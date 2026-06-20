@@ -8,7 +8,7 @@ export default function Research3() {
       description="Based on 130+ real emails. 3 proven templates plus a checklist for each send."
       resourceId="research-3"
       seoTitle="Cold Email Templates for Research Internships (Tested)"
-      seoDescription="3 cold email templates that got replies from IIT professors. Based on 130+ real emails. Includes a pre-send checklist."
+      seoDescription="3 cold email templates that got replies from top professors. Based on 130+ real emails. Includes a pre-send checklist."
       canonicalPath="/cold-email-templates"
     />
   );

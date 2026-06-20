@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
+import AeoSection from '../components/AeoSection';
 
 import TheBook from '../components/TheBook';
 import WhoItsFor from '../components/WhoItsFor';
@@ -41,7 +42,7 @@ export default function Home() {
     <>
       <Navbar />
       <Hero />
-
+      <AeoSection />
       <TheBook />
       <WhoItsFor />
       <ResearchPlaybooks />

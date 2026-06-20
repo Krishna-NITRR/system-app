@@ -2,7 +2,7 @@ import ResourceLandingPage from '../components/ResourceLandingPage';
 
 export default function Research1() {
   return (
-    <ResourceLandingPage 
+    <ResourceLandingPage
       tag="Resource 01"
       title="Research Fellowships & Programs for Indian Students (2026)"
       description="50+ international and Indian programs. Exact eligibility, stipends, deadlines, and application roadmap."

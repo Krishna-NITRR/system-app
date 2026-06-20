@@ -6,13 +6,13 @@ export default function ResearchPlaybooks() {
     {
       tag: "Resource 01",
       title: "Fellowships & Programs List",
-      desc: "50+ programs in India and abroad. Deadlines, stipends, and what they actually look for.",
+      desc: "50+ programs worldwide. Deadlines, stipends, and what they actually look for.",
       link: "/fellowships"
     },
     {
       tag: "Resource 02",
       title: "Professor Outreach Database",
-      desc: "A list of professors across IITs, NITs, and IISc who actively take interns.",
+      desc: "A list of professors at prestigious labs like IITs and IISc who actively take interns.",
       link: "/professor-database"
     },
     {
