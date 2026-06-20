@@ -7,7 +7,7 @@ export default function ResearchMain() {
 
   usePageMeta({
     title: 'Placement Prep System: Finance, IT, Core & Research Tracks',
-    description: '4 career track roadmaps for NIT/IIT students. Finance, IT, Core, Research — each mapped with exact steps. ₹149 one-time. Built by an NIT Raipur student.',
+    description: '4 career track roadmaps for NIT/IIT students. Finance, IT, Core, Research - each mapped with exact steps. ₹149 one-time. Built by an NIT Raipur student.',
     canonical: 'https://www.krishnamahawar.in/career-roadmaps',
   });
 

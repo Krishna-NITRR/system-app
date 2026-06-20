@@ -9,7 +9,7 @@ export default function WhoItsFor() {
         <div className="who-layout fade">
           <div className="who-item">
             <div className="who-title">High School Students</div>
-            <p className="who-desc">Start building a research profile 2 years before college applications. Most applicants don't know this is possible — you'll be ahead before day one.</p>
+            <p className="who-desc">Start building a research profile 2 years before college applications. Most applicants don't know this is possible - you'll be ahead before day one.</p>
           </div>
           <div className="who-item">
             <div className="who-title">Undergraduate Researchers</div>
@@ -21,7 +21,7 @@ export default function WhoItsFor() {
           </div>
           <div className="who-item">
             <div className="who-title">Early Career Academics</div>
-            <p className="who-desc">Build your profile, connect with professors, and start your publication record. One paper leads to the next — but the first one is the hardest.</p>
+            <p className="who-desc">Build your profile, connect with professors, and start your publication record. One paper leads to the next - but the first one is the hardest.</p>
           </div>
         </div>
       </div>

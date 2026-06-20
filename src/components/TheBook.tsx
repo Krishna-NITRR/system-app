@@ -23,7 +23,7 @@ export default function TheBook() {
                 <span className="ch-num">02</span>
                 <div>
                   <div className="ch-title">Reading Papers Efficiently</div>
-                  <div className="ch-desc">Extract what matters in under 30 minutes — the three-pass method that working researchers actually use</div>
+                  <div className="ch-desc">Extract what matters in under 30 minutes - the three-pass method that working researchers actually use</div>
                 </div>
               </li>
               <li className="ch-item">
@@ -37,21 +37,21 @@ export default function TheBook() {
                 <span className="ch-num">04</span>
                 <div>
                   <div className="ch-title">Securing Research Internships</div>
-                  <div className="ch-desc">IITs, IISc, CSIR, SRFP — the full application system. Browse <Link to="/fellowships" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>50+ fellowship programs</Link>.</div>
+                  <div className="ch-desc">IITs, IISc, CSIR, SRFP - the full application system. Browse <Link to="/fellowships" style={{ color: 'var(--accent)', textDecoration: 'underline' }}>50+ fellowship programs</Link>.</div>
                 </div>
               </li>
               <li className="ch-item">
                 <span className="ch-num">05</span>
                 <div>
                   <div className="ch-title">From Internship to Publication</div>
-                  <div className="ch-desc">Convert early research into conference and journal papers — targeting realistic venues, not Nature</div>
+                  <div className="ch-desc">Convert early research into conference and journal papers - targeting realistic venues, not Nature</div>
                 </div>
               </li>
               <li className="ch-item">
                 <span className="ch-num">06</span>
                 <div>
                   <div className="ch-title">Long-Term Research Growth</div>
-                  <div className="ch-desc">Build a compounding research profile from year one — not a last-semester scramble</div>
+                  <div className="ch-desc">Build a compounding research profile from year one - not a last-semester scramble</div>
                 </div>
               </li>
             </ul>

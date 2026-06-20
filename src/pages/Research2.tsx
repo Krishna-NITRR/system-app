@@ -4,7 +4,7 @@ export default function Research2() {
   return (
     <ResourceLandingPage 
       tag="Resource 02"
-      title="Professors Who Take Research Interns — IIT, NIT, IISc"
+      title="Professors Who Take Research Interns - IIT, NIT, IISc"
       description="Curated list of professors across IITs, NITs, IISc, and global labs who actively take interns."
       resourceId="research-2"
       seoTitle="Professor List: IIT & IISc Faculty Taking Interns"
