@@ -10,8 +10,15 @@ import Testimonials from '../components/Testimonials';
 import Author from '../components/Author';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
+import usePageMeta from '../hooks/usePageMeta';
 
 export default function Home() {
+  usePageMeta({
+    title: 'How to Get Research Internships in India — Krishna Mahawar',
+    description: 'Step-by-step system to land IIT research fellowships, write cold emails that get replies, and publish your first paper. From an NIT Raipur undergrad who did it.',
+    canonical: 'https://www.krishnamahawar.in/',
+  });
+
   useEffect(() => {
     // Fade-in on scroll effect
     const io = new IntersectionObserver((entries) => {

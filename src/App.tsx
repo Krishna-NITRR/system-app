@@ -12,12 +12,12 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/research-1" element={<Research1 />} />
-        <Route path="/research-2" element={<Research2 />} />
-        <Route path="/research-3" element={<Research3 />} />
-        <Route path="/research-4" element={<Research4 />} />
-        <Route path="/research-5" element={<Research5 />} />
-        <Route path="/research-main" element={<ResearchMain />} />
+        <Route path="/fellowships" element={<Research1 />} />
+        <Route path="/professor-database" element={<Research2 />} />
+        <Route path="/cold-email-templates" element={<Research3 />} />
+        <Route path="/internship-guide" element={<Research4 />} />
+        <Route path="/project-ideas" element={<Research5 />} />
+        <Route path="/career-roadmaps" element={<ResearchMain />} />
       </Routes>
     </BrowserRouter>
   );

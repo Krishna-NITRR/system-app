@@ -1,8 +1,15 @@
 import { useState } from 'react';
 import './ResearchMain.css';
+import usePageMeta from '../hooks/usePageMeta';
 
 export default function ResearchMain() {
   const [copied, setCopied] = useState(false);
+
+  usePageMeta({
+    title: 'Placement Prep System: Finance, IT, Core & Research Tracks',
+    description: '4 career track roadmaps for NIT/IIT students. Finance, IT, Core, Research — each mapped with exact steps. ₹149 one-time. Built by an NIT Raipur student.',
+    canonical: 'https://www.krishnamahawar.in/career-roadmaps',
+  });
 
   const openUPI = () => {
     window.location.href = 'upi://pay?pa=krishnazindahai@okhdfcbank&pn=KrishnaMahawar&am=149&cu=INR';
@@ -58,7 +65,7 @@ export default function ResearchMain() {
   <div className="proof-bar-inner">
     <div className="proof-item gold">IIT Madras Summer Research Fellow</div>
     <div className="proof-item">IIT BHU Intern</div>
-    <div className="proof-item">Interantional Conference First Author</div>
+    <div className="proof-item">International Conference First Author</div>
     <div className="proof-item">9.06 CGPA, NIT Raipur</div>
   </div>
 </div>

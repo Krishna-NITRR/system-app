@@ -3,20 +3,30 @@ import { Link } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
 
 import { motion, useReducedMotion } from 'framer-motion';
+import usePageMeta from '../hooks/usePageMeta';
 
 interface Props {
   tag: string;
   title: string;
   description: string;
   resourceId: string;
+  seoTitle: string;
+  seoDescription: string;
+  canonicalPath: string;
 }
 
-export default function ResourceLandingPage({ tag, title, description, resourceId }: Props) {
+export default function ResourceLandingPage({ tag, title, description, resourceId, seoTitle, seoDescription, canonicalPath }: Props) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const shouldReduceMotion = useReducedMotion();
+
+  usePageMeta({
+    title: seoTitle,
+    description: seoDescription,
+    canonical: `https://www.krishnamahawar.in${canonicalPath}`,
+  });
 
   useEffect(() => {
     window.scrollTo(0, 0);

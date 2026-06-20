@@ -43,7 +43,7 @@ export default function Hero() {
             <br />
             {"for PhDs.".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`t2-${i}`}>{char}</Letter>)}
           </h1>
-          <p className="hero-sub">I didn’t know how research worked when I started. After a lot of trial and error, I ended up working with IIT Madras and publishing at an international conference. This is what worked.</p>
+          <p className="hero-sub">I sent 130+ cold emails before getting my first reply. Then I figured out what works — got into <strong>IIT Madras</strong> as a research fellow, interned at <strong>IIT BHU</strong>, and presented as first author at <strong>ISAMET 2026</strong>. These are the exact methods.</p>
           <div className="hero-cta-row">
             <a href="#playbooks" className="btn btn-primary">Get the Guides</a>
             <a href="#book" className="btn btn-outline">Read the Book</a>

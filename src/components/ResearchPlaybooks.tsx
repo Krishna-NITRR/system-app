@@ -7,37 +7,37 @@ export default function ResearchPlaybooks() {
       tag: "Resource 01",
       title: "Fellowships & Programs List",
       desc: "50+ programs in India and abroad. Deadlines, stipends, and what they actually look for.",
-      link: "/research-1"
+      link: "/fellowships"
     },
     {
       tag: "Resource 02",
       title: "Professor Outreach Database",
       desc: "A list of professors across IITs, NITs, and IISc who actively take interns.",
-      link: "/research-2"
+      link: "/professor-database"
     },
     {
       tag: "Resource 03",
       title: "Cold Email Templates That Get Replies",
       desc: "Based on 130+ real emails. Three templates that worked, plus a checklist before you hit send.",
-      link: "/research-3"
+      link: "/cold-email-templates"
     },
     {
       tag: "Resource 04",
       title: "Internship & Research Guide",
       desc: "Step-by-step notes on landing internships and learning how to research from year one.",
-      link: "/research-4"
+      link: "/internship-guide"
     },
     {
       tag: "Resource 05",
       title: "Project Ideas for Research Internships",
       desc: "Good starting ideas across core and non-core engineering. Ready to use.",
-      link: "/research-5"
+      link: "/project-ideas"
     },
     {
       tag: "Resource 06",
       title: "Career Roadmaps",
       desc: "Preparation steps for Core Engineering, Tech, and Research paths.",
-      link: "/research-main"
+      link: "/career-roadmaps"
     }
   ];
 
