@@ -10,6 +10,7 @@ export default function Research3() {
       seoTitle="Cold Email Templates for Research Internships (Tested)"
       seoDescription="3 cold email templates that got replies from top professors. Based on 130+ real emails. Includes a pre-send checklist."
       canonicalPath="/cold-email-templates"
+      driveLink="https://drive.google.com/file/d/1pSv0XyF52i9JKEld64MpdUmUQWoyGAKI/view?usp=sharing"
     />
   );
 }

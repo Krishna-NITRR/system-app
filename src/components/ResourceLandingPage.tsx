@@ -13,9 +13,10 @@ interface Props {
   seoTitle: string;
   seoDescription: string;
   canonicalPath: string;
+  driveLink?: string;
 }
 
-export default function ResourceLandingPage({ tag, title, description, resourceId, seoTitle, seoDescription, canonicalPath }: Props) {
+export default function ResourceLandingPage({ tag, title, description, resourceId, seoTitle, seoDescription, canonicalPath, driveLink = "https://drive.google.com/drive/folders/placeholder" }: Props) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
@@ -46,7 +47,7 @@ export default function ResourceLandingPage({ tag, title, description, resourceI
         throw dbError;
       }
 
-      window.location.href = 'https://drive.google.com/drive/folders/placeholder';
+      window.location.href = driveLink;
     } catch (err) {
       console.error(err);
       setError('Something went wrong. Please try again.');

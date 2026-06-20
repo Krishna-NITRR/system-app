@@ -8,8 +8,9 @@ export default function Research1() {
       description="50+ international and Indian programs. Exact eligibility, stipends, deadlines, and application roadmap."
       resourceId="research-1"
       seoTitle="50+ Research Fellowships for Students in India (2026)"
-      seoDescription="Complete list of research fellowships and programs for Indian undergraduates. SRFP, JNCASR, IISc, and 50+ more with deadlines, stipends, and eligibility."
+      seoDescription="Complete list of research fellowships and programs for students. Includes top labs like IISc and JNCASR, plus 50+ more with deadlines, stipends, and eligibility."
       canonicalPath="/fellowships"
+      driveLink="https://drive.google.com/drive/folders/1JSCq_yyxIbg-_QiptAuyXZUG7gWgOorU?usp=drive_link"
     />
   );
 }
