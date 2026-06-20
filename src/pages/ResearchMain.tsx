@@ -40,7 +40,7 @@ export default function ResearchMain() {
 
       <nav>
         <div className="nav-brand">Krishna Mahawar<span>.</span></div>
-        <div className="nav-badge">{"\u20B9"}149 one-time</div>
+        <div className="nav-badge">{"\u20B9"}149 (≈ $2)</div>
       </nav>
 
 
@@ -50,11 +50,11 @@ export default function ResearchMain() {
           <h1>One system.<br />Four tracks.<br /><em>Zero guesswork.</em></h1>
           <p className="hero-sub">Finance. IT. Core. Research. Each track mapped end to end. No scattered resources. No figuring out what comes next. Just a clear path from where you are to where you need to be.</p>
           <div className="price-block">
-            <span className="price">{"\u20B9"}149</span>
+            <span className="price">{"\u20B9"}149 (≈ $2)</span>
             <span className="price-sub">one-time {"\u00B7"} instant access {"\u00B7"} all future updates included</span>
           </div>
           <button className="btn-cta" onClick={scrollToPayment}>
-            Get Placement Map  {"\u2192"}
+            Get Access  {"\u2192"}
           </button>
           <div className="hero-note">9 students have already paid. Access delivered within 2 hours.</div>
         </div>
@@ -140,7 +140,7 @@ export default function ResearchMain() {
             <div className="trust-desc">With deadlines, stipends, and direct apply links.</div>
           </div>
           <div className="trust-item">
-            <div className="trust-num">{"\u20B9"}149</div>
+            <div className="trust-num">{"\u20B9"}149 (≈ $2)</div>
             <div className="trust-label">One-time</div>
             <div className="trust-desc">All future updates included at no extra cost.</div>
           </div>
@@ -153,12 +153,12 @@ export default function ResearchMain() {
       <section className="sec" id="payment">
         <div className="payment-card">
           <div className="payment-heading">Complete Your Payment</div>
-          <div className="payment-sub">3 steps {"\u00B7"} under 2 minutes</div>
+          <div className="payment-sub">Currently supports UPI payments (India). Global payment options will be added soon.</div>
           <div className="steps">
             <div className="step">
               <div className="step-num">1</div>
               <div>
-                <div className="step-title">Pay {"\u20B9"}149 via UPI</div>
+                <div className="step-title">Pay {"\u20B9"}149 (≈ $2)</div>
                 <div className="step-desc">Scan the QR below or copy the UPI ID. Use any UPI app.</div>
               </div>
             </div>
@@ -187,7 +187,7 @@ export default function ResearchMain() {
                 <button className={`btn-copy ${copied ? "copied" : ""}`} onClick={copyUPI}>{copied ? "Copied!" : "Copy"}</button>
               </div>
               <button className="btn-upi" onClick={openUPI}>
-                Pay {"\u20B9"}149 via UPI App  {"\u2192"}
+                Pay {"\u20B9"}149 (≈ $2) {"\u2192"}
               </button>
               <div className="upi-note">Opens your UPI app directly {"\u00B7"} mobile</div>
             </div>

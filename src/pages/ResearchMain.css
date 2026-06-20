@@ -28,6 +28,15 @@
 /* NAV */
 .rm-page nav {background:rgba(12,12,15,.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--div);padding:14px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99}
 .rm-page .nav-brand span {color:var(--p)}
+.rm-page .nav-badge {
+  font-size: 0.8rem;
+  background: rgba(108, 76, 241, 0.15);
+  color: var(--p);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-weight: 600;
+  white-space: nowrap;
+}
 
 /* HERO */
 .rm-page #hero {padding:80px 24px 72px;background:var(--bg);position:relative;overflow:hidden}
@@ -39,8 +48,21 @@
 .rm-page .hero-sub {font-size:1rem;color:var(--tm);line-height:1.72;margin-bottom:32px;max-width:540px}
 .rm-page .price-block {display:flex;align-items:baseline;gap:12px;margin-bottom:32px;padding:20px 0;border-top:1px solid var(--div);border-bottom:1px solid var(--div)}
 .rm-page .price-sub {font-size:.82rem;color:var(--tl)}
+.rm-page .btn-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 28px;
+  background: var(--p);
+  color: #fff;
+  font-weight: 600;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 .rm-page .btn-cta:hover {background:#5538d4;transform:translateY(-1px);box-shadow:0 8px 32px rgba(108,76,241,.3)}
-.rm-page .hero-note {margin-top:12px;font-size:.75rem;color:var(--tl);display:flex;align-items:center;gap:6px}
+.rm-page .hero-note {margin-top:16px;font-size:.75rem;color:var(--tl);display:flex;align-items:center;gap:6px}
 .rm-page .hero-note::before {content:'';width:5px;height:5px;border-radius:50%;background:#22C55E;flex-shrink:0}
 
 /* SOCIAL PROOF BAR */
@@ -60,8 +82,10 @@
 
 /* TRUST */
 .rm-page #trust {background:var(--bg);padding:48px 24px}
-.rm-page .trust-grid {max-width:700px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-.rm-page .trust-item {padding:20px 16px;background:var(--card);border:1px solid var(--div);border-radius:var(--radius)}
+.rm-page .trust-grid {max-width:700px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.rm-page .trust-item {padding:24px 20px;background:var(--card);border:1px solid var(--div);border-radius:var(--radius)}
+.rm-page .trust-num {font-size:1.6rem;font-weight:700;color:var(--text);margin-bottom:6px;white-space:nowrap}
+.rm-page .trust-label {font-size:.85rem;font-weight:600;color:var(--p);margin-bottom:8px}
 .rm-page .trust-desc {font-size:.75rem;color:var(--tl);line-height:1.5}
 
 /* PAYMENT */
@@ -76,12 +100,15 @@
 .rm-page .qr-img {width:140px;height:140px;object-fit:cover;border-radius:6px;border:1px solid var(--div);flex-shrink:0;background:var(--bg3)}
 .rm-page .qr-right {flex:1;min-width:200px}
 .rm-page .upi-row {display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--div);border-radius:4px;padding:10px 12px;margin-bottom:12px}
+.rm-page .btn-copy {padding:8px 14px;background:var(--p);color:#fff;border:none;border-radius:4px;font-size:.75rem;font-weight:600;cursor:pointer;transition:background 0.2s}
 .rm-page .btn-copy:hover {background:#5538d4}
 .rm-page .btn-copy.copied {background:#22C55E}
+.rm-page .btn-upi {width:100%;padding:14px 24px;background:#FF6600;color:#fff;border:none;border-radius:6px;font-weight:600;cursor:pointer;transition:background 0.2s;text-align:center;display:block}
 .rm-page .btn-upi:hover {background:#E55A00}
-.rm-page .upi-note {font-size:.7rem;color:var(--tl);text-align:center;margin-top:6px}
-.rm-page .submit-block {margin-top:24px;padding-top:24px;border-top:1px solid var(--div)}
-.rm-page .submit-desc {font-size:.78rem;color:var(--tm);margin-bottom:14px;line-height:1.55}
+.rm-page .upi-note {font-size:.7rem;color:var(--tl);text-align:center;margin-top:8px}
+.rm-page .submit-block {margin-top:28px;padding-top:28px;border-top:1px solid var(--div)}
+.rm-page .submit-desc {font-size:.8rem;color:var(--tm);margin-bottom:18px;line-height:1.6}
+.rm-page .btn-submit {display:block;width:100%;text-align:center;padding:14px 24px;background:var(--text);color:var(--bg);font-weight:600;border:none;border-radius:6px;cursor:pointer;transition:background 0.2s}
 .rm-page .btn-submit:hover {background:#d0cfde}
 .rm-page .submit-note {font-size:.72rem;color:var(--tl);text-align:center;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px}
 .rm-page .submit-note::before {content:'';width:5px;height:5px;border-radius:50%;background:#22C55E;flex-shrink:0}
