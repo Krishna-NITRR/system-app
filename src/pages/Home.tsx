@@ -14,8 +14,8 @@ import usePageMeta from '../hooks/usePageMeta';
 
 export default function Home() {
   usePageMeta({
-    title: 'How to Get Research Internships in India - Krishna Mahawar',
-    description: 'Step-by-step system to land IIT research fellowships, write cold emails that get replies, and publish your first paper. From an NIT Raipur undergrad who did it.',
+    title: 'Start Research, Publish & Build a Career - Krishna Mahawar',
+    description: 'This website shows students how to start research from scratch, publish their work, and use it to get internships, fellowships, jobs, or even build startups.',
     canonical: 'https://www.krishnamahawar.in/',
   });
 

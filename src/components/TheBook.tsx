@@ -6,7 +6,7 @@ export default function TheBook() {
       <div className="wrap">
         <span className="eyebrow">Upcoming Book</span>
         <h2 className="section-title" id="book-heading">A Practical Research Guide</h2>
-        <p className="section-sub">A straightforward guide to finding internships and writing your first paper. Just the exact steps that worked, no vague advice.</p>
+        <p className="section-sub">A straightforward guide to starting research from scratch, publishing, and landing internships, fellowships, or jobs. Just the exact steps that worked, no vague advice.</p>
         <div className="about-layout fade">
           <div className="about-body">
             <p>The biggest barrier isn't your CGPA or your college name. It's that nobody tells you how the process actually works until it's too late.</p>

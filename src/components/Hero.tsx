@@ -43,7 +43,7 @@ export default function Hero() {
             <br />
             {"for PhDs.".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`t2-${i}`}>{char}</Letter>)}
           </h1>
-          <p className="hero-sub">I sent 130+ cold emails before getting my first reply. Then I figured out what works - got into <strong>IIT Madras</strong> as a research fellow, interned at <strong>IIT BHU</strong>, and presented as first author at <strong>ISAMET 2026</strong>. These are the exact methods.</p>
+          <p className="hero-sub">This website shows you how to start research from scratch, publish your work, and use it to get internships, fellowships, jobs, or even build startups. Learn the exact systems I used to land positions at <strong>IIT Madras</strong>, <strong>IIT BHU</strong>, and publish my first paper.</p>
           <div className="hero-cta-row">
             <a href="#playbooks" className="btn btn-primary">Get the Guides</a>
             <a href="#book" className="btn btn-outline">Read the Book</a>

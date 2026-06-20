@@ -4,9 +4,10 @@ interface PageMeta {
   title: string;
   description: string;
   canonical?: string;
+  image?: string;
 }
 
-export default function usePageMeta({ title, description, canonical }: PageMeta) {
+export default function usePageMeta({ title, description, canonical, image }: PageMeta) {
   useEffect(() => {
     document.title = title;
 
@@ -30,20 +31,33 @@ export default function usePageMeta({ title, description, canonical }: PageMeta)
       link.href = canonical;
     }
 
-    // OG tags
-    const setOG = (property: string, content: string) => {
-      let tag = document.querySelector(`meta[property="${property}"]`);
+    // OG and Twitter tags helper
+    const setMeta = (nameOrProperty: string, content: string, isProperty = true) => {
+      const selector = isProperty ? `meta[property="${nameOrProperty}"]` : `meta[name="${nameOrProperty}"]`;
+      let tag = document.querySelector(selector);
       if (!tag) {
         tag = document.createElement('meta');
-        tag.setAttribute('property', property);
+        if (isProperty) {
+          tag.setAttribute('property', nameOrProperty);
+        } else {
+          tag.setAttribute('name', nameOrProperty);
+        }
         document.head.appendChild(tag);
       }
       tag.setAttribute('content', content);
     };
 
-    setOG('og:title', title);
-    setOG('og:description', description);
-    setOG('og:type', 'website');
-    if (canonical) setOG('og:url', canonical);
-  }, [title, description, canonical]);
+    setMeta('og:title', title);
+    setMeta('og:description', description);
+    setMeta('og:type', 'website');
+    if (canonical) setMeta('og:url', canonical);
+
+    setMeta('twitter:title', title, false);
+    setMeta('twitter:description', description, false);
+    setMeta('twitter:card', 'summary_large_image', false);
+
+    const imgUrl = image || 'https://www.krishnamahawar.in/og-image.png';
+    setMeta('og:image', imgUrl);
+    setMeta('twitter:image', imgUrl, false);
+  }, [title, description, canonical, image]);
 }
