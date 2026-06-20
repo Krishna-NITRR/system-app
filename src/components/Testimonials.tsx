@@ -10,7 +10,7 @@ export default function Testimonials() {
             <p className="testi-text">Finally someone explaining research the way it actually works. The cold email chapter alone changed everything for me.</p>
             <div className="testi-author">
               <div className="testi-av">AR</div>
-              <div><div className="testi-name">Ananya R.</div><div className="testi-role">B.Tech, IIT Kharagpur · June 2026</div></div>
+              <div><div className="testi-name">Ananya R.</div><div className="testi-role">B.Tech, IIT Kharagpur</div></div>
             </div>
           </div>
           <div className="testi-item">

@@ -39,7 +39,8 @@ export default function Footer() {
       </div>
       <div className="footer-bottom wrap">
         <div className="footer-copy">&copy; 2026 Krishna Mahawar &middot; National Institute of Technology, Raipur</div>
-        <div className="footer-copy">Research Systems for Students &middot; Updated June 2026</div>
+        <div className="footer-copy">Research Systems for Students</div>
+        <div className="footer-copy" style={{ opacity: 0.5 }}>By Krishna Mahawar</div>
       </div>
     </footer>
   );

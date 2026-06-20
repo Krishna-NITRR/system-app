@@ -22,7 +22,6 @@ export default function Author() {
               <a href="https://www.linkedin.com/in/krishna-mahawar/" target="_blank" rel="noopener noreferrer author" style={{ color: 'var(--accent)', fontWeight: 600, fontSize: '0.9rem', textDecoration: 'underline' }}>
                 LinkedIn Profile →
               </a>
-              <span style={{ color: 'var(--tm)', fontSize: '0.8rem' }}>Last updated: June 2026</span>
             </div>
           </div>
         </div>
