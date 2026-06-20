@@ -41,7 +41,7 @@ export default function Hero() {
           <h1 id="hero-heading">
             {"Research isn't reserved ".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`t1-${i}`}>{char}</Letter>)}
             <br />
-            {"for toppers.".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`t2-${i}`}>{char}</Letter>)}
+            {"for PhDs.".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`t2-${i}`}>{char}</Letter>)}
           </h1>
           <p className="hero-sub">I didn’t know how research worked when I started. After a lot of trial and error, I ended up working with IIT Madras and publishing at an international conference. This is what worked.</p>
           <div className="hero-cta-row">
