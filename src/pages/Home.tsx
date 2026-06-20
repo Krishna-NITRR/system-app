@@ -15,7 +15,7 @@ import usePageMeta from '../hooks/usePageMeta';
 export default function Home() {
   usePageMeta({
     title: 'Start Research, Publish & Build a Career - Krishna Mahawar',
-    description: 'This website shows students how to start research from scratch, publish their work, and use it to get internships, fellowships, jobs, or even build startups.',
+    description: 'Start research from scratch, publish your work, and use it to land internships, jobs, or build startups. A practical guide.',
     canonical: 'https://www.krishnamahawar.in/',
   });
 
