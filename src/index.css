@@ -895,7 +895,15 @@ footer {
   box-shadow: 0 8px 30px rgba(108, 76, 241, 0.15);
 }
 
+.search-container {
+  position: relative;
+  max-width: 600px;
+  margin: 2rem auto 0;
+  width: 100%;
+}
 .search-input {
+  width: 100%;
+  box-sizing: border-box;
   background: var(--bg2);
   border: 1px solid var(--div);
   padding: 14px 20px 14px 44px;

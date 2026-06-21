@@ -19,7 +19,7 @@ const RESOURCES = [
     title: "Professor Outreach Database",
     desc: "A list of professors at prestigious labs like IITs and IISc who actively take interns.",
     link: "/professor-database",
-    category: "Professors",
+    category: "Templates",
     featured: true,
   },
   {
@@ -27,7 +27,7 @@ const RESOURCES = [
     title: "Cold Email Templates That Get Replies",
     desc: "Based on 130+ real emails. Three templates that worked, plus a checklist before you hit send.",
     link: "/cold-email-templates",
-    category: "Email Templates",
+    category: "Templates",
     featured: false,
   },
   {
@@ -56,7 +56,7 @@ const RESOURCES = [
   }
 ];
 
-const CATEGORIES = ["All", "Internships", "Professors", "Email Templates", "Guides", "Career"];
+const CATEGORIES = ["All", "Internships", "Templates", "Guides", "Career"];
 
 export default function ResearchTools() {
   usePageMeta({
@@ -107,11 +107,11 @@ export default function ResearchTools() {
           </p>
           
           {/* Search Bar */}
-          <div className="mt-8 max-w-xl mx-auto relative">
+          <div className="search-container">
             <input 
               type="text" 
               placeholder="Search internships, emails, IIT, research..." 
-              className="search-input w-full"
+              className="search-input"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
