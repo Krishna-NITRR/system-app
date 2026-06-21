@@ -13,10 +13,11 @@ export default function Footer() {
         <div className="footer-col">
           <h5>Navigate</h5>
           <ul>
-            <li><a href="#book">The Book</a></li>
-            <li><a href="#playbooks">Research Systems</a></li>
-            <li><a href="#signup">Early Access</a></li>
-            <li><a href="#author">About</a></li>
+            <li><a href="/#book">The Book</a></li>
+            <li><a href="/#playbooks">Research Systems</a></li>
+            <li><a href="/#signup">Early Access</a></li>
+            <li><a href="https://merch.krishnamahawar.in">Merch Store</a></li>
+            <li><a href="/#author">About</a></li>
           </ul>
         </div>
         <div className="footer-col">
