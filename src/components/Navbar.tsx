@@ -30,12 +30,13 @@ export default function Navbar() {
   return (
     <>
       <nav id="nav" role="navigation" aria-label="Main navigation" className={scrolled ? 'scrolled' : ''}>
-        <a href="#" className="nav-logo">Krishna Mahawar<span>.</span></a>
+        <a href="/" className="nav-logo">Krishna Mahawar<span>.</span></a>
         <ul className="nav-links" role="list">
-          <li><a href="#book">The Book</a></li>
-          <li><a href="#playbooks">Research Systems</a></li>
-          <li><a href="#author">About</a></li>
-          <li><a href="#contact">Contact</a></li>
+          <li><a href="/#book">The Book</a></li>
+          <li><a href="/#playbooks">Research Systems</a></li>
+          <li><a href="/research-tools-and-resources">Tools</a></li>
+          <li><a href="/#author">About</a></li>
+          <li><a href="/#contact">Contact</a></li>
         </ul>
         <div className="nav-right">
           <button className="toggle" id="themeToggle" aria-label="Toggle dark mode" onClick={toggleTheme}>
@@ -55,11 +56,12 @@ export default function Navbar() {
       </nav>
 
       <nav className={`mobile-menu ${isOpen ? 'open' : ''}`} id="mobileMenu" aria-label="Mobile navigation">
-        <a href="#book" onClick={closeMobile}>The Book</a>
-        <a href="#playbooks" onClick={closeMobile}>Research Systems</a>
-        <a href="#author" onClick={closeMobile}>About</a>
-        <a href="#contact" onClick={closeMobile}>Contact</a>
-        <a href="#signup" onClick={closeMobile} style={{ color: '#6C4CF1', fontWeight: 700 }}>Join Waitlist</a>
+        <a href="/#book" onClick={closeMobile}>The Book</a>
+        <a href="/#playbooks" onClick={closeMobile}>Research Systems</a>
+        <a href="/research-tools-and-resources" onClick={closeMobile}>Tools</a>
+        <a href="/#author" onClick={closeMobile}>About</a>
+        <a href="/#contact" onClick={closeMobile}>Contact</a>
+        <a href="/#signup" onClick={closeMobile} style={{ color: '#6C4CF1', fontWeight: 700 }}>Join Waitlist</a>
       </nav>
 
       <div className="ann-bar">
