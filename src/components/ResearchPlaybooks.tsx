@@ -58,6 +58,15 @@ export default function ResearchPlaybooks() {
               </TiltCard>
             </Link>
           ))}
+          
+          <Link to="/research-tools-and-resources" style={{ textDecoration: 'none' }}>
+            <TiltCard className="playbook-card explore-more-card">
+              <div className="playbook-tag" style={{ color: 'var(--purple)' }}>More Resources</div>
+              <div className="playbook-title">Explore All Tools &amp; Guides</div>
+              <p className="playbook-desc">Browse our full library of research tools, email templates, and internship guides with advanced filtering.</p>
+              <span className="playbook-link" style={{ fontWeight: 600 }}>Explore more &rarr;</span>
+            </TiltCard>
+          </Link>
         </div>
       </div>
     </section>

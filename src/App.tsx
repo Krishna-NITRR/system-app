@@ -6,6 +6,7 @@ import Research3 from './pages/Research3';
 import Research4 from './pages/Research4';
 import Research5 from './pages/Research5';
 import ResearchMain from './pages/ResearchMain';
+import ResearchTools from './pages/ResearchTools';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/internship-guide" element={<Research4 />} />
         <Route path="/project-ideas" element={<Research5 />} />
         <Route path="/career-roadmaps" element={<ResearchMain />} />
+        <Route path="/research-tools-and-resources" element={<ResearchTools />} />
       </Routes>
     </BrowserRouter>
   );

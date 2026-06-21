@@ -882,3 +882,80 @@ footer {
 .footer-logo { font-size: .95rem; font-weight: 600; color: #fff; margin-bottom: 6px; }
 .footer-col h5 { font-size: .65rem; font-weight: 600; color: rgba(255,255,255,.35); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
 .footer-col ul li a { font-size: .8rem; color: rgba(255,255,255,.5); transition: color var(--trans); }
+
+/* Research Tools Page & Explore More Card */
+
+.explore-more-card {
+  border: 1px solid var(--purple-light);
+  background: linear-gradient(145deg, var(--bg) 0%, rgba(108, 76, 241, 0.03) 100%);
+  box-shadow: 0 4px 20px rgba(108, 76, 241, 0.08);
+}
+.explore-more-card:hover {
+  border-color: var(--purple);
+  box-shadow: 0 8px 30px rgba(108, 76, 241, 0.15);
+}
+
+.search-input {
+  background: var(--bg2);
+  border: 1px solid var(--div);
+  padding: 14px 20px 14px 44px;
+  border-radius: var(--radius-lg);
+  color: var(--text);
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+.search-input:focus {
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 3px var(--purple-light);
+}
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--tm);
+  pointer-events: none;
+}
+
+.category-filters {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.filter-btn {
+  background: var(--bg2);
+  border: 1px solid var(--div);
+  padding: 8px 16px;
+  border-radius: 100px;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.filter-btn:hover {
+  border-color: var(--tm);
+}
+.filter-btn.active {
+  background: var(--text);
+  color: var(--bg);
+  border-color: var(--text);
+}
+
+.featured-grid {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+@media (max-width: 768px) {
+  .featured-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+.featured-card {
+  border-color: var(--purple-light);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.06);
+}
+[data-theme="dark"] .featured-card {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
