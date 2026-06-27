@@ -10,7 +10,7 @@ export default function Research5() {
       seoTitle="Research Project Ideas for Engineering Internships"
       seoDescription="Ready-to-pitch project ideas across core and non-core engineering. Each idea includes why it works and how to propose it to a professor."
       canonicalPath="/project-ideas"
-      driveLink="https://drive.google.com/drive/folders/1dvslQDSaT9-x7R1zJbbCRG7WPDjigcJl?usp=drive_link"
+      driveLink="https://drive.google.com/drive/folders/1dvslQDSaT9-x7R1zJbbCRG7WPDjigcJl"
     />
   );
 }
