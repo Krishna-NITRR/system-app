@@ -44,14 +44,16 @@ export default function ResourceLandingPage({ tag, title, description, resourceI
         .insert([{ name, email, resource: resourceId }]);
 
       if (dbError && dbError.code !== '23505') {
-        throw dbError;
+        console.error('Lead capture error (Supabase might be paused):', dbError);
+        // We continue to the driveLink even if lead capture fails 
+        // to ensure the user gets their resource.
       }
 
       window.location.href = driveLink;
     } catch (err) {
-      console.error(err);
-      setError('Something went wrong. Please try again.');
-      setLoading(false);
+      console.error('Unexpected error:', err);
+      // Fallback in case of unexpected exception
+      window.location.href = driveLink;
     }
   };
 
