@@ -7,10 +7,12 @@ import Research4 from './pages/Research4';
 import Research5 from './pages/Research5';
 import ResearchMain from './pages/ResearchMain';
 import ResearchTools from './pages/ResearchTools';
+import MerchBanner from './components/MerchBanner';
 
 function App() {
   return (
     <BrowserRouter>
+      <MerchBanner />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/fellowships" element={<Research1 />} />
