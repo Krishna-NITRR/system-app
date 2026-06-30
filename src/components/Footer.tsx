@@ -23,10 +23,8 @@ export default function Footer() {
         <div className="footer-col">
           <h5>Resources</h5>
           <ul>
-            <li><Link to="/fellowships">Fellowship List</Link></li>
-            <li><Link to="/cold-email-templates">Cold Email Templates</Link></li>
-            <li><Link to="/professor-database">Professor Database</Link></li>
             <li><Link to="/career-roadmaps">Career Roadmaps</Link></li>
+            <li><a href="https://www.krishnamahawar.in/research-tools-and-resources" target="_blank" rel="noopener noreferrer">Explore all free and premium resources</a></li>
           </ul>
         </div>
         <div className="footer-col">
