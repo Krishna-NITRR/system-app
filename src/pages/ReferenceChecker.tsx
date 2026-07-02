@@ -17,7 +17,6 @@ export default function ReferenceChecker() {
     const [progress, setProgress] = useState(0);
     const [errorMessage, setErrorMessage] = useState('');
     const [isDragOver, setIsDragOver] = useState(false);
-    const [showSample, setShowSample] = useState(false);
     const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
     
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -84,7 +83,9 @@ export default function ReferenceChecker() {
                     setUploadState('error');
                 } else {
                     setUploadState('success');
-                    handleViewSample();
+                    setTimeout(() => {
+                        sampleRef.current?.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
                 }
             }, 500);
 
@@ -93,13 +94,6 @@ export default function ReferenceChecker() {
             setErrorMessage(error.message || "Failed to process the document.");
             setUploadState('error');
         }
-    };
-
-    const handleViewSample = () => {
-        setShowSample(true);
-        setTimeout(() => {
-            sampleRef.current?.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
     };
 
     return (
@@ -117,9 +111,6 @@ export default function ReferenceChecker() {
                             <div className="rc-hero-actions">
                                 <button className="rc-btn rc-btn-primary rc-btn-large" onClick={() => fileInputRef.current?.click()}>
                                     Check My Paper
-                                </button>
-                                <button className="rc-btn rc-btn-secondary rc-btn-large" onClick={handleViewSample}>
-                                    See Sample Report
                                 </button>
                             </div>
                         </div>
@@ -243,10 +234,10 @@ export default function ReferenceChecker() {
                     </div>
                 </section>
 
-                {/* Sample Report Section */}
-                {(showSample || uploadState === 'success') && (
+                {/* Analysis Report Section */}
+                {(uploadState === 'success') && (
                     <section id="sample-report" ref={sampleRef} className="rc-sample-report-section rc-container">
-                        <h2 className="rc-section-title">{analysisResult ? 'Analysis Dashboard' : 'Sample Analysis Dashboard'}</h2>
+                        <h2 className="rc-section-title">Analysis Dashboard</h2>
                         <div className="rc-dashboard-mockup rc-full-dashboard">
                             <div className="rc-dashboard-header">
                                 <div className="rc-dashboard-title">Document Quality Overview</div>
