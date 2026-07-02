@@ -381,7 +381,7 @@ export default function ReferenceChecker() {
                 {/* FAQ */}
                 <section id="faq" className="rc-faq-section rc-container">
                     <h2 className="rc-section-title">Frequently Asked Questions</h2>
-                    <div className="rc-faq-list">
+                    <div className="rc-faq-container">
                         <div className="rc-faq-item">
                             <h3 className="rc-faq-question">What formats does this Research Paper Citation Checker support?</h3>
                             <div className="rc-faq-answer">

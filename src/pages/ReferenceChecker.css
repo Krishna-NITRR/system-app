@@ -418,6 +418,10 @@
     padding-bottom: 24px;
 }
 
+.rc-faq-item:last-child {
+    border-bottom: none;
+}
+
 .rc-faq-question {
     font-size: 1.125rem;
     font-weight: 600;
