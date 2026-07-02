@@ -256,7 +256,7 @@ export default function ReferenceChecker() {
                                             Confidence: {analysisResult.confidence}
                                         </span>
                                     )}
-                                    <button className="rc-btn rc-btn-secondary rc-btn-sm" onClick={() => alert('Exporting PDF... (Placeholder)')}>Export PDF</button>
+                                    <button className="rc-btn rc-btn-secondary rc-btn-sm" onClick={() => window.print()}>Export PDF</button>
                                 </div>
                             </div>
                             <div className="rc-dashboard-body rc-grid">
