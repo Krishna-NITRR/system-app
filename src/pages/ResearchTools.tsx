@@ -55,9 +55,9 @@ const RESOURCES = [
     featured: false,
   },
   {
-    tag: "Tool 01",
-    title: "Reference Consistency Checker",
-    desc: "Upload your research paper and identify missing citations, duplicate references, and bibliography inconsistencies.",
+    tag: "Resource 07",
+    title: "Free Citation Checker",
+    desc: "Instantly identify missing citations, duplicate references, and numbering issues.",
     link: "/reference-checker",
     category: "Tools",
     featured: true,

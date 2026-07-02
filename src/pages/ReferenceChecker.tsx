@@ -2,12 +2,15 @@ import { useState, useRef } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import usePageMeta from '../hooks/usePageMeta';
+import { extractTextFromFile } from '../utils/documentParser';
+import { analyzeManuscript } from '../utils/citationAnalyzer';
+import type { AnalysisResult } from '../utils/citationAnalyzer';
 import './ReferenceChecker.css';
 
 export default function ReferenceChecker() {
     usePageMeta({
-        title: 'Reference Consistency Checker - Krishna Mahawar',
-        description: 'Find citation mistakes instantly. Scan your manuscript for citation errors and bibliography formatting issues.',
+        title: 'Free Citation Checker | Reference Consistency Checker',
+        description: 'Free research paper citation checker. Instantly find missing citations, duplicate references, and bibliography errors in IEEE and APA formats.',
     });
 
     const [uploadState, setUploadState] = useState<'default' | 'uploading' | 'analyzing' | 'success' | 'error'>('default');
@@ -15,6 +18,7 @@ export default function ReferenceChecker() {
     const [errorMessage, setErrorMessage] = useState('');
     const [isDragOver, setIsDragOver] = useState(false);
     const [showSample, setShowSample] = useState(false);
+    const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
     
     const fileInputRef = useRef<HTMLInputElement>(null);
     const sampleRef = useRef<HTMLElement>(null);
@@ -53,23 +57,42 @@ export default function ReferenceChecker() {
             return;
         }
 
-        simulateUploadAndAnalysis();
+        simulateUploadAndAnalysis(file);
     };
 
-    const simulateUploadAndAnalysis = () => {
+    const simulateUploadAndAnalysis = async (file: File) => {
         setUploadState('uploading');
         setProgress(0);
         
         let currProgress = 0;
         const uploadInterval = setInterval(() => {
-            currProgress += 5;
-            setProgress(currProgress);
-            if (currProgress >= 100) {
-                clearInterval(uploadInterval);
-                setUploadState('analyzing');
-                setTimeout(() => setUploadState('success'), 2500);
-            }
+            currProgress += 10;
+            if (currProgress <= 90) setProgress(currProgress);
         }, 100);
+
+        try {
+            const text = await extractTextFromFile(file);
+            const result = analyzeManuscript(text);
+            
+            clearInterval(uploadInterval);
+            setProgress(100);
+            setAnalysisResult(result);
+            
+            setTimeout(() => {
+                if (result.error) {
+                    setErrorMessage(result.error);
+                    setUploadState('error');
+                } else {
+                    setUploadState('success');
+                    handleViewSample();
+                }
+            }, 500);
+
+        } catch (error: any) {
+            clearInterval(uploadInterval);
+            setErrorMessage(error.message || "Failed to process the document.");
+            setUploadState('error');
+        }
     };
 
     const handleViewSample = () => {
@@ -84,41 +107,42 @@ export default function ReferenceChecker() {
             <Navbar />
             
             <main role="main" className="pt-24 pb-12">
-                {/* Hero Section */}
-                <section className="rc-hero rc-container">
-                    <div className="rc-hero-content">
-                        <h1 className="rc-hero-title">Find citation mistakes before reviewers do.</h1>
-                        <p className="rc-hero-desc">Upload your research paper and identify missing citations, duplicate references, numbering issues, and bibliography inconsistencies before journal submission.</p>
-                        <div className="rc-hero-actions">
-                            <a href="#upload" className="rc-btn rc-btn-primary">Check My Paper</a>
-                            <button onClick={handleViewSample} className="rc-btn rc-btn-secondary">See Sample Report</button>
-                        </div>
-                    </div>
-                    <div className="rc-hero-visual" aria-hidden="true">
-                        <div className="rc-dashboard-mockup rc-mockup-mini">
-                            <div className="rc-dashboard-header">
-                                <div className="rc-dashboard-title">Analysis Report</div>
+                <section className="rc-hero-section rc-container">
+                    <div className="rc-hero">
+                        <div className="rc-hero-content">
+                            <h1 className="rc-hero-title">Free Citation Checker</h1>
+                            <p className="rc-hero-desc">
+                                Find missing citations and duplicate references before reviewers do. Upload your research paper to our Reference Consistency Checker to instantly verify your bibliography against your text citations.
+                            </p>
+                            <div className="rc-hero-actions">
+                                <button className="rc-btn rc-btn-primary rc-btn-large" onClick={() => fileInputRef.current?.click()}>
+                                    Check My Paper
+                                </button>
+                                <button className="rc-btn rc-btn-secondary rc-btn-large" onClick={handleViewSample}>
+                                    See Sample Report
+                                </button>
                             </div>
-                            <div className="rc-dashboard-body">
-                                <div className="rc-mockup-item rc-error">
-                                    <span className="rc-icon">×</span>
-                                    <div className="rc-mockup-text">
-                                        <strong>Missing Citation</strong>
-                                        <span>[4] cited in text, missing in bibliography.</span>
-                                    </div>
+                        </div>
+                        <div className="rc-hero-image" aria-hidden="true">
+                            <div className="rc-dashboard-mockup">
+                                <div className="rc-dashboard-header">
+                                    <span className="rc-dashboard-title">Citation Checker Report</span>
+                                    <span className="rc-status-dot"></span>
                                 </div>
-                                <div className="rc-mockup-item rc-error">
-                                    <span className="rc-icon">×</span>
-                                    <div className="rc-mockup-text">
-                                        <strong>Duplicate Reference</strong>
-                                        <span>Smith et al. (2020) appears twice.</span>
+                                <div className="rc-dashboard-body">
+                                    <div className="rc-mockup-item rc-error">
+                                        <span className="rc-icon">×</span>
+                                        <div className="rc-mockup-text">
+                                            <strong>Missing Citations Detected</strong>
+                                            <span>Reference [14] in bibliography is not cited in text</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="rc-mockup-item rc-success">
-                                    <span className="rc-icon">✓</span>
-                                    <div className="rc-mockup-text">
-                                        <strong>Formatting</strong>
-                                        <span>IEEE style consistent.</span>
+                                    <div className="rc-mockup-item rc-warning">
+                                        <span className="rc-icon">!</span>
+                                        <div className="rc-mockup-text">
+                                            <strong>Duplicate References Found</strong>
+                                            <span>Smith et al. (2020) appears twice in bibliography</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -222,67 +246,106 @@ export default function ReferenceChecker() {
                 {/* Sample Report Section */}
                 {(showSample || uploadState === 'success') && (
                     <section id="sample-report" ref={sampleRef} className="rc-sample-report-section rc-container">
-                        <h2 className="rc-section-title">Analysis Dashboard</h2>
+                        <h2 className="rc-section-title">{analysisResult ? 'Analysis Dashboard' : 'Sample Analysis Dashboard'}</h2>
                         <div className="rc-dashboard-mockup rc-full-dashboard">
                             <div className="rc-dashboard-header">
                                 <div className="rc-dashboard-title">Document Quality Overview</div>
                                 <div className="rc-dashboard-actions">
+                                    {analysisResult && (
+                                        <span className={`rc-confidence rc-${analysisResult.confidence.toLowerCase()}`} style={{ marginRight: '16px', fontSize: '0.875rem', fontWeight: 600 }}>
+                                            Confidence: {analysisResult.confidence}
+                                        </span>
+                                    )}
                                     <button className="rc-btn rc-btn-secondary rc-btn-sm" onClick={() => alert('Exporting PDF... (Placeholder)')}>Export PDF</button>
                                 </div>
                             </div>
                             <div className="rc-dashboard-body rc-grid">
                                 <div className="rc-score-card">
                                     <div className="rc-score-label">Integrity Score</div>
-                                    <div className="rc-score-value">92 <span className="rc-score-total">/ 100</span></div>
-                                    <div className="rc-score-status">Good, but needs minor fixes.</div>
+                                    <div className="rc-score-value">{analysisResult ? analysisResult.score : 92} <span className="rc-score-total">/ 100</span></div>
+                                    <div className="rc-score-status">{
+                                        analysisResult 
+                                        ? (analysisResult.score > 90 ? 'Excellent' : analysisResult.score > 70 ? 'Good, but needs fixes' : 'Needs major revision') 
+                                        : 'Good, but needs minor fixes.'
+                                    }</div>
                                 </div>
                                 <div className="rc-issues-list">
                                     <h4>Issues Found</h4>
                                     <ul className="rc-clean-list">
-                                        <li><span className="rc-icon rc-warning">!</span> 2 duplicate references detected</li>
-                                        <li><span className="rc-icon rc-warning">!</span> 1 missing citation in text</li>
-                                        <li><span className="rc-icon rc-error">×</span> 3 references in bibliography not cited</li>
-                                        <li><span className="rc-icon rc-error">×</span> Citation numbering mismatch at Reference 18</li>
+                                        {!analysisResult && (
+                                            <>
+                                                <li><span className="rc-icon rc-warning">!</span> 2 duplicate references detected</li>
+                                                <li><span className="rc-icon rc-warning">!</span> 1 missing citation in text</li>
+                                                <li><span className="rc-icon rc-error">×</span> 3 references in bibliography not cited</li>
+                                                <li><span className="rc-icon rc-error">×</span> Citation numbering mismatch at Reference 18</li>
+                                            </>
+                                        )}
+                                        {analysisResult && analysisResult.score === 100 && (
+                                            <li><span className="rc-icon rc-success">✓</span> No citation issues found!</li>
+                                        )}
+                                        {analysisResult && analysisResult.duplicates.map((dup, i) => (
+                                            <li key={`dup-${i}`}><span className="rc-icon rc-warning">!</span> Duplicate reference: {dup}</li>
+                                        ))}
+                                        {analysisResult && analysisResult.missingInText.map((msg, i) => (
+                                            <li key={`mit-${i}`}><span className="rc-icon rc-warning">!</span> {msg}</li>
+                                        ))}
+                                        {analysisResult && analysisResult.missingInBibliography.map((msg, i) => (
+                                            <li key={`mib-${i}`}><span className="rc-icon rc-error">×</span> {msg}</li>
+                                        ))}
+                                        {analysisResult && analysisResult.numberingErrors.map((msg, i) => (
+                                            <li key={`num-${i}`}><span className="rc-icon rc-error">×</span> {msg}</li>
+                                        ))}
                                     </ul>
                                 </div>
                             </div>
                         </div>
+                        <p className="rc-disclaimer" style={{ textAlign: 'center', marginTop: '16px', fontSize: '0.875rem', color: 'var(--text-muted, #6b7280)' }}>
+                            Supports IEEE, APA and common author-year citation formats. Other styles may be partially recognized.
+                        </p>
                     </section>
                 )}
 
                 {/* What the tool checks */}
-                <section className="rc-checks-section rc-container">
-                    <h2 className="rc-section-title">What the Tool Checks</h2>
-                    <div className="rc-grid rc-checks-grid">
-                        <div className="rc-card">
-                            <div className="rc-card-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg></div>
-                            <h4>Missing references</h4>
-                            <p>Detects citations that appear in the text but are missing from the bibliography.</p>
-                        </div>
-                        <div className="rc-card">
-                            <div className="rc-card-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div>
-                            <h4>Missing citations</h4>
-                            <p>Finds references listed at the end but never cited in the manuscript.</p>
-                        </div>
-                        <div className="rc-card">
-                            <div className="rc-card-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg></div>
-                            <h4>Duplicate references</h4>
-                            <p>Identifies duplicate bibliography entries.</p>
-                        </div>
-                        <div className="rc-card">
-                            <div className="rc-card-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg></div>
-                            <h4>Numbering errors</h4>
-                            <p>Checks citation numbering sequence specifically for IEEE style.</p>
-                        </div>
-                        <div className="rc-card">
-                            <div className="rc-card-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></div>
-                            <h4>Ordering issues</h4>
-                            <p>Verifies alphabetical order for APA and Harvard formatting styles.</p>
-                        </div>
-                        <div className="rc-card">
-                            <div className="rc-card-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></div>
-                            <h4>Basic formatting</h4>
-                            <p>Identifies inconsistent citation styling and structural mistakes.</p>
+                <section className="rc-features-section rc-bg-light">
+                    <div className="rc-container rc-text-center">
+                        <h2 className="rc-section-title">What the Bibliography Checker Analyzes</h2>
+                        <div className="rc-grid rc-checks-grid">
+                            <div className="rc-card">
+                                <div className="rc-card-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                                </div>
+                                <h4>Missing Citations</h4>
+                                <p>Detects references listed in your bibliography that were never actually cited in your manuscript text.</p>
+                            </div>
+                            <div className="rc-card">
+                                <div className="rc-card-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                                </div>
+                                <h4>Duplicate References</h4>
+                                <p>Identifies identical or highly similar reference entries that have been accidentally repeated in the bibliography.</p>
+                            </div>
+                            <div className="rc-card">
+                                <div className="rc-card-icon">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                </div>
+                                <h4>Formatting Formats</h4>
+                                <p>Acts as an IEEE Citation Checker and APA Citation Checker by cross-referencing inline tags with the bibliography list.</p>
+                            </div>
+                            <div className="rc-card">
+                                <div className="rc-card-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="20" x2="12" y2="10"></line><line x1="18" y1="20" x2="18" y2="4"></line><line x1="6" y1="20" x2="6" y2="16"></line></svg></div>
+                                <h4>Numbering errors</h4>
+                                <p>Checks citation numbering sequence specifically for IEEE style.</p>
+                            </div>
+                            <div className="rc-card">
+                                <div className="rc-card-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg></div>
+                                <h4>Ordering issues</h4>
+                                <p>Verifies alphabetical order for APA and Harvard formatting styles.</p>
+                            </div>
+                            <div className="rc-card">
+                                <div className="rc-card-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg></div>
+                                <h4>Basic formatting</h4>
+                                <p>Identifies inconsistent citation styling and structural mistakes.</p>
+                            </div>
                         </div>
                     </div>
                 </section>
@@ -318,11 +381,23 @@ export default function ReferenceChecker() {
                 {/* FAQ */}
                 <section id="faq" className="rc-faq-section rc-container">
                     <h2 className="rc-section-title">Frequently Asked Questions</h2>
-                    <div className="rc-faq-container">
+                    <div className="rc-faq-list">
                         <div className="rc-faq-item">
-                            <h4 className="rc-faq-question">What is a Reference Consistency Checker?</h4>
+                            <h3 className="rc-faq-question">What formats does this Research Paper Citation Checker support?</h3>
                             <div className="rc-faq-answer">
-                                <p>A Reference Consistency Checker is an automated tool designed to compare the in-text citations of your research paper against your bibliography. It scans your entire document to ensure every referenced author and number matches perfectly. This saves researchers hours of manual verification and prevents embarrassing errors before journal submission. The tool cross-references multiple styles, identifying inconsistencies in formatting, missing entries, and duplicate records instantly.</p>
+                                <p>Our Reference Checker currently accepts standard DOCX files and text-searchable PDFs. Scanned image-based PDFs are not supported.</p>
+                            </div>
+                        </div>
+                        <div className="rc-faq-item">
+                            <h3 className="rc-faq-question">Is it safe to upload my unpublished manuscript?</h3>
+                            <div className="rc-faq-answer">
+                                <p>Yes. The Reference Consistency Checker processes files entirely securely in memory. We do not permanently store your intellectual property.</p>
+                            </div>
+                        </div>
+                        <div className="rc-faq-item">
+                            <h3 className="rc-faq-question">Does it work as an IEEE Citation Checker or APA Citation Checker?</h3>
+                            <div className="rc-faq-answer">
+                                <p>Yes! It uses a hybrid parsing approach to cross-reference common numeric (IEEE) and author-year (APA) formats.</p>
                             </div>
                         </div>
                         <div className="rc-faq-item">
