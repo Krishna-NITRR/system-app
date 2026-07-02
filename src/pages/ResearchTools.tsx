@@ -53,10 +53,18 @@ const RESOURCES = [
     link: "/career-roadmaps",
     category: "Career",
     featured: false,
+  },
+  {
+    tag: "Tool 01",
+    title: "Reference Consistency Checker",
+    desc: "Upload your research paper and identify missing citations, duplicate references, and bibliography inconsistencies.",
+    link: "/reference-checker",
+    category: "Tools",
+    featured: true,
   }
 ];
 
-const CATEGORIES = ["All", "Internships", "Templates", "Guides", "Career"];
+const CATEGORIES = ["All", "Internships", "Templates", "Guides", "Career", "Tools"];
 
 export default function ResearchTools() {
   usePageMeta({

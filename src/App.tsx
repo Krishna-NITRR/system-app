@@ -7,6 +7,7 @@ import Research4 from './pages/Research4';
 import Research5 from './pages/Research5';
 import ResearchMain from './pages/ResearchMain';
 import ResearchTools from './pages/ResearchTools';
+import ReferenceChecker from './pages/ReferenceChecker';
 import MerchBanner from './components/MerchBanner';
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
         <Route path="/project-ideas" element={<Research5 />} />
         <Route path="/career-roadmaps" element={<ResearchMain />} />
         <Route path="/research-tools-and-resources" element={<ResearchTools />} />
+        <Route path="/reference-checker" element={<ReferenceChecker />} />
       </Routes>
     </BrowserRouter>
   );
