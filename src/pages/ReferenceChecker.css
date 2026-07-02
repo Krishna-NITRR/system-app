@@ -500,3 +500,67 @@
         margin-bottom: 0px;
     }
 }
+
+/* Dark Mode Support */
+[data-theme="dark"] .rc-page {
+    background-color: var(--bg);
+    color: var(--text);
+}
+[data-theme="dark"] .rc-page .rc-bg-light,
+[data-theme="dark"] .rc-page .rc-upload-container,
+[data-theme="dark"] .rc-page .rc-card,
+[data-theme="dark"] .rc-page .rc-dashboard-mockup {
+    background-color: var(--bg2);
+}
+[data-theme="dark"] .rc-page .rc-section-title,
+[data-theme="dark"] .rc-page .rc-hero-title,
+[data-theme="dark"] .rc-page .rc-dashboard-title,
+[data-theme="dark"] .rc-page .rc-faq-question,
+[data-theme="dark"] .rc-page .rc-step p {
+    color: var(--text);
+}
+[data-theme="dark"] .rc-page .rc-hero-desc,
+[data-theme="dark"] .rc-page .rc-upload-state p,
+[data-theme="dark"] .rc-page .rc-card p,
+[data-theme="dark"] .rc-page .rc-faq-answer p,
+[data-theme="dark"] .rc-page .rc-trust-text {
+    color: #9ca3af;
+}
+[data-theme="dark"] .rc-page .rc-btn-primary {
+    background-color: #f9fafb;
+    color: #111827;
+}
+[data-theme="dark"] .rc-page .rc-btn-primary:hover {
+    background-color: #d1d5db;
+}
+[data-theme="dark"] .rc-page .rc-btn-secondary {
+    background-color: transparent;
+    color: var(--text);
+    border-color: #4b5563;
+}
+[data-theme="dark"] .rc-page .rc-btn-secondary:hover {
+    background-color: #374151;
+}
+[data-theme="dark"] .rc-page .rc-dashboard-mockup,
+[data-theme="dark"] .rc-page .rc-card,
+[data-theme="dark"] .rc-page .rc-upload-container {
+    border-color: #374151;
+}
+[data-theme="dark"] .rc-page .rc-dashboard-header,
+[data-theme="dark"] .rc-page .rc-mockup-item {
+    background-color: var(--bg3, #1f2937);
+    border-color: #374151;
+}
+[data-theme="dark"] .rc-page .rc-faq-item,
+[data-theme="dark"] .rc-page .rc-score-card {
+    border-color: #374151;
+}
+[data-theme="dark"] .rc-page .rc-upload-icon,
+[data-theme="dark"] .rc-page .rc-card-icon,
+[data-theme="dark"] .rc-page .rc-step-arrow {
+    color: #d1d5db;
+}
+[data-theme="dark"] .rc-page .rc-step-number {
+    background-color: #f9fafb;
+    color: #111827;
+}
