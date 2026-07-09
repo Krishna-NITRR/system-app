@@ -76,7 +76,7 @@ export default function BetaReader() {
               transition={{ duration: 0.6, delay: 0.1 }}
             >
               Help Shape <span className="accent">
-                {"Think Research Publish".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`h1-${i}`}>{char}</Letter>)}
+                {"My Book on Building Careers Through Research".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`h1-${i}`}>{char}</Letter>)}
               </span>
             </motion.h1>
             <motion.p
