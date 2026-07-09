@@ -75,7 +75,9 @@ export default function BetaReader() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              Help Shape <span className="accent">My Career Through Research</span>
+              Help Shape <span className="accent">
+                {"My Career Through Research".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`h1-${i}`}>{char}</Letter>)}
+              </span>
             </motion.h1>
             <motion.p
               initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
@@ -135,30 +137,22 @@ export default function BetaReader() {
           <div className="benefits-grid fade">
             <div className="benefit-card">
               <span className="benefit-icon">🎓</span>
-              <h3>
-                {"Undergraduates".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`c1-${i}`}>{char}</Letter>)}
-              </h3>
+              <h3>Undergraduates</h3>
               <p>1st and 2nd year students are the best fit, but 3rd, 4th, or even final year students are completely okay too.</p>
             </div>
             <div className="benefit-card">
               <span className="benefit-icon">🏫</span>
-              <h3>
-                {"High School Students".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`c2-${i}`}>{char}</Letter>)}
-              </h3>
+              <h3>High School Students</h3>
               <p>You are ambitious and want to understand how academic research works before you even step foot into college.</p>
             </div>
             <div className="benefit-card">
               <span className="benefit-icon">💡</span>
-              <h3>
-                {"The \"Lost\" Student".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`c3-${i}`}>{char}</Letter>)}
-              </h3>
+              <h3>The "Lost" Student</h3>
               <p>You've tried sending cold emails but got ignored. You want a tested system to finally break into a lab.</p>
             </div>
             <div className="benefit-card">
               <span className="benefit-icon">🔬</span>
-              <h3>
-                {"Early Researchers".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`c4-${i}`}>{char}</Letter>)}
-              </h3>
+              <h3>Early Researchers</h3>
               <p>You want to start building your profile early but don't know the first thing about reading a research paper.</p>
             </div>
           </div>
