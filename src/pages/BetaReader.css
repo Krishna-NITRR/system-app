@@ -1,0 +1,260 @@
+/* BetaReader.css */
+
+.beta-hero {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.beta-hero p {
+  font-size: 1.15rem;
+  color: var(--tl);
+  margin-bottom: 32px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.story-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 40px;
+  margin-top: 40px;
+}
+@media (min-width: 768px) {
+  .story-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+}
+
+.story-text h2 {
+  margin-bottom: 24px;
+}
+
+.story-text p {
+  color: var(--tm);
+  margin-bottom: 16px;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.story-img {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+  border: 1px solid var(--div);
+}
+
+.benefits-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 24px;
+  margin-top: 48px;
+}
+@media (min-width: 768px) {
+  .benefits-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.benefit-card {
+  background: var(--bg2);
+  padding: 32px;
+  border-radius: var(--radius);
+  border: 1px solid var(--div);
+  text-align: center;
+  transition: transform var(--trans), box-shadow var(--trans);
+}
+
+.benefit-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(108,76,241,0.1);
+  border-color: var(--purple-dark);
+}
+
+.benefit-icon {
+  font-size: 2rem;
+  margin-bottom: 16px;
+  display: inline-block;
+  color: var(--purple);
+}
+
+.benefit-card h3 {
+  font-size: 1.2rem;
+  margin-bottom: 12px;
+}
+
+.benefit-card p {
+  color: var(--tm);
+  font-size: 0.95rem;
+}
+
+/* FAQ Section */
+.faq-list {
+  max-width: 760px;
+  margin: 40px auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.faq-item {
+  background: var(--bg2);
+  border: 1px solid var(--div);
+  border-radius: var(--radius);
+  padding: 24px;
+  transition: border-color var(--trans);
+}
+.faq-item:hover {
+  border-color: var(--purple-dark);
+}
+
+.faq-q {
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
+  color: var(--text);
+}
+
+.faq-a {
+  color: var(--tm);
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+/* Form Styles */
+.beta-form-wrap {
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--bg2);
+  border: 1px solid var(--div);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 600px) {
+  .beta-form-wrap {
+    padding: 24px;
+  }
+}
+
+.beta-form-wrap h3 {
+  font-size: 1.6rem;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.beta-form-wrap > p {
+  text-align: center;
+  color: var(--tm);
+  margin-bottom: 32px;
+}
+
+.beta-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.form-group label span {
+  color: #e53935;
+  margin-left: 4px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--radius);
+  border: 1px solid var(--div);
+  background: var(--bg);
+  color: var(--text);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color var(--trans), box-shadow var(--trans);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--purple);
+  box-shadow: 0 0 0 2px rgba(108,76,241,0.2);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--div);
+}
+
+.checkbox-group {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.checkbox-group input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--purple);
+  cursor: pointer;
+}
+
+.checkbox-group label {
+  font-weight: 400;
+  color: var(--tm);
+  line-height: 1.5;
+  cursor: pointer;
+}
+
+.beta-submit {
+  margin-top: 16px;
+  width: 100%;
+  justify-content: center;
+  padding: 16px;
+  font-size: 1rem;
+}
+
+.beta-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+.beta-success {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.beta-success h3 {
+  font-size: 2rem;
+  color: var(--purple);
+  margin-bottom: 16px;
+}
+
+.beta-success p {
+  color: var(--tm);
+  font-size: 1.1rem;
+}

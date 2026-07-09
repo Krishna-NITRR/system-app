@@ -205,7 +205,7 @@ export default function ReferenceChecker() {
                                     </div>
                                     <h3>Analysis complete.</h3>
                                     <p>We found inconsistencies in your manuscript.</p>
-                                    <button className="rc-btn rc-btn-primary mt-4" onClick={handleViewSample}>View Full Report</button>
+                                    <button className="rc-btn rc-btn-primary mt-4" onClick={() => { document.getElementById('rc-demo-results')?.scrollIntoView({behavior: 'smooth'}) }}>View Full Report</button>
                                 </div>
                             )}
 
