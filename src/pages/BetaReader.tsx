@@ -30,7 +30,7 @@ export default function BetaReader() {
   const shouldReduceMotion = useReducedMotion();
 
   usePageMeta({
-    title: 'Become a Beta Reader - Think Research Publish',
+    title: 'Become a Beta Reader - My Career Through Research',
     description: 'Join the exclusive beta reading group for Krishna Mahawar\'s upcoming book on starting research, publishing, and building a career.',
     canonical: 'https://www.krishnamahawar.in/beta-reader',
   });
@@ -75,7 +75,7 @@ export default function BetaReader() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              Help Shape <span className="accent">Think Research Publish</span>
+              Help Shape <span className="accent">My Career Through Research</span>
             </motion.h1>
             <motion.p
               initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
@@ -110,7 +110,7 @@ export default function BetaReader() {
                 It took me years of brute-force trial and error, getting rejected from hundreds of cold emails, and making every mistake possible before I finally figured it out. I eventually published papers, won fellowships, and built a career - but the process shouldn't have been that painful.
               </p>
               <p>
-                <strong>Think Research Publish</strong> is the playbook I wish I had on day one. It's the exact, step-by-step system for starting from scratch, getting professors to actually reply to your emails, and executing research that matters. No fluff. Just raw, actionable mechanics.
+                <strong>My Career Through Research</strong> is the playbook I wish I had on day one. It's the exact, step-by-step system for starting from scratch, getting professors to actually reply to your emails, and executing research that matters. No fluff. Just raw, actionable mechanics.
               </p>
             </div>
             <div className="story-image-wrap">
