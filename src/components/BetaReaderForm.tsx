@@ -18,6 +18,7 @@ export default function BetaReaderForm() {
     const school = formData.get('school') as string;
     const year = formData.get('year') as string;
     const linkedin = formData.get('linkedin') as string;
+    const whatsapp = formData.get('whatsapp') as string;
     const experience = formData.get('experience') as string;
     const motivation = formData.get('motivation') as string;
     const commitment = formData.get('commitment') === 'on';
@@ -48,6 +49,7 @@ export default function BetaReaderForm() {
         school,
         year,
         linkedin: linkedin || null,
+        whatsapp: whatsapp || null,
         experience,
         motivation,
         commitment,
@@ -79,7 +81,7 @@ export default function BetaReaderForm() {
         animate={{ opacity: 1, scale: 1 }}
       >
         <h3>Application Received</h3>
-        <p>Thank you for stepping up. I'm personally reviewing applications and will reach out via email if you're selected.</p>
+        <p>Thank you for stepping up. I'm personally reviewing applications and will reach out via email or linkedin or whatsapp if you're selected.</p>
       </motion.div>
     );
   }
@@ -134,6 +136,11 @@ export default function BetaReaderForm() {
         <div className="form-group">
           <label htmlFor="br-linkedin">LinkedIn Profile (Optional)</label>
           <input type="url" id="br-linkedin" name="linkedin" placeholder="https://linkedin.com/in/johndoe" />
+        </div>
+
+        <div className="form-group">
+          <label htmlFor="br-whatsapp">WhatsApp Contact (Optional)</label>
+          <input type="tel" id="br-whatsapp" name="whatsapp" placeholder="+1 234 567 8900" />
         </div>
 
         <div className="form-group">
