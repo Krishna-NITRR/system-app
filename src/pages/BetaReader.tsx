@@ -76,7 +76,14 @@ export default function BetaReader() {
               transition={{ duration: 0.6, delay: 0.1 }}
             >
               Help Shape <span className="accent">
-                {"My Book on Building Careers Through Research".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`h1-${i}`}>{char}</Letter>)}
+                {"My Book on Building Careers Through Research".split(' ').map((word, wIdx, arr) => (
+                  <span key={`w-${wIdx}`} style={{ whiteSpace: 'nowrap' }}>
+                    {word.split('').map((char, cIdx) => (
+                      <Letter key={`c-${wIdx}-${cIdx}`}>{char}</Letter>
+                    ))}
+                    {wIdx < arr.length - 1 && ' '}
+                  </span>
+                ))}
               </span>
             </motion.h1>
             <motion.p
