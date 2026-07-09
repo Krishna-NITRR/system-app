@@ -1,10 +1,30 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import BetaReaderForm from '../components/BetaReaderForm';
 import usePageMeta from '../hooks/usePageMeta';
 import { motion, useReducedMotion } from 'framer-motion';
 import './BetaReader.css';
+
+const Letter = ({ children }: { children: React.ReactNode }) => {
+  const [jiggling, setJiggling] = useState(false);
+  
+  const handleHover = () => {
+    if (!jiggling) {
+      setJiggling(true);
+      setTimeout(() => setJiggling(false), 2000);
+    }
+  };
+
+  return (
+    <span 
+      className={`letter-jiggle ${jiggling ? 'is-jiggling' : ''}`} 
+      onMouseEnter={handleHover}
+    >
+      {children}
+    </span>
+  );
+};
 
 export default function BetaReader() {
   const shouldReduceMotion = useReducedMotion();
@@ -87,7 +107,7 @@ export default function BetaReader() {
                 I didn't go to a tier-1 institute, I had no mentors, and every guide I read was either too vague or required you to already be a genius.
               </p>
               <p>
-                It took me years of brute-force trial and error, getting rejected from hundreds of cold emails, and making every mistake possible before I finally figured it out. I eventually published papers, won fellowships, and built a career—but the process shouldn't have been that painful.
+                It took me years of brute-force trial and error, getting rejected from hundreds of cold emails, and making every mistake possible before I finally figured it out. I eventually published papers, won fellowships, and built a career - but the process shouldn't have been that painful.
               </p>
               <p>
                 <strong>Think Research Publish</strong> is the playbook I wish I had on day one. It's the exact, step-by-step system for starting from scratch, getting professors to actually reply to your emails, and executing research that matters. No fluff. Just raw, actionable mechanics.
@@ -115,18 +135,31 @@ export default function BetaReader() {
           <div className="benefits-grid fade">
             <div className="benefit-card">
               <span className="benefit-icon">🎓</span>
-              <h3>First-Year Engineers</h3>
-              <p>You want to start building your profile early but don't know the first thing about reading a research paper.</p>
+              <h3>
+                {"Undergraduates".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`c1-${i}`}>{char}</Letter>)}
+              </h3>
+              <p>1st and 2nd year students are the best fit, but 3rd, 4th, or even final year students are completely okay too.</p>
             </div>
             <div className="benefit-card">
               <span className="benefit-icon">🏫</span>
-              <h3>High School Students</h3>
+              <h3>
+                {"High School Students".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`c2-${i}`}>{char}</Letter>)}
+              </h3>
               <p>You are ambitious and want to understand how academic research works before you even step foot into college.</p>
             </div>
             <div className="benefit-card">
               <span className="benefit-icon">💡</span>
-              <h3>The "Lost" Student</h3>
+              <h3>
+                {"The \"Lost\" Student".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`c3-${i}`}>{char}</Letter>)}
+              </h3>
               <p>You've tried sending cold emails but got ignored. You want a tested system to finally break into a lab.</p>
+            </div>
+            <div className="benefit-card">
+              <span className="benefit-icon">🔬</span>
+              <h3>
+                {"Early Researchers".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`c4-${i}`}>{char}</Letter>)}
+              </h3>
+              <p>You want to start building your profile early but don't know the first thing about reading a research paper.</p>
             </div>
           </div>
         </div>
@@ -192,7 +225,7 @@ export default function BetaReader() {
             </div>
             <div className="faq-item">
               <div className="faq-q">How many people will be selected?</div>
-              <div className="faq-a">I am keeping the group small—around 20-30 people. I want to be able to read and process everyone's feedback deeply.</div>
+              <div className="faq-a">I am keeping the group small - around 20-30 people. I want to be able to read and process everyone's feedback deeply.</div>
             </div>
             <div className="faq-item">
               <div className="faq-q">When does the beta reading start?</div>

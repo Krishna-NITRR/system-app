@@ -138,7 +138,7 @@ export default function BetaReaderForm() {
 
         <div className="form-group">
           <label htmlFor="br-exp">Have you worked on research before? <span>*</span></label>
-          <textarea id="br-exp" name="experience" placeholder="Briefly describe your experience (or lack thereof). It is completely okay if you have 0 experience—that's who this book is for." required></textarea>
+          <textarea id="br-exp" name="experience" placeholder="Briefly describe your experience (or lack thereof). It is completely okay if you have 0 experience - that's who this book is for." required></textarea>
         </div>
 
         <div className="form-group">
