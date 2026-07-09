@@ -30,7 +30,7 @@ export default function BetaReader() {
   const shouldReduceMotion = useReducedMotion();
 
   usePageMeta({
-    title: 'Become a Beta Reader - My Career Through Research',
+    title: 'Become a Beta Reader - Think Research Publish',
     description: 'Join the exclusive beta reading group for Krishna Mahawar\'s upcoming book on starting research, publishing, and building a career.',
     canonical: 'https://www.krishnamahawar.in/beta-reader',
   });
@@ -76,7 +76,7 @@ export default function BetaReader() {
               transition={{ duration: 0.6, delay: 0.1 }}
             >
               Help Shape <span className="accent">
-                {"My Career Through Research".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`h1-${i}`}>{char}</Letter>)}
+                {"Think Research Publish".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`h1-${i}`}>{char}</Letter>)}
               </span>
             </motion.h1>
             <motion.p
@@ -112,7 +112,10 @@ export default function BetaReader() {
                 It took me years of brute-force trial and error, getting rejected from hundreds of cold emails, and making every mistake possible before I finally figured it out. I eventually published papers, won fellowships, and built a career - but the process shouldn't have been that painful.
               </p>
               <p>
-                <strong>My Career Through Research</strong> is the playbook I wish I had on day one. It's the exact, step-by-step system for starting from scratch, getting professors to actually reply to your emails, and executing research that matters. No fluff. Just raw, actionable mechanics.
+                <strong>Think Research Publish</strong> is the playbook I wish I had on day one. It's the exact, step-by-step system for starting from scratch, getting professors to actually reply to your emails, and executing research that matters.
+              </p>
+              <p>
+                More importantly, it shows you how to build your <strong>career through research</strong> - whether you want to take the traditional path of becoming a professor, or leverage your skills to become a CEO, founder, or entrepreneur. No fluff. Just raw, actionable mechanics.
               </p>
             </div>
             <div className="story-image-wrap">
