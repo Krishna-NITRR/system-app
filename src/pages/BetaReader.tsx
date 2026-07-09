@@ -119,7 +119,7 @@ export default function BetaReader() {
                 It took me years of brute-force trial and error, getting rejected from hundreds of cold emails, and making every mistake possible before I finally figured it out. I eventually published papers, won fellowships, and built a career - but the process shouldn't have been that painful.
               </p>
               <p>
-                <strong>Think Research Publish</strong> is the playbook I wish I had on day one. It's the exact, step-by-step system for starting from scratch, getting professors to actually reply to your emails, and executing research that matters.
+                <strong>My book</strong> is the playbook I wish I had on day one. It's the exact, step-by-step system for starting from scratch, getting professors to actually reply to your emails, and executing research that matters.
               </p>
               <p>
                 More importantly, it shows you how to build your <strong>career through research</strong> - whether you want to take the traditional path of becoming a professor, or leverage your skills to become a CEO, founder, or entrepreneur. No fluff. Just raw, actionable mechanics.
