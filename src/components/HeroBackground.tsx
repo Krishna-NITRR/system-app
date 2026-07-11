@@ -33,9 +33,8 @@ export default function HeroBackground() {
     };
 
     const animate = () => {
-      // Smooth interpolation (lerp)
-      currentX += (targetX - currentX) * 0.08;
-      currentY += (targetY - currentY) * 0.08;
+      currentX += (targetX - currentX) * 0.15;
+      currentY += (targetY - currentY) * 0.15;
       
       if (divRef.current) {
         divRef.current.style.setProperty('--mouse-x', `${currentX}px`);
@@ -64,22 +63,14 @@ export default function HeroBackground() {
   const baseStyles: React.CSSProperties = {
     position: 'absolute',
     top: 0, left: 0, right: 0, bottom: 0,
-    backgroundImage: 'linear-gradient(to right, rgba(108,76,241,0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(108,76,241,0.2) 1px, transparent 1px)',
+    backgroundImage: 'linear-gradient(to right, rgba(108,76,241,0.5) 1px, transparent 1px), linear-gradient(to bottom, rgba(108,76,241,0.5) 1px, transparent 1px)',
     backgroundSize: '48px 48px',
     pointerEvents: 'none',
-    zIndex: 0
+    zIndex: 1 // Increased zIndex slightly just in case
   };
 
   if (shouldReduceMotion) {
-    return (
-      <div 
-        style={{
-          ...baseStyles,
-          maskImage: 'radial-gradient(circle at 50% 50%, black 0%, transparent 60%)',
-          WebkitMaskImage: 'radial-gradient(circle at 50% 50%, black 0%, transparent 60%)',
-        }}
-      />
-    );
+    return <div style={baseStyles} />;
   }
 
   return (
@@ -87,8 +78,8 @@ export default function HeroBackground() {
       ref={divRef}
       style={{
         ...baseStyles,
-        maskImage: 'radial-gradient(circle 600px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), black 0%, transparent 100%)',
-        WebkitMaskImage: 'radial-gradient(circle 600px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), black 0%, transparent 100%)',
+        maskImage: 'radial-gradient(circle 400px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), black 0%, transparent 100%)',
+        WebkitMaskImage: 'radial-gradient(circle 400px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), black 0%, transparent 100%)',
       }}
     />
   );
