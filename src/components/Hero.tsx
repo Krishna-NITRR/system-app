@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import HeroBackground from './HeroBackground';
+import ResearchTimeline from './ResearchTimeline';
 
 const Letter = ({ children }: { children: React.ReactNode }) => {
   const [jiggling, setJiggling] = useState(false);
@@ -35,6 +37,7 @@ export default function Hero() {
 
   return (
     <section id="hero" aria-labelledby="hero-heading">
+      <HeroBackground />
       <div className="hero-inner">
         <motion.div {...motionProps} id="hero-text" style={{ ...motionProps.style, flex: 1 }}>
           <div className="hero-tag">Student Research Guide</div>
@@ -53,38 +56,9 @@ export default function Hero() {
         <motion.div 
           {...motionProps} 
           transition={{ ...motionProps.transition, delay: 0.2 }}
-          className="hero-right"
           style={{ perspective: 1000 }}
         >
-          <div className="hero-right-label">Track Record</div>
-          
-          <div className="stat-row">
-            <div className="stat-item">
-              <span className="stat-label">Fellowship</span>
-              <span className="stat-value purple">IIT Madras Research</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Internship</span>
-              <span className="stat-value">IIT BHU Varanasi</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">Conference</span>
-              <span className="stat-value">ISAMET 2026</span>
-            </div>
-            <div className="stat-item">
-              <span className="stat-label">CGPA</span>
-              <span className="stat-value">9.06 / 10</span>
-            </div>
-          </div>
-          
-          <button 
-            className="hero-right-cta"
-            onClick={() => {
-              document.getElementById('author')?.scrollIntoView({ behavior: 'smooth' });
-            }}
-          >
-            See Full Background
-          </button>
+          <ResearchTimeline />
         </motion.div>
       </div>
     </section>

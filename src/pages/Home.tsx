@@ -21,20 +21,39 @@ export default function Home() {
   });
 
   useEffect(() => {
-    // Fade-in on scroll effect
+    // Fade-in on scroll effect with staggering
+    let staggerIndex = 0;
+    let staggerTimeout: NodeJS.Timeout | null = null;
+    
     const io = new IntersectionObserver((entries) => {
+      let isAnyIntersecting = false;
+      
       entries.forEach((e) => {
         if (e.isIntersecting) {
+          isAnyIntersecting = true;
+          // Apply a staggered transition delay
+          (e.target as HTMLElement).style.transitionDelay = `${staggerIndex * 100}ms`;
           e.target.classList.add('vis');
+          
+          staggerIndex++;
           io.unobserve(e.target);
         }
       });
+      
+      if (isAnyIntersecting) {
+        // Reset stagger index after a short period (when the scroll batch finishes)
+        if (staggerTimeout) clearTimeout(staggerTimeout);
+        staggerTimeout = setTimeout(() => {
+          staggerIndex = 0;
+        }, 100);
+      }
     }, { threshold: 0.07 });
     
     document.querySelectorAll('.fade').forEach((el) => io.observe(el));
     
     return () => {
       io.disconnect();
+      if (staggerTimeout) clearTimeout(staggerTimeout);
     };
   }, []);
 
