@@ -1,6 +1,14 @@
 import { useEffect, useRef } from 'react';
 import { useReducedMotion } from 'framer-motion';
 
+interface Ripple {
+  x: number;
+  y: number;
+  radius: number;
+  opacity: number;
+  id: number;
+}
+
 export default function HeroBackground() {
   const shouldReduceMotion = useReducedMotion();
   const divRef = useRef<HTMLDivElement>(null);
@@ -13,49 +21,90 @@ export default function HeroBackground() {
     let currentX = targetX;
     let currentY = targetY;
     
+    let isTouch = false;
+    let ripples: Ripple[] = [];
+    let rippleId = 0;
     let animationFrameId: number;
 
+    const spawnRipple = (x: number, y: number) => {
+      ripples.push({ x, y, radius: 30, opacity: 0.8, id: rippleId++ });
+    };
+
     const updateMouse = (e: MouseEvent) => {
+      isTouch = false;
       targetX = e.clientX;
       targetY = e.clientY;
     };
 
+    let lastTouchTime = 0;
     const updateTouch = (e: TouchEvent) => {
+      isTouch = true;
       if (e.touches.length > 0) {
-        targetX = e.touches[0].clientX;
-        targetY = e.touches[0].clientY;
+        const x = e.touches[0].clientX;
+        const y = e.touches[0].clientY;
+        
+        // Throttle ripple spawning on drag
+        const now = Date.now();
+        if (now - lastTouchTime > 120) {
+          spawnRipple(x, y);
+          lastTouchTime = now;
+        }
+      }
+    };
+    
+    const handleTouchStart = (e: TouchEvent) => {
+      isTouch = true;
+      if (e.touches.length > 0) {
+        spawnRipple(e.touches[0].clientX, e.touches[0].clientY);
       }
     };
 
-    const resetMouse = () => {
-      targetX = window.innerWidth / 2;
-      targetY = window.innerHeight / 2;
-    };
-
     const animate = () => {
-      currentX += (targetX - currentX) * 0.15;
-      currentY += (targetY - currentY) * 0.15;
+      const maskParts = [];
+      
+      // 1. Desktop cursor flashlight (smooth lerp)
+      if (!isTouch) {
+        currentX += (targetX - currentX) * 0.15;
+        currentY += (targetY - currentY) * 0.15;
+        maskParts.push(`radial-gradient(circle 400px at ${currentX}px ${currentY}px, black 0%, transparent 100%)`);
+      }
+
+      // 2. Mobile ripples (expanding rings)
+      for (let i = ripples.length - 1; i >= 0; i--) {
+        const r = ripples[i];
+        r.radius += 10; // Expansion speed
+        r.opacity -= 0.015; // Fade speed
+        
+        if (r.opacity <= 0) {
+          ripples.splice(i, 1);
+        } else {
+          // Creates a soft ring wave: center is faint, edge is bright, outside is transparent
+          const centerOp = (r.opacity * 0.2).toFixed(2);
+          const edgeOp = r.opacity.toFixed(2);
+          maskParts.push(`radial-gradient(circle ${r.radius}px at ${r.x}px ${r.y}px, rgba(0,0,0,${centerOp}) 0%, rgba(0,0,0,${edgeOp}) 60%, transparent 100%)`);
+        }
+      }
+      
+      const maskStr = maskParts.length > 0 ? maskParts.join(', ') : 'none';
       
       if (divRef.current) {
-        divRef.current.style.setProperty('--mouse-x', `${currentX}px`);
-        divRef.current.style.setProperty('--mouse-y', `${currentY}px`);
+        divRef.current.style.maskImage = maskStr;
+        divRef.current.style.WebkitMaskImage = maskStr;
       }
       
       animationFrameId = requestAnimationFrame(animate);
     };
 
     window.addEventListener('mousemove', updateMouse);
-    window.addEventListener('touchmove', updateTouch);
-    window.addEventListener('mouseleave', resetMouse);
-    window.addEventListener('touchend', resetMouse);
+    window.addEventListener('touchmove', updateTouch, { passive: true });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
     
     animate();
 
     return () => {
       window.removeEventListener('mousemove', updateMouse);
       window.removeEventListener('touchmove', updateTouch);
-      window.removeEventListener('mouseleave', resetMouse);
-      window.removeEventListener('touchend', resetMouse);
+      window.removeEventListener('touchstart', handleTouchStart);
       cancelAnimationFrame(animationFrameId);
     };
   }, [shouldReduceMotion]);
@@ -66,7 +115,7 @@ export default function HeroBackground() {
     backgroundImage: 'linear-gradient(to right, rgba(108,76,241,0.5) 1px, transparent 1px), linear-gradient(to bottom, rgba(108,76,241,0.5) 1px, transparent 1px)',
     backgroundSize: '48px 48px',
     pointerEvents: 'none',
-    zIndex: 1 // Increased zIndex slightly just in case
+    zIndex: 1 
   };
 
   if (shouldReduceMotion) {
@@ -78,8 +127,8 @@ export default function HeroBackground() {
       ref={divRef}
       style={{
         ...baseStyles,
-        maskImage: 'radial-gradient(circle 400px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), black 0%, transparent 100%)',
-        WebkitMaskImage: 'radial-gradient(circle 400px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), black 0%, transparent 100%)',
+        maskImage: 'radial-gradient(circle 400px at 50vw 50vh, black 0%, transparent 100%)',
+        WebkitMaskImage: 'radial-gradient(circle 400px at 50vw 50vh, black 0%, transparent 100%)',
       }}
     />
   );
