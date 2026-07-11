@@ -21,17 +21,17 @@ export default function ResearchTimeline() {
 
   const itemVariants = {
     hidden: { opacity: 0, x: 20 },
-    show: { opacity: 1, x: 0, transition: { type: "spring", stiffness: 100, damping: 20 } }
+    show: { opacity: 1, x: 0, transition: { type: "spring" as const, stiffness: 100, damping: 20 } }
   };
 
   const lineVariants = {
     hidden: { height: 0 },
-    show: { height: "100%", transition: { duration: 1.2, ease: "easeOut" } }
+    show: { height: "100%", transition: { duration: 1.2, ease: "easeOut" as const } }
   };
 
   const dotVariants = {
     hidden: { scale: 0, opacity: 0 },
-    show: { scale: 1, opacity: 1, transition: { type: "spring", stiffness: 200 } }
+    show: { scale: 1, opacity: 1, transition: { type: "spring" as const, stiffness: 200 } }
   };
 
   return (

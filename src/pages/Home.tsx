@@ -23,7 +23,7 @@ export default function Home() {
   useEffect(() => {
     // Fade-in on scroll effect with staggering
     let staggerIndex = 0;
-    let staggerTimeout: NodeJS.Timeout | null = null;
+    let staggerTimeout: ReturnType<typeof setTimeout> | null = null;
     
     const io = new IntersectionObserver((entries) => {
       let isAnyIntersecting = false;
