@@ -27,7 +27,7 @@ export default function HeroBackground() {
     let animationFrameId: number;
 
     const spawnRipple = (x: number, y: number) => {
-      ripples.push({ x, y, radius: 30, opacity: 0.8, id: rippleId++ });
+      ripples.push({ x, y, radius: 10, opacity: 1.5, id: rippleId++ });
     };
 
     const updateMouse = (e: MouseEvent) => {
@@ -45,7 +45,7 @@ export default function HeroBackground() {
         
         // Throttle ripple spawning on drag
         const now = Date.now();
-        if (now - lastTouchTime > 120) {
+        if (now - lastTouchTime > 80) { // Spawns ripples faster when dragging
           spawnRipple(x, y);
           lastTouchTime = now;
         }
@@ -72,16 +72,16 @@ export default function HeroBackground() {
       // 2. Mobile ripples (expanding rings)
       for (let i = ripples.length - 1; i >= 0; i--) {
         const r = ripples[i];
-        r.radius += 10; // Expansion speed
-        r.opacity -= 0.015; // Fade speed
+        r.radius += 24; // Much faster expansion
+        r.opacity -= 0.03; // Faster fade
         
         if (r.opacity <= 0) {
           ripples.splice(i, 1);
         } else {
-          // Creates a soft ring wave: center is faint, edge is bright, outside is transparent
-          const centerOp = (r.opacity * 0.2).toFixed(2);
-          const edgeOp = r.opacity.toFixed(2);
-          maskParts.push(`radial-gradient(circle ${r.radius}px at ${r.x}px ${r.y}px, rgba(0,0,0,${centerOp}) 0%, rgba(0,0,0,${edgeOp}) 60%, transparent 100%)`);
+          // Creates a high-contrast ring wave
+          const centerOp = Math.min(1, r.opacity * 0.1).toFixed(2);
+          const edgeOp = Math.min(1, r.opacity).toFixed(2);
+          maskParts.push(`radial-gradient(circle ${r.radius}px at ${r.x}px ${r.y}px, rgba(0,0,0,${centerOp}) 0%, rgba(0,0,0,${edgeOp}) 70%, transparent 100%)`);
         }
       }
       
