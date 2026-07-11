@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+/* Google Fonts loaded via <link> in index.html for non-blocking performance */
 /* ═══════════════════════════════════════════
    KRISHNA MAHAWAR — styles.css
    Design: Sharp editorial, high-authority
@@ -699,7 +699,7 @@ footer {
   align-items: start;
 }
 .footer-logo span { color: var(--purple); }
-.footer-tagline { font-size: .78rem; color: rgba(255,255,255,.65); margin-bottom: 14px; }
+.footer-tagline { font-size: .78rem; color: rgba(255,255,255,.75); margin-bottom: 14px; }
 .footer-email { font-size: .78rem; color: rgba(255,255,255,.75); transition: color var(--trans); }
 .footer-email:hover { color: #fff; }
 .footer-col ul li { margin-bottom: 8px; }
@@ -715,7 +715,7 @@ footer {
   flex-wrap: wrap;
   gap: 10px;
 }
-.footer-copy { font-size: .74rem; color: rgba(255,255,255,.55); }
+.footer-copy { font-size: .74rem; color: rgba(255,255,255,.7); }
 
 /* ══════════════════════════════════════════
    RESPONSIVE
@@ -764,7 +764,7 @@ footer {
   --bg3: #1c1c26;
   --text: #f0eff8;
   --tm: #9997b8;
-  --tl: #5e5c7a;
+  --tl: #8280a0;
   --div: #2a2838;
   --nav-bg: rgba(15,15,20,.96);
   --sh: 0 1px 8px rgba(0,0,0,.4);
@@ -893,8 +893,8 @@ footer {
 .contact-info h3 { font-size: 1rem; font-weight: 600; color: var(--text); margin-bottom: 8px; }
 .contact-link-label { font-size: .75rem; font-weight: 600; color: var(--text); display: block; margin-bottom: 2px; }
 .footer-logo { font-size: .95rem; font-weight: 600; color: #fff; margin-bottom: 6px; }
-.footer-col h5 { font-size: .65rem; font-weight: 600; color: rgba(255,255,255,.35); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
-.footer-col ul li a { font-size: .8rem; color: rgba(255,255,255,.5); transition: color var(--trans); }
+.footer-heading, .footer-col h5 { font-size: .65rem; font-weight: 600; color: rgba(255,255,255,.55); text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; }
+.footer-col ul li a { font-size: .8rem; color: rgba(255,255,255,.7); transition: color var(--trans); }
 
 /* Research Tools Page & Explore More Card */
 

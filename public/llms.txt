@@ -1,0 +1,25 @@
+# Krishna Mahawar — Research Guide for Students
+
+> A practical guide to starting academic research from scratch, publishing papers, and building a career through internships and fellowships.
+
+## Author
+
+Krishna Mahawar — B.Tech Mining Engineering, NIT Raipur. IIT Madras Summer Research Fellow. IIT BHU Research Intern. First author at ISAMET 2026 International Conference.
+
+## Pages
+
+- [Home](https://www.krishnamahawar.in/): Main landing page with research guide overview, book preview, and email signup
+- [Fellowships & Programs](https://www.krishnamahawar.in/fellowships): 50+ research fellowship programs with deadlines and stipends
+- [Professor Database](https://www.krishnamahawar.in/professor-database): Database of professors who actively take undergraduate interns
+- [Cold Email Templates](https://www.krishnamahawar.in/cold-email-templates): Proven email templates based on 130+ real outreach attempts
+- [Internship Guide](https://www.krishnamahawar.in/internship-guide): Step-by-step notes on landing research internships
+- [Project Ideas](https://www.krishnamahawar.in/project-ideas): Starter research project ideas across engineering disciplines
+- [Career Roadmaps](https://www.krishnamahawar.in/career-roadmaps): Preparation paths for Core Engineering, Tech, and Research careers
+- [Research Tools](https://www.krishnamahawar.in/research-tools-and-resources): Curated tools and resources for researchers
+- [Reference Checker](https://www.krishnamahawar.in/reference-checker): Free tool to validate academic paper references
+- [Beta Reader Application](https://www.krishnamahawar.in/beta-reader): Apply to be an early reader of the upcoming book
+
+## Contact
+
+- Email: admin@krishnamahawar.in
+- LinkedIn: https://www.linkedin.com/in/krishna-mahawar/

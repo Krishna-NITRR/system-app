@@ -60,15 +60,17 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <Hero />
-      <AeoSection />
-      <TheBook />
-      <WhoItsFor />
-      <ResearchPlaybooks />
-      <EmailSignup />
-      <Testimonials />
-      <Author />
-      <Contact />
+      <main id="main-content">
+        <Hero />
+        <AeoSection />
+        <TheBook />
+        <WhoItsFor />
+        <ResearchPlaybooks />
+        <EmailSignup />
+        <Testimonials />
+        <Author />
+        <Contact />
+      </main>
       <Footer />
     </>
   );

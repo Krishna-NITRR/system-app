@@ -9,7 +9,7 @@ export const theme = {
     bg3: '#F2F2F2',
     text: '#1A1A1A',
     tm: '#4B4B4B',
-    tl: '#888',
+    tl: '#717171',
     div: '#E4E4E4',
     'nav-bg': 'rgba(255,255,255,.96)',
   },

@@ -11,7 +11,7 @@ export default function Footer() {
           <a href="mailto:admin@krishnamahawar.in" className="footer-email">admin@krishnamahawar.in</a>
         </div>
         <div className="footer-col">
-          <h5>Navigate</h5>
+          <div className="footer-heading">Navigate</div>
           <ul>
             <li><a href="/#book">The Book</a></li>
             <li><a href="/#playbooks">Research Systems</a></li>
@@ -21,7 +21,7 @@ export default function Footer() {
           </ul>
         </div>
         <div className="footer-col">
-          <h5>Resources</h5>
+          <div className="footer-heading">Resources</div>
           <ul>
             <li><Link to="/career-roadmaps">Career Roadmaps</Link></li>
             <li><Link to="/beta-reader">Beta Reader Application</Link></li>
@@ -29,7 +29,7 @@ export default function Footer() {
           </ul>
         </div>
         <div className="footer-col">
-          <h5>Connect</h5>
+          <div className="footer-heading">Connect</div>
           <ul>
             <li><a href="https://www.linkedin.com/in/krishna-mahawar/" target="_blank" rel="noopener noreferrer">LinkedIn</a></li>
             <li><a href="mailto:admin@krishnamahawar.in">Email</a></li>
