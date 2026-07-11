@@ -1,55 +1,70 @@
-import { useEffect } from 'react';
-import { motion, useMotionValue, useSpring, useReducedMotion, useMotionTemplate } from 'framer-motion';
+import { useEffect, useRef } from 'react';
+import { useReducedMotion } from 'framer-motion';
 
 export default function HeroBackground() {
-  const mouseX = useMotionValue(typeof window !== 'undefined' ? window.innerWidth / 2 : 0);
-  const mouseY = useMotionValue(typeof window !== 'undefined' ? window.innerHeight / 2 : 0);
   const shouldReduceMotion = useReducedMotion();
-
-  // Smooth out the mouse movement to create the spring return effect
-  const smoothX = useSpring(mouseX, { damping: 40, stiffness: 150, mass: 0.5 });
-  const smoothY = useSpring(mouseY, { damping: 40, stiffness: 150, mass: 0.5 });
-
-  const maskImage = useMotionTemplate`radial-gradient(circle 600px at ${smoothX}px ${smoothY}px, black 0%, transparent 100%)`;
+  const divRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (shouldReduceMotion) return;
 
-    const handleMouseMove = (e: MouseEvent) => {
-      // Adjust if Hero is not taking full viewport, though we'll use clientX/clientY relative to window for simplicity
-      mouseX.set(e.clientX);
-      mouseY.set(e.clientY);
+    let targetX = window.innerWidth / 2;
+    let targetY = window.innerHeight / 2;
+    let currentX = targetX;
+    let currentY = targetY;
+    
+    let animationFrameId: number;
+
+    const updateMouse = (e: MouseEvent) => {
+      targetX = e.clientX;
+      targetY = e.clientY;
     };
 
-    const handleTouchMove = (e: TouchEvent) => {
+    const updateTouch = (e: TouchEvent) => {
       if (e.touches.length > 0) {
-        mouseX.set(e.touches[0].clientX);
-        mouseY.set(e.touches[0].clientY);
+        targetX = e.touches[0].clientX;
+        targetY = e.touches[0].clientY;
       }
     };
 
     const resetMouse = () => {
-      mouseX.set(window.innerWidth / 2);
-      mouseY.set(window.innerHeight / 2);
+      targetX = window.innerWidth / 2;
+      targetY = window.innerHeight / 2;
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
-    window.addEventListener('touchmove', handleTouchMove);
+    const animate = () => {
+      // Smooth interpolation (lerp)
+      currentX += (targetX - currentX) * 0.08;
+      currentY += (targetY - currentY) * 0.08;
+      
+      if (divRef.current) {
+        divRef.current.style.setProperty('--mouse-x', `${currentX}px`);
+        divRef.current.style.setProperty('--mouse-y', `${currentY}px`);
+      }
+      
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    window.addEventListener('mousemove', updateMouse);
+    window.addEventListener('touchmove', updateTouch);
     window.addEventListener('mouseleave', resetMouse);
     window.addEventListener('touchend', resetMouse);
+    
+    animate();
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('mousemove', updateMouse);
+      window.removeEventListener('touchmove', updateTouch);
       window.removeEventListener('mouseleave', resetMouse);
       window.removeEventListener('touchend', resetMouse);
+      cancelAnimationFrame(animationFrameId);
     };
-  }, [mouseX, mouseY, shouldReduceMotion]);
+  }, [shouldReduceMotion]);
 
   const baseStyles: React.CSSProperties = {
     position: 'absolute',
     top: 0, left: 0, right: 0, bottom: 0,
-    backgroundImage: 'linear-gradient(to right, rgba(108,76,241,0.12) 1px, transparent 1px), linear-gradient(to bottom, rgba(108,76,241,0.12) 1px, transparent 1px)',
+    backgroundImage: 'linear-gradient(to right, rgba(108,76,241,0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(108,76,241,0.2) 1px, transparent 1px)',
     backgroundSize: '48px 48px',
     pointerEvents: 'none',
     zIndex: 0
@@ -68,11 +83,12 @@ export default function HeroBackground() {
   }
 
   return (
-    <motion.div
+    <div
+      ref={divRef}
       style={{
         ...baseStyles,
-        maskImage,
-        WebkitMaskImage: maskImage,
+        maskImage: 'radial-gradient(circle 600px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), black 0%, transparent 100%)',
+        WebkitMaskImage: 'radial-gradient(circle 600px at var(--mouse-x, 50vw) var(--mouse-y, 50vh), black 0%, transparent 100%)',
       }}
     />
   );
