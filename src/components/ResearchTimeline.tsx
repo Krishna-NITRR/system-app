@@ -3,7 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 const timelineData = [
   { year: "2023", title: "Started B.Tech", sub: "NIT Raipur" },
   { year: "2025", title: "Summer Research Internship", sub: "IIT BHU" },
-  { year: "2025", title: "Started writing book", sub: "Analyzing 17+ case studies on leveraging research to build high-impact careers as founders, executives, and elite academics" },
+  { year: "2025", title: "Started writing book", sub: "My journey & 17+ case studies on building elite careers (Founders, CEOs, PhDs)" },
   { year: "2026", title: "First Author & Presenter", sub: "ISAMET 2026 International Conference" },
   { year: "2026", title: "Summer Research Fellowship", sub: "IIT Madras" },
   { year: "Now", title: "Building practical research resources for students", sub: "" },
