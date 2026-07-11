@@ -89,7 +89,7 @@ export default function HeroBackground() {
       
       if (divRef.current) {
         divRef.current.style.maskImage = maskStr;
-        divRef.current.style.WebkitMaskImage = maskStr;
+        divRef.current.style.webkitMaskImage = maskStr;
       }
       
       animationFrameId = requestAnimationFrame(animate);
