@@ -1,7 +1,8 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Home from './pages/Home';
 import MerchBanner from './components/MerchBanner';
+
+const Home = lazy(() => import('./pages/Home'));
 
 const ResearchMain = lazy(() => import('./pages/ResearchMain'));
 const ResearchTools = lazy(() => import('./pages/ResearchTools'));
