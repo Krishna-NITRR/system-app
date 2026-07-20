@@ -20,7 +20,6 @@ export const resources: Record<string, Resource> = {
     title: 'Professor Outreach Database',
     shortTitle: 'Professor Database',
     description: 'Professors at IITs and IISc who actively take interns.',
-    driveLink: 'https://drive.google.com/drive/folders/placeholder',
     seo: { 
       title: 'Professor Outreach Database - Cold Email Targets', 
       description: 'A list of professors at prestigious labs like IITs and IISc who actively take interns.' 
@@ -33,7 +32,7 @@ export const resources: Record<string, Resource> = {
     title: 'Cold Email Templates That Get Replies',
     shortTitle: 'Cold Email Templates',
     description: 'Based on 130+ real emails. Three templates that worked, plus a checklist before you hit send.',
-    driveLink: 'https://drive.google.com/drive/folders/placeholder',
+    driveLink: 'https://drive.google.com/file/d/1pSv0XyF52i9JKEld64MpdUmUQWoyGAKI/view?usp=sharing',
     seo: { 
       title: 'Cold Email Templates for Research Internships', 
       description: 'Templates that actually get replies from professors.' 
@@ -46,7 +45,7 @@ export const resources: Record<string, Resource> = {
     title: 'Internship & Research Guide',
     shortTitle: 'Internship Guide',
     description: 'Step-by-step notes on landing internships and learning how to research from year one.',
-    driveLink: 'https://drive.google.com/drive/folders/placeholder',
+
     seo: { 
       title: 'Internship & Research Guide for Engineering Students', 
       description: 'Step-by-step notes on landing internships.' 
@@ -59,7 +58,7 @@ export const resources: Record<string, Resource> = {
     title: 'Project Ideas for Research Internships',
     shortTitle: 'Project Ideas',
     description: 'Good starting ideas across core and non-core engineering. Ready to use.',
-    driveLink: 'https://drive.google.com/drive/folders/placeholder',
+    driveLink: 'https://drive.google.com/drive/folders/1dvslQDSaT9-x7R1zJbbCRG7WPDjigcJl',
     seo: { 
       title: 'Project Ideas for Research Internships', 
       description: 'Good starting ideas across core and non-core engineering.' 

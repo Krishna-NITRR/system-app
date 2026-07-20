@@ -6,6 +6,6 @@ export const initiatePayment: PaymentProvider = async (request: PaymentRequest):
   
   return {
     status: 'success',
-    transactionId: 'txn_placeholder_123',
+    transactionId: `txn_${Date.now()}`,
   };
 };

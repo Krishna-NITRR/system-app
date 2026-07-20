@@ -44,15 +44,25 @@ export default function ResourceDeliveryPage() {
               <p>{copy.delivery.subheading}</p>
               
               <div style={{ marginTop: '32px' }}>
-                <a 
-                  href={resource.driveLink} 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
-                  className="btn btn-primary"
-                  style={{ fontSize: '1rem', padding: '16px 28px' }}
-                >
-                  {resource.ctaVerb} {resource.shortTitle} &rarr;
-                </a>
+                {resource.driveLink ? (
+                  <a 
+                    href={resource.driveLink} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="btn btn-primary"
+                    style={{ fontSize: '1rem', padding: '16px 28px' }}
+                  >
+                    {resource.ctaVerb} {resource.shortTitle} &rarr;
+                  </a>
+                ) : (
+                  <button 
+                    disabled 
+                    className="btn btn-primary"
+                    style={{ fontSize: '1rem', padding: '16px 28px', opacity: 0.6, cursor: 'not-allowed' }}
+                  >
+                    Download Coming Soon
+                  </button>
+                )}
               </div>
             </div>
             

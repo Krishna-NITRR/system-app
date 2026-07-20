@@ -4,7 +4,7 @@ export interface Resource {
   title: string;
   shortTitle: string;
   description: string;
-  driveLink: string;
+  driveLink?: string;
   seo: {
     title: string;
     description: string;
