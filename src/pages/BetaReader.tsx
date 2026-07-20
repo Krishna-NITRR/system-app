@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import BetaReaderForm from '../components/BetaReaderForm';
 import usePageMeta from '../hooks/usePageMeta';
+import useFadeObserver from '../hooks/useFadeObserver';
 import { motion, useReducedMotion } from 'framer-motion';
 import './BetaReader.css';
 
@@ -35,23 +36,7 @@ export default function BetaReader() {
     canonical: 'https://www.krishnamahawar.in/beta-reader',
   });
 
-  useEffect(() => {
-    // Fade-in on scroll effect for non-framer-motion elements
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          e.target.classList.add('vis');
-          io.unobserve(e.target);
-        }
-      });
-    }, { threshold: 0.07 });
-    
-    document.querySelectorAll('.fade').forEach((el) => io.observe(el));
-    
-    return () => {
-      io.disconnect();
-    };
-  }, []);
+  useFadeObserver();
 
   return (
     <>

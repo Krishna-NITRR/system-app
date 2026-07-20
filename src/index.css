@@ -980,3 +980,121 @@ footer {
 [data-theme="dark"] .featured-card {
   box-shadow: 0 8px 24px rgba(0,0,0,0.3);
 }
+
+/* ══════════════════════════════════════════
+   GOAL CHOOSER
+══════════════════════════════════════════ */
+.goal-chooser {
+  margin-top: 32px;
+}
+.goal-chooser h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 24px;
+}
+.goal-chooser-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+@media (max-width: 600px) {
+  .goal-chooser-grid { grid-template-columns: 1fr; }
+}
+.goal-card {
+  background: var(--bg2);
+  border: 1px solid var(--div);
+  border-radius: var(--radius);
+  padding: 20px;
+  cursor: pointer;
+  transition: all var(--trans);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+.goal-card:hover {
+  border-color: var(--purple);
+  box-shadow: var(--sh);
+  transform: translateY(-2px);
+}
+.goal-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.goal-icon {
+  font-size: 1.2rem;
+}
+.goal-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
+}
+.goal-desc {
+  font-size: 0.82rem;
+  color: var(--tm);
+  line-height: 1.5;
+}
+
+/* ══════════════════════════════════════════
+   PRODUCT FAQ & PRICING
+══════════════════════════════════════════ */
+.product-faq details {
+  background: var(--bg2);
+  border: 1px solid var(--div);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  overflow: hidden;
+}
+.product-faq summary {
+  padding: 18px 24px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.product-faq summary::-webkit-details-marker {
+  display: none;
+}
+.product-faq summary::after {
+  content: '+';
+  font-size: 1.2rem;
+  color: var(--purple);
+  font-weight: 400;
+}
+.product-faq details[open] summary::after {
+  content: '−';
+}
+.product-faq .faq-answer {
+  padding: 0 24px 18px;
+  font-size: 0.88rem;
+  color: var(--tm);
+  line-height: 1.6;
+}
+.pricing-card {
+  background: var(--bg2);
+  border: 2px solid var(--purple);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  text-align: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+.pricing-amount {
+  font-size: 3rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+.pricing-currency {
+  font-size: 1.2rem;
+  vertical-align: super;
+}
+.pricing-note {
+  font-size: 0.85rem;
+  color: var(--tm);
+  margin-top: 16px;
+}

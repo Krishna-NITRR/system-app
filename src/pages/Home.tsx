@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+// Import removed for useEffect
 import Navbar from '../components/Navbar';
 import Hero from '../components/Hero';
 import AeoSection from '../components/AeoSection';
@@ -12,6 +12,7 @@ import Author from '../components/Author';
 import Contact from '../components/Contact';
 import Footer from '../components/Footer';
 import usePageMeta from '../hooks/usePageMeta';
+import useFadeObserver from '../hooks/useFadeObserver';
 
 export default function Home() {
   usePageMeta({
@@ -20,42 +21,7 @@ export default function Home() {
     canonical: 'https://www.krishnamahawar.in/',
   });
 
-  useEffect(() => {
-    // Fade-in on scroll effect with staggering
-    let staggerIndex = 0;
-    let staggerTimeout: ReturnType<typeof setTimeout> | null = null;
-    
-    const io = new IntersectionObserver((entries) => {
-      let isAnyIntersecting = false;
-      
-      entries.forEach((e) => {
-        if (e.isIntersecting) {
-          isAnyIntersecting = true;
-          // Apply a staggered transition delay
-          (e.target as HTMLElement).style.transitionDelay = `${staggerIndex * 100}ms`;
-          e.target.classList.add('vis');
-          
-          staggerIndex++;
-          io.unobserve(e.target);
-        }
-      });
-      
-      if (isAnyIntersecting) {
-        // Reset stagger index after a short period (when the scroll batch finishes)
-        if (staggerTimeout) clearTimeout(staggerTimeout);
-        staggerTimeout = setTimeout(() => {
-          staggerIndex = 0;
-        }, 100);
-      }
-    }, { threshold: 0.07 });
-    
-    document.querySelectorAll('.fade').forEach((el) => io.observe(el));
-    
-    return () => {
-      io.disconnect();
-      if (staggerTimeout) clearTimeout(staggerTimeout);
-    };
-  }, []);
+  useFadeObserver();
 
   return (
     <>

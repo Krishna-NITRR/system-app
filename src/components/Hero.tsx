@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { motion, useReducedMotion } from 'framer-motion';
 import HeroBackground from './HeroBackground';
 import ResearchTimeline from './ResearchTimeline';
 
@@ -24,22 +23,11 @@ const Letter = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default function Hero() {
-      const shouldReduceMotion = useReducedMotion();
-
-  const motionProps = shouldReduceMotion 
-    ? { initial: { opacity: 0 }, animate: { opacity: 1 }, transition: { duration: 0.8 } }
-    : {
-        initial: { opacity: 0, y: 50, rotateX: 15, scale: 0.95 },
-        animate: { opacity: 1, y: 0, rotateX: 0, scale: 1 },
-        transition: { duration: 1, type: "spring" as const, bounce: 0.2 },
-        style: { perspective: 1000 }
-      };
-
   return (
     <section id="hero" aria-labelledby="hero-heading">
       <HeroBackground />
       <div className="hero-inner">
-        <motion.div {...motionProps} id="hero-text" style={{ ...motionProps.style, flex: 1 }}>
+        <div className="hero-enter" id="hero-text" style={{ flex: 1 }}>
           <div className="hero-tag">Student Research Guide</div>
           <h1 id="hero-heading">
             {"Research isn't reserved ".split('').map((char, i) => char === ' ' ? ' ' : <Letter key={`t1-${i}`}>{char}</Letter>)}
@@ -51,15 +39,11 @@ export default function Hero() {
             <a href="#playbooks" className="btn btn-primary">Get the Guides</a>
             <a href="#book" className="btn btn-outline">Read the Book</a>
           </div>
-        </motion.div>
+        </div>
         
-        <motion.div 
-          {...motionProps} 
-          transition={{ ...motionProps.transition, delay: 0.2 }}
-          style={{ perspective: 1000 }}
-        >
+        <div className="hero-enter hero-enter-delay" style={{ perspective: 1000 }}>
           <ResearchTimeline />
-        </motion.div>
+        </div>
       </div>
     </section>
   );
