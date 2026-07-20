@@ -30,16 +30,28 @@ export default function ResourceSignupForm({ resource }: Props) {
       const utmMedium = urlParams.get('utm_medium') || null;
       const utmCampaign = urlParams.get('utm_campaign') || null;
 
-      const { error: dbError } = await supabase
-        .from('leads')
-        .insert([{ 
-          name, 
-          email, 
-          resource_slug: resource.slug,
-          traffic_source: trafficSource,
-          utm_medium: utmMedium,
-          utm_campaign: utmCampaign,
-        }]);
+      // Fallback mechanism to handle cases where UTM columns don't exist in Supabase yet
+      const payload: any = { 
+        name, 
+        email, 
+        resource: resource.slug 
+      };
+
+      // Add tracking if possible, but we'll try without if it fails
+      const fullPayload = {
+        ...payload,
+        traffic_source: trafficSource,
+        utm_medium: utmMedium,
+        utm_campaign: utmCampaign,
+      };
+
+      let { error: dbError } = await supabase.from('leads').insert([fullPayload]);
+
+      // If we get an error about missing columns (like PGRST204), try the basic payload
+      if (dbError && (dbError.code === 'PGRST204' || dbError.code === '42703')) {
+        const { error: retryError } = await supabase.from('leads').insert([payload]);
+        dbError = retryError;
+      }
 
       if (dbError && dbError.code !== '23505') {
         throw dbError;

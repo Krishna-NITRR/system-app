@@ -23,8 +23,7 @@ export default function ProductPricing({ pricing }: Props) {
           .insert([{ 
             name: lead.name, 
             email: lead.email, 
-            resource_slug: 'book-waitlist',
-            traffic_source: 'waitlist_flow'
+            resource: 'book-waitlist'
           }]);
       } catch (err) {
         console.error('Waitlist recording error', err);

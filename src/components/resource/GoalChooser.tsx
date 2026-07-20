@@ -16,7 +16,7 @@ export default function GoalChooser() {
         await supabase
           .from('leads')
           .update({ goal_id: goalId })
-          .match({ email: lead.email, resource_slug: lead.resourceSlug });
+          .match({ email: lead.email, resource: lead.resourceSlug });
       } catch (err) {
         console.error('Failed to update goal in DB', err);
       }
