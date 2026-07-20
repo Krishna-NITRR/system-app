@@ -29,7 +29,7 @@ function App() {
           <Route path="/book" element={<BookPage />} />
           <Route path="/waitlist-success" element={<WaitlistSuccessPage />} />
 
-          {/* Backward compatibility — existing resource URLs redirect */}
+          {/* Backward compatibility: existing resource URLs redirect */}
           <Route path="/fellowships" element={<Navigate to="/resources/fellowships" replace />} />
           <Route path="/professor-database" element={<Navigate to="/resources/professor-database" replace />} />
           <Route path="/cold-email-templates" element={<Navigate to="/resources/cold-email-templates" replace />} />

@@ -23,7 +23,7 @@ export default function BookPage() {
   const goal = goalId ? getGoal(goalId) : undefined;
 
   usePageMeta({
-    title: `${book.name} - Krishna Mahawar`,
+    title: `${book.name}: A Research Guide for Students - Krishna Mahawar`,
     description: book.overview.description,
     canonical: "https://www.krishnamahawar.in/book" + (goalId ? "?goal=" + goalId : ""),
   });

@@ -10,8 +10,8 @@ export default function TestimonialGrid({ testimonials }: Props) {
   return (
     <section className="sec bg3" id="testimonials">
       <div className="wrap">
-        <span className="eyebrow">Reader Feedback</span>
-        <h2 className="section-title">What people are saying</h2>
+        <span className="eyebrow">Early Readers</span>
+        <h2 className="section-title">What students are saying</h2>
         <div className="testi-layout fade">
           {testimonials.map((t) => (
             <div key={t.id} className="testi-item">

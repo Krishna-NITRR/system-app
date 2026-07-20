@@ -5,7 +5,7 @@ import usePageMeta from '../hooks/usePageMeta';
 
 export default function WaitlistSuccessPage() {
   usePageMeta({
-    title: `Waitlist Joined`,
+    title: 'You\'re on the Waitlist - Krishna Mahawar',
     description: copy.waitlist.message,
     canonical: `https://www.krishnamahawar.in/waitlist-success`,
   });

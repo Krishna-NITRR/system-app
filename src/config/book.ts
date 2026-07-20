@@ -5,25 +5,25 @@ export const book: Product = {
   name: 'Think Research Publish',
   
   defaultHero: {
-    headline: 'A practical guide to starting research, publishing, and building a career',
-    subheadline: 'The exact systems I used to land positions at IIT Madras, IIT BHU, and publish my first paper.',
-    cta: 'Get the Book',
+    headline: 'A practical system for starting research, publishing papers, and building a career',
+    subheadline: 'The exact systems I used to land positions at IIT Madras and IIT BHU, and publish my first paper.',
+    cta: 'Join the Waitlist',
   },
   defaultNarrative: 'The biggest barrier isn\'t your CGPA or your college name. It\'s that nobody tells you how the process actually works until it\'s too late. I wrote this to be the guide I wish I had in my first year. Every chapter gives you an exact method you can use right away.',
 
   overview: {
     eyebrow: 'What\'s Inside',
-    title: 'A Practical Research Guide',
-    description: 'A straightforward guide to starting research from scratch, publishing, and landing internships, fellowships, or jobs. Just the exact steps that worked, no vague advice.',
+    title: 'A Practical Research Guide for Undergraduates',
+    description: 'A straightforward guide to starting research from scratch, publishing papers, and landing internships or fellowships. The exact steps that worked, with no vague advice.',
   },
 
   chapters: [
-    { number: '01', title: 'Identifying Research Interests', description: 'Find direction even without a clear field preference. Includes research project ideas to get started.' },
-    { number: '02', title: 'Reading Papers Efficiently', description: 'Extract what matters in under 30 minutes - the three-pass method that working researchers actually use.' },
-    { number: '03', title: 'The Cold Email System', description: 'Built from analysing 130+ real professor emails. See the proven templates.' },
-    { number: '04', title: 'Securing Research Internships', description: 'IITs, IISc, CSIR, SRFP - the full application system. Browse 50+ fellowship programs.' },
-    { number: '05', title: 'From Internship to Publication', description: 'Convert early research into conference and journal papers - targeting realistic venues, not Nature.' },
-    { number: '06', title: 'Long-Term Research Growth', description: 'Build a compounding research profile from year one - not a last-semester scramble.' },
+    { number: '01', title: 'Identifying Your Research Interests', description: 'Find direction even without a clear field preference. Includes starter project ideas to help you begin.' },
+    { number: '02', title: 'Reading Papers Efficiently', description: 'Extract what matters in under 30 minutes using the three-pass method that working researchers actually use.' },
+    { number: '03', title: 'The Cold Email System', description: 'Built from analysing 130+ real professor emails. Includes the proven templates and a pre-send checklist.' },
+    { number: '04', title: 'Securing Research Internships', description: 'IITs, IISc, CSIR, SRFP: the full application system, plus a directory of 50+ fellowship programs.' },
+    { number: '05', title: 'Publishing Your First Paper', description: 'Turn early research into conference and journal papers by targeting realistic venues, not Nature.' },
+    { number: '06', title: 'Building a Long-Term Research Profile', description: 'Build a compounding research profile from year one instead of a last-semester scramble.' },
   ],
 
   features: [
@@ -34,15 +34,15 @@ export const book: Product = {
   ],
 
   faq: [
-    { question: 'Is this book only for engineering students?', answer: 'The cold email, literature review, and publication systems work for any STEM field. The specific fellowship examples are engineering/science focused, but the core methods apply universally.' },
-    { question: 'Do I need prior research experience?', answer: 'No. The book is specifically written assuming you are starting from zero.' },
-    { question: 'When will the book be available?', answer: 'We are currently in the final stages of review. By joining the waitlist, you will be the first to know when it drops.' }
+    { question: 'Is this book only for engineering students?', answer: 'The cold email, literature review, and publication systems work for any STEM field. The specific fellowship examples lean towards engineering and science, but the core methods apply across disciplines.' },
+    { question: 'Do I need prior research experience?', answer: 'No. The book is written for students starting from zero. That\'s exactly who it\'s for.' },
+    { question: 'When will the book be available?', answer: 'It\'s in the final stages of review. Join the waitlist and you\'ll be the first to know when it launches.' }
   ],
 
   pricing: {
     amount: 0,
     currency: 'INR',
     cta: 'Join the Waitlist',
-    note: 'Instant digital delivery upon launch',
+    note: 'Free. You\'ll be notified the moment it launches.',
   },
 };

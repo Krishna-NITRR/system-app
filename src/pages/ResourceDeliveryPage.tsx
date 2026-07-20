@@ -14,7 +14,7 @@ export default function ResourceDeliveryPage() {
 
   usePageMeta({
     title: `Your Resource - ${resource?.shortTitle || 'Delivery'}`,
-    description: 'Download your resource and choose your next step.',
+    description: `Download ${resource?.shortTitle || 'your resource'} and choose your next step.`,
     canonical: `https://www.krishnamahawar.in/resources/${slug}/get`,
   });
 

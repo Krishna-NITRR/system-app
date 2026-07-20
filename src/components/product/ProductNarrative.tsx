@@ -8,7 +8,7 @@ export default function ProductNarrative({ narrative }: Props) {
       <div className="wrap">
         <div className="story-grid fade">
           <div className="story-text" style={{ maxWidth: '800px', margin: '0 auto' }}>
-            <span className="eyebrow">The Origin</span>
+            <span className="eyebrow">Why I Wrote This</span>
             <p style={{ fontSize: '1.05rem', color: 'var(--tm)', lineHeight: 1.8 }}>
               {narrative}
             </p>

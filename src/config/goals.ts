@@ -8,10 +8,10 @@ export const goals: Goal[] = [
     icon: '🔬',
     hero: {
       headline: 'The step-by-step system to land your first research internship',
-      subheadline: 'Cold emails, applications, and professor outreach — the exact playbook that got me into IIT Madras and IIT BHU.',
-      cta: 'Get the Research Internship Playbook',
+      subheadline: 'Cold emails, applications, and professor outreach: the exact playbook that got me into IIT Madras and IIT BHU.',
+      cta: 'Join the Waitlist',
     },
-    narrative: 'You\'ve been scrolling through fellowship lists and sending generic emails. You know you need research experience, but it feels like a closed club. The truth is, there is a systemic way to approach professors and land internships, even if you are not from a top-tier college.',
+    narrative: 'You\'ve been scrolling through fellowship lists and sending generic emails. You know you need research experience, but it feels like a closed club. The truth is, there\'s a systematic way to approach professors and land internships, even if you\'re not from a top-tier college.',
     featuredTestimonialId: 'siddharth-k',
   },
   {
@@ -20,11 +20,11 @@ export const goals: Goal[] = [
     description: 'Go from a blank page to a published conference or journal paper.',
     icon: '📄',
     hero: {
-      headline: 'From blank page to published paper — a practical system',
-      subheadline: 'Target realistic venues, write efficiently, and submit with confidence.',
-      cta: 'Get the Publication Playbook',
+      headline: 'From blank page to published research paper',
+      subheadline: 'Pick a realistic venue, structure your writing, and submit with confidence.',
+      cta: 'Join the Waitlist',
     },
-    narrative: 'Publishing feels impossible when nobody around you has done it. You don\'t know how to pick a topic, how to write the methodology, or where to submit. But the process is highly structured. Once you learn the steps, you can reliably produce research papers.',
+    narrative: 'Publishing feels impossible when nobody around you has done it. You don\'t know how to pick a topic, structure the methodology, or where to submit. But the process is more structured than it looks. Once you learn the steps, you can reliably produce research papers.',
     featuredTestimonialId: 'ananya-r',
   },
   {
@@ -33,11 +33,11 @@ export const goals: Goal[] = [
     description: 'Build a research profile that makes your application stand out.',
     icon: '🎓',
     hero: {
-      headline: 'Build a research profile that stands out to admissions committees',
-      subheadline: 'Go beyond CGPA. Learn how to get strong letters of recommendation and build a compounding research portfolio.',
-      cta: 'Get the Grad School Playbook',
+      headline: 'Building a research profile that stands out for grad school',
+      subheadline: 'Go beyond CGPA. Get strong recommendation letters and build a compounding research portfolio.',
+      cta: 'Join the Waitlist',
     },
-    narrative: 'When everyone applying to grad school has a high CGPA, research experience is the differentiator. You need publications, real internship experience, and professors who can write detailed, specific letters of recommendation about your capabilities.',
+    narrative: 'When everyone applying to grad school has a high CGPA, research experience is the differentiator. You need publications, real internship experience, and professors who can write detailed, specific letters about your work.',
     featuredTestimonialId: 'preethi-m',
   },
   {
@@ -47,10 +47,10 @@ export const goals: Goal[] = [
     icon: '💡',
     hero: {
       headline: 'Stop feeling lost when reading research papers',
-      subheadline: 'Learn how to extract what matters, find research gaps, and build the confidence to work independently.',
-      cta: 'Get the Research Confidence Playbook',
+      subheadline: 'Learn to extract what matters, spot research gaps, and build the confidence to work independently.',
+      cta: 'Join the Waitlist',
     },
-    narrative: 'Reading your first few research papers can feel overwhelming. It feels like everyone else knows something you don\'t. But there is a specific method to reading literature, identifying gaps, and moving from a consumer of research to a creator.',
+    narrative: 'Your first few research papers feel overwhelming. It seems like everyone else understands something you don\'t. But there\'s a specific method to reading literature, identifying gaps, and moving from a consumer of research to a contributor.',
     featuredTestimonialId: 'ananya-r',
   },
 ];
