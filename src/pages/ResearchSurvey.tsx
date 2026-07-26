@@ -216,18 +216,22 @@ export default function ResearchSurvey() {
     setSubmitStatus('loading');
     setSubmitError(null);
 
+    const challengeWithContext = [
+      data.biggest_challenge.trim(),
+      `\n---\nInterests: ${data.interests.join(', ')}`,
+      `Top outcome: ${data.top_outcome}`,
+      `Open to follow-up: ${data.follow_up}`,
+    ].join('\n');
+
     const { error } = await supabase
-      .from('booksurvey')
+      .from('book_survey')
       .insert([{
         role: data.role,
         field_of_study: data.field_of_study.trim(),
-        interests: data.interests,
-        top_outcome: data.top_outcome,
         tried_research: data.tried_research === 'Yes',
-        biggest_challenge: data.biggest_challenge.trim(),
+        biggest_challenge: challengeWithContext,
         google_search: data.google_search.trim(),
-        book_wish: data.book_wish.trim(),
-        follow_up: data.follow_up === 'Yes',
+        book_sentence: data.book_wish.trim(),
         email: data.follow_up === 'Yes' ? data.email.toLowerCase().trim() : null,
         created_at: new Date().toISOString(),
       }]);
