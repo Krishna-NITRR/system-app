@@ -107,9 +107,9 @@ export default function ResearchSurvey() {
   const shouldReduceMotion = useReducedMotion();
 
   usePageMeta({
-    title: 'Help Improve Research Education - Share Your Experience | Krishna Mahawar',
+    title: 'How Are You Using Research to Build Your Career? | Krishna Mahawar',
     description:
-      'Share your research experiences and challenges to help shape better research education resources for students, educators, and researchers worldwide.',
+      'Share how you use research to land internships, pursue higher studies, build startups, or grow your career. Your experience will help shape practical resources for future students.',
     canonical: 'https://www.krishnamahawar.in/research-survey',
   });
 
@@ -217,7 +217,7 @@ export default function ResearchSurvey() {
     setSubmitError(null);
 
     const { error } = await supabase
-      .from('book_survey')
+      .from('booksurvey')
       .insert([{
         role: data.role,
         field_of_study: data.field_of_study.trim(),
@@ -257,8 +257,8 @@ export default function ResearchSurvey() {
     script.text = JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'WebPage',
-      'name': 'Help Improve Research Education - Survey',
-      'description': 'Share your research experiences and challenges to help shape better research education resources.',
+      'name': 'How Are You Using Research to Build Your Career?',
+      'description': 'Share how you use research to land internships, pursue higher studies, build startups, or grow your career. Help shape practical resources for future students.',
       'url': 'https://www.krishnamahawar.in/research-survey',
       'author': {
         '@type': 'Person',
@@ -500,7 +500,7 @@ export default function ResearchSurvey() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
             >
-              Research Education Initiative
+              2–3 Minute Survey
             </motion.span>
             <motion.h1
               id="survey-heading"
@@ -510,14 +510,14 @@ export default function ResearchSurvey() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
             >
-              Help Improve <span className="accent">Research Education</span>
+              How Are You Using Research to <span className="accent">Build Your Career</span>?
             </motion.h1>
             <motion.p
               initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.2 }}
             >
-              I&rsquo;m speaking with students, educators, and researchers to better understand the challenges beginners face while learning research. Your insights will directly influence:
+              Whether you&rsquo;re chasing a research internship, preparing for higher studies, exploring R&amp;D, or just figuring out where research fits in your career &mdash; your experience matters. I&rsquo;m collecting real stories from students and professionals to understand how people actually use research to create opportunities. What you share will directly shape:
             </motion.p>
             <motion.ul
               className="survey-hero-benefits fade"
@@ -525,10 +525,10 @@ export default function ResearchSurvey() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.3 }}
             >
-              <li>An upcoming beginner-friendly research book</li>
-              <li>Free educational resources</li>
-              <li>Future research learning initiatives</li>
-              <li>Community-driven resources</li>
+              <li>Practical, career-focused research resources</li>
+              <li>A beginner-friendly guide on building a career through research</li>
+              <li>Free tools, templates, and educational content</li>
+              <li>Community initiatives connecting students with real opportunities</li>
             </motion.ul>
             <motion.div
               className="survey-meta"
@@ -537,7 +537,7 @@ export default function ResearchSurvey() {
               transition={{ duration: 0.5, delay: 0.4 }}
             >
               <div className="survey-meta-item">
-                <span className="survey-meta-label">Estimated time</span>
+                <span className="survey-meta-label">Takes just</span>
                 <span className="survey-meta-value">2–3 minutes</span>
               </div>
             </motion.div>
@@ -547,7 +547,7 @@ export default function ResearchSurvey() {
               transition={{ duration: 0.6, delay: 0.5 }}
             >
               <a href="#survey" className="btn btn-primary" onClick={scrollToSurvey}>
-                Share Your Experience
+                Share My Experience
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
               </a>
             </motion.div>
@@ -559,10 +559,10 @@ export default function ResearchSurvey() {
       <section className="sec bg3" id="survey" aria-labelledby="survey-form-heading">
         <div className="wrap">
           <div className="text-center fade" style={{ textAlign: 'center', marginBottom: '40px' }}>
-            <span className="eyebrow">Your Perspective Matters</span>
-            <h2 className="section-title" id="survey-form-heading">Share Your Research Experience</h2>
+            <span className="eyebrow">Real Stories, Real Impact</span>
+            <h2 className="section-title" id="survey-form-heading">Your Research Journey</h2>
             <p className="section-sub" style={{ margin: '0 auto' }}>
-              Every response helps build better resources for the next generation of researchers.
+              Every response helps future students figure out how to use research to build the career they actually want.
             </p>
           </div>
 
@@ -570,9 +570,9 @@ export default function ResearchSurvey() {
             {submitStatus === 'success' ? (
               <div className="survey-success" role="status" aria-live="polite">
                 <div className="survey-success-icon" aria-hidden="true">✓</div>
-                <h3>Thank You for Contributing</h3>
+                <h3>Thank You</h3>
                 <p>
-                  Your insights are incredibly valuable. They will directly shape how we build better research education resources for students everywhere.
+                  Your story will directly help future students figure out how to use research to land internships, get into top programs, and build the career they want. That matters more than you think.
                 </p>
               </div>
             ) : submitStatus === 'loading' ? (
