@@ -25,6 +25,7 @@ export default function Footer() {
           <ul>
             <li><Link to="/career-roadmaps">Career Roadmaps</Link></li>
             <li><Link to="/beta-reader">Beta Reader Application</Link></li>
+            <li><Link to="/research-survey">Research Survey</Link></li>
             <li><a href="https://www.krishnamahawar.in/research-tools-and-resources" target="_blank" rel="noopener noreferrer">Explore all free and premium resources</a></li>
           </ul>
         </div>

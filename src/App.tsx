@@ -8,6 +8,7 @@ const ResearchMain = lazy(() => import('./pages/ResearchMain'));
 const ResearchTools = lazy(() => import('./pages/ResearchTools'));
 const ReferenceChecker = lazy(() => import('./pages/ReferenceChecker'));
 const BetaReader = lazy(() => import('./pages/BetaReader'));
+const ResearchSurvey = lazy(() => import('./pages/ResearchSurvey'));
 
 const ResourceLandingPage = lazy(() => import('./pages/ResourceLandingPage'));
 const ResourceDeliveryPage = lazy(() => import('./pages/ResourceDeliveryPage'));
@@ -42,6 +43,7 @@ function App() {
           <Route path="/research-tools-and-resources" element={<ResearchTools />} />
           <Route path="/reference-checker" element={<ReferenceChecker />} />
           <Route path="/beta-reader" element={<BetaReader />} />
+          <Route path="/research-survey" element={<ResearchSurvey />} />
         </Routes>
       </Suspense>
     </BrowserRouter>
