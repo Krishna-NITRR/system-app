@@ -42,7 +42,7 @@ export default function Navbar() {
           <button className="toggle" id="themeToggle" aria-label="Toggle dark mode" onClick={toggleTheme}>
             <div className="toggle-icons"><span>&#9728;</span><span>&#9790;</span></div>
           </button>
-          <a href="#signup" className="btn btn-primary nav-cta">Join Waitlist</a>
+          <a href="/#signup" className="btn btn-primary nav-cta">Join Waitlist</a>
           <button 
             className="burger" 
             id="burger" 
@@ -67,7 +67,7 @@ export default function Navbar() {
       <div className="ann-bar">
         <div className="ann-bar-inner">
           <p>The book will launch soon. Fill the waitlist form below.</p>
-          <a href="#signup">Join Waitlist &rarr;</a>
+          <a href="/#signup">Join Waitlist &rarr;</a>
         </div>
       </div>
     </>
