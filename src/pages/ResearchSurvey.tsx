@@ -218,9 +218,7 @@ export default function ResearchSurvey() {
 
     const challengeWithContext = [
       data.biggest_challenge.trim(),
-      `\n---\nInterests: ${data.interests.join(', ')}`,
-      `Top outcome: ${data.top_outcome}`,
-      `Open to follow-up: ${data.follow_up}`,
+      `\n---\nOpen to follow-up: ${data.follow_up}`,
     ].join('\n');
 
     const { error } = await supabase
@@ -232,6 +230,8 @@ export default function ResearchSurvey() {
         biggest_challenge: challengeWithContext,
         google_search: data.google_search.trim(),
         book_sentence: data.book_wish.trim(),
+        research_interest: data.interests,
+        primary_goal: data.top_outcome,
         email: data.follow_up === 'Yes' ? data.email.toLowerCase().trim() : null,
         created_at: new Date().toISOString(),
       }]);
