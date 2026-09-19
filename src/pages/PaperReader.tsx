@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import Footer from '../components/Footer';
 import usePageMeta from '../hooks/usePageMeta';
 import { processPaper } from '../utils/paperReader';
 import type { ReaderState, ReaderUIState, TermEntry } from '../types/paperReader';
@@ -238,6 +238,7 @@ export default function PaperReader() {
             )}
           </section>
         </main>
+        <Footer />
       </div>
     );
   }
@@ -266,6 +267,7 @@ export default function PaperReader() {
             <p style={{ marginTop: '12px', fontSize: '0.85rem', color: 'var(--tl)' }}>{progress}% Complete</p>
           </div>
         </main>
+        <Footer />
       </div>
     );
   }

@@ -206,7 +206,10 @@ export default function ResearchMain() {
 
       <footer>
         <div className="footer-brand">Krishna Mahawar<span>.</span></div>
-        <div className="footer-copy">&copy; 2026 {"\u00B7"} krishnamahawar.in {"\u00B7"} NIT Raipur</div>
+        <div className="footer-copy">
+          <a href="/paper-reader" style={{ color: 'inherit', textDecoration: 'underline', marginRight: '15px' }}>Try the Research Paper Reader</a>
+          &copy; 2026 {"\u00B7"} krishnamahawar.in {"\u00B7"} NIT Raipur
+        </div>
       </footer>
 
 
