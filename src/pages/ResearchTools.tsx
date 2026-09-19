@@ -61,6 +61,14 @@ const RESOURCES = [
     link: "/reference-checker",
     category: "Tools",
     featured: true,
+  },
+  {
+    tag: "Resource 08",
+    title: "Research Paper Reader",
+    desc: "Make academic papers easier to understand while preserving scientific meaning.",
+    link: "/paper-reader",
+    category: "Tools",
+    featured: true,
   }
 ];
 
