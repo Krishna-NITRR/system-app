@@ -36,9 +36,9 @@ export default function SlotPicker({ onSelectSlot, selectedSlot }: Props) {
 
   return (
     <div style={{ background: 'var(--bg)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--div)', padding: '24px' }}>
-      <div style={{ marginBottom: '24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h3 style={{ fontSize: '1.2rem', margin: 0, color: 'var(--text)' }}>Select a time</h3>
-        <div style={{ fontSize: '0.85rem', color: 'var(--tm)', background: 'var(--bg2)', padding: '4px 12px', borderRadius: '20px' }}>
+      <div className="slot-picker-header">
+        <h3 style={{ fontSize: '1.1rem', margin: 0, color: 'var(--text)' }}>Select a time</h3>
+        <div style={{ fontSize: '0.82rem', color: 'var(--tm)', background: 'var(--bg2)', padding: '4px 10px', borderRadius: '20px', whiteSpace: 'nowrap' }}>
           Times shown in <strong>{timezone}</strong>
         </div>
       </div>

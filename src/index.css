@@ -1098,3 +1098,103 @@ footer {
   color: var(--tm);
   margin-top: 16px;
 }
+
+/* ══════════════════════════════════════════
+   MENTORSHIP PAGE — RESPONSIVE
+══════════════════════════════════════════ */
+
+/* Hero buttons */
+.mentorship-hero-btns {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+
+/* Pre-session form 2-col grid */
+.mentorship-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Slot picker header */
+.slot-picker-header {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+/* Payment trigger action buttons */
+.payment-trigger-actions {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+/* Credibility strip — allow wrapping on small screens */
+@media (max-width: 600px) {
+  .cred-inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .cred-item {
+    border-right: none;
+    padding: 4px 16px;
+  }
+  .cred-text {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Form grid stacks */
+  .mentorship-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Hero buttons full-width */
+  .mentorship-hero-btns {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .mentorship-hero-btns .btn {
+    text-align: center;
+  }
+
+  /* Audience cards stack */
+  #audience .wrap > div[style] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Slot picker header: timezone pill below title */
+  .slot-picker-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Payment buttons stack */
+  .payment-trigger-actions {
+    flex-direction: column;
+  }
+  .payment-trigger-actions .btn {
+    width: 100%;
+  }
+
+  /* Booking stepper: smaller text */
+  #booking .section-title {
+    font-size: 1.5rem;
+  }
+
+  /* Includes grid: single column */
+  #includes .wrap > div[style] {
+    grid-template-columns: 1fr !important;
+  }
+}
+

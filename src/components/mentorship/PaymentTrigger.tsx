@@ -140,7 +140,7 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
     <div style={{ background: 'var(--bg)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--div)', padding: '32px', textAlign: 'center' }}>
       <h3 style={{ fontSize: '1.2rem', marginBottom: '16px', color: 'var(--text)' }}>Confirm Booking</h3>
       <p style={{ color: 'var(--tm)', marginBottom: '32px' }}>
-        You are booking a 30-minute session. Your slot will be reserved immediately upon successful payment.
+        Your slot is reserved the moment payment clears. You will receive a Google Meet link and a calendar invite by email.
       </p>
       
       {error && (
@@ -149,7 +149,7 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
+      <div className="payment-trigger-actions">
         <button 
           className="btn btn-outline" 
           onClick={onCancel}

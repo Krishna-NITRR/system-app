@@ -61,11 +61,12 @@ export default function PreSessionForm({ onSubmit, loading }: Props) {
 
   return (
     <div style={{ background: 'var(--bg)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--div)', padding: '24px' }}>
-      <h3 style={{ fontSize: '1.2rem', margin: '0 0 24px 0', color: 'var(--text)' }}>Tell me about yourself</h3>
+      <h3 style={{ fontSize: '1.2rem', margin: '0 0 8px 0', color: 'var(--text)' }}>Tell me about yourself</h3>
+      <p style={{ fontSize: '0.88rem', color: 'var(--tl)', margin: '0 0 24px 0' }}>I read every form before the session. The more specific you are, the more useful the call will be.</p>
       
       <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+        <div className="mentorship-form-grid">
           <div className="f-field">
             <label htmlFor="student_name">Full Name</label>
             <input 
@@ -78,7 +79,7 @@ export default function PreSessionForm({ onSubmit, loading }: Props) {
             />
           </div>
           <div className="f-field">
-            <label htmlFor="student_email">Email (Where I'll send the link)</label>
+            <label htmlFor="student_email">Email (where I will send the Google Meet link)</label>
             <input 
               type="email" 
               id="student_email" 
@@ -162,13 +163,13 @@ export default function PreSessionForm({ onSubmit, loading }: Props) {
         )}
 
         <div className="f-field">
-          <label htmlFor="student_situation">What is your current situation?</label>
+          <label htmlFor="student_situation">What is your current situation? <span style={{ color: 'var(--tl)', fontWeight: 400 }}>(college, year, what you are working on)</span></label>
           <textarea 
             id="student_situation" 
             name="student_situation" 
             required 
             rows={4}
-            placeholder="E.g., I'm a 2nd year CS student at an NIT. I want to apply for research internships next summer but I don't have any papers published yet."
+            placeholder="E.g., I am a 2nd year CS student at an NIT. I want to apply for research internships next summer but I have no papers published and no prior lab experience."
             value={formData.student_situation}
             onChange={handleChange}
             style={{ width: '100%', padding: '12px 16px', border: '1px solid var(--div)', borderRadius: '8px', background: 'var(--bg2)', color: 'var(--text)', fontFamily: 'inherit', resize: 'vertical' }}
@@ -176,7 +177,7 @@ export default function PreSessionForm({ onSubmit, loading }: Props) {
         </div>
 
         <div className="f-field">
-          <label htmlFor="student_goal">What is the ONE main thing you want out of this 30-min call?</label>
+          <label htmlFor="student_goal">What is the one thing you want to walk away with from this call?</label>
           <textarea 
             id="student_goal" 
             name="student_goal" 
@@ -195,7 +196,7 @@ export default function PreSessionForm({ onSubmit, loading }: Props) {
           disabled={loading}
           style={{ padding: '16px', fontSize: '1rem', marginTop: '8px', width: '100%' }}
         >
-          {loading ? 'Saving...' : 'Continue to Payment →'}
+          {loading ? 'Saving...' : 'Continue to Time Selection'}
         </button>
       </form>
     </div>
