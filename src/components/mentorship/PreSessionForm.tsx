@@ -182,7 +182,7 @@ export default function PreSessionForm({ onSubmit, loading }: Props) {
             name="student_goal" 
             required 
             rows={3}
-            placeholder="E.g., Help me review my cold email template and pick 5 professors to email."
+            placeholder="E.g., I need a concrete roadmap to publish in a top-tier journal and land a fully-funded research position at MIT or Stanford."
             value={formData.student_goal}
             onChange={handleChange}
             style={{ width: '100%', padding: '12px 16px', border: '1px solid var(--div)', borderRadius: '8px', background: 'var(--bg2)', color: 'var(--text)', fontFamily: 'inherit', resize: 'vertical' }}
