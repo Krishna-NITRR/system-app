@@ -87,7 +87,7 @@ export const mentorshipConfig: MentorshipConfig = {
     },
     {
       question: 'Will this help me get an internship?',
-      answer: 'I cannot guarantee you an internship. What I can do is make sure you leave with a clear strategy: how to write better cold emails, what professors and labs actually look for, and what your next steps are. The execution is yours.',
+      answer: 'I cannot guarantee you an internship just by showing up to the call. What I can do is make sure you leave with a clear strategy: how to write better cold emails, what professors and labs actually look for, and exactly what your next steps are. If you execute the plan as discussed, landing a research internship at a prestigious university or institution, including abroad, is absolutely within reach. The strategy is mine. The execution is yours.',
     },
     {
       question: 'Why pay when other platforms are free?',
