@@ -35,6 +35,7 @@ export default function Navbar() {
           <li><a href="/#book">The Book</a></li>
           <li><a href="/#playbooks">Research Systems</a></li>
           <li><a href="/research-tools-and-resources">Tools</a></li>
+          <li><a href="/mentorship">1:1 Mentorship</a></li>
           <li><a href="/#author">About</a></li>
           <li><a href="/#contact">Contact</a></li>
         </ul>
@@ -59,6 +60,7 @@ export default function Navbar() {
         <a href="/#book" onClick={closeMobile}>The Book</a>
         <a href="/#playbooks" onClick={closeMobile}>Research Systems</a>
         <a href="/research-tools-and-resources" onClick={closeMobile}>Tools</a>
+        <a href="/mentorship" onClick={closeMobile}>1:1 Mentorship</a>
         <a href="/#author" onClick={closeMobile}>About</a>
         <a href="/#contact" onClick={closeMobile}>Contact</a>
         <a href="/#signup" onClick={closeMobile} style={{ color: '#6C4CF1', fontWeight: 700 }}>Join Waitlist</a>

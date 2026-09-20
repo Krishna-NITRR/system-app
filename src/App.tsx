@@ -11,6 +11,9 @@ const BetaReader = lazy(() => import('./pages/BetaReader'));
 const ResearchSurvey = lazy(() => import('./pages/ResearchSurvey'));
 const PaperReader = lazy(() => import('./pages/PaperReader'));
 
+const MentorshipPage = lazy(() => import('./pages/MentorshipPage'));
+const MentorshipConfirmed = lazy(() => import('./pages/MentorshipConfirmed'));
+
 const ResourceLandingPage = lazy(() => import('./pages/ResourceLandingPage'));
 const ResourceDeliveryPage = lazy(() => import('./pages/ResourceDeliveryPage'));
 const BookPage = lazy(() => import('./pages/BookPage'));
@@ -46,6 +49,10 @@ function App() {
           <Route path="/beta-reader" element={<BetaReader />} />
           <Route path="/paper-reader" element={<PaperReader />} />
           <Route path="/research-survey" element={<ResearchSurvey />} />
+          
+          {/* Mentorship */}
+          <Route path="/mentorship" element={<MentorshipPage />} />
+          <Route path="/mentorship/confirmed" element={<MentorshipConfirmed />} />
         </Routes>
       </Suspense>
     </BrowserRouter>

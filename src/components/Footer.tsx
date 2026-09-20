@@ -23,6 +23,7 @@ export default function Footer() {
         <div className="footer-col">
           <div className="footer-heading">Resources</div>
           <ul>
+            <li><Link to="/mentorship">1:1 Mentorship</Link></li>
             <li><Link to="/career-roadmaps">Career Roadmaps</Link></li>
             <li><Link to="/paper-reader">Research Paper Reader</Link></li>
             <li><Link to="/beta-reader">Beta Reader Application</Link></li>
