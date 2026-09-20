@@ -1,5 +1,5 @@
-import { addDays, set, isBefore, addMinutes, formatISO } from 'date-fns';
-import { formatInTimeZone, toDate } from 'date-fns-tz';
+import { addDays, isBefore, addMinutes } from 'date-fns';
+import { toDate } from 'date-fns-tz';
 
 export interface AvailabilityRow {
   day_of_week: number;
@@ -44,8 +44,6 @@ export function generateSlots(
     if (!availability) continue;
 
     // We generate slots in the SOURCE_TZ then convert to UTC
-    const [startH, startM] = availability.start_time.split(':').map(Number);
-    const [endH, endM] = availability.end_time.split(':').map(Number);
     
     // Create start and end boundaries for this specific date in Asia/Kolkata
     // To do this reliably, we format the target date as YYYY-MM-DD in the local timezone, 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import { generateSlots, AvailabilityRow, BlockedSlotRow, BookedSlotRow } from '../utils/slotGenerator';
+import { generateSlots, type AvailabilityRow, type BlockedSlotRow, type BookedSlotRow } from '../utils/slotGenerator';
 import type { DaySlots } from '../types/mentorship';
 
 export function useAvailableSlots() {

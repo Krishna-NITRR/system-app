@@ -1,14 +1,14 @@
-import { useNavigate } from 'react-router-dom';
+import { useState, useRef, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import usePageMeta from '../hooks/usePageMeta';
 import { processPaper } from '../utils/paperReader';
-import type { ReaderState, ReaderUIState, TermEntry } from '../types/paperReader';
+import type { ReaderState, ReaderUIState } from '../types/paperReader';
 import { getTermById } from '../data/terminology';
 import './PaperReader.css';
 
 export default function PaperReader() {
-  usePageMeta('Research Paper Reader', 'Make academic papers easier to understand while preserving scientific meaning.');
+  usePageMeta({ title: 'Research Paper Reader', description: 'Make academic papers easier to understand while preserving scientific meaning.' });
 
   const [state, setState] = useState<ReaderState>({ phase: 'landing' });
   const [ui, setUI] = useState<ReaderUIState>({
@@ -21,7 +21,6 @@ export default function PaperReader() {
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
 
   // Handle term click
   const handleTermClick = (termId: string, e: React.MouseEvent) => {

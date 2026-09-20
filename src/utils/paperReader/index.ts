@@ -11,7 +11,6 @@ import type {
   PaperSentence,
   TransformationStats,
   ProcessingStep,
-  SectionType,
 } from '../../types/paperReader';
 import { extractTextFromFile } from '../documentParser';
 import { detectSections, classifySectionType } from './sectionDetector';
@@ -50,8 +49,6 @@ export async function processPaper(
   const metadata = extractMetadata(rawText);
   const rawSections = detectSections(rawText);
 
-  // Re-split each section's content into paragraphs and sentences
-  const lines = rawText.split('\n');
   const sections: PaperSection[] = parseSectionsContent(rawSections, rawText);
 
   onProgress?.('parsing', 100);

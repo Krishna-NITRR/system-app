@@ -98,7 +98,6 @@ export function detectSections(text: string): PaperSection[] {
   let currentLines: string[] = [];
   let currentTitle = 'Untitled Section';
   let currentLevel = 1;
-  let currentType: SectionType = 'other';
   let sectionIndex = 0;
 
   for (let i = 0; i < lines.length; i++) {
@@ -122,7 +121,6 @@ export function detectSections(text: string): PaperSection[] {
 
       currentTitle = line.trim();
       currentLevel = headingInfo.level;
-      currentType = headingInfo.type;
       currentLines = [];
     } else {
       currentLines.push(line);

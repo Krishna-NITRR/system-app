@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import CurrencyToggle from './CurrencyToggle';
-import PreSessionForm, { PreSessionFormData } from './PreSessionForm';
+import PreSessionForm, { type PreSessionFormData } from './PreSessionForm';
 import SlotPicker from './SlotPicker';
 import PaymentTrigger from './PaymentTrigger';
 import type { Slot } from '../../types/mentorship';
