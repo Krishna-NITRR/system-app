@@ -40,7 +40,7 @@ export function generateSlots(
     const dayOfWeek = targetDate.getDay();
     
     // Find availability for this day of week
-    const availability = availabilities.find(a => a.day_of_week === dayOfWeek);
+    const availability = availabilities.find(a => Number(a.day_of_week) === dayOfWeek);
     if (!availability) continue;
 
     // We generate slots in the SOURCE_TZ then convert to UTC
@@ -50,8 +50,11 @@ export function generateSlots(
     // then parse it as if it was midnight in Asia/Kolkata, then add hours/mins.
     const dateString = `${targetDate.getFullYear()}-${String(targetDate.getMonth() + 1).padStart(2, '0')}-${String(targetDate.getDate()).padStart(2, '0')}`;
     
-    const dayStartZoned = toDate(`${dateString}T${availability.start_time}:00`, { timeZone: SOURCE_TZ });
-    const dayEndZoned = toDate(`${dateString}T${availability.end_time}:00`, { timeZone: SOURCE_TZ });
+    // Supabase returns time as 'HH:MM:SS'. If it's just 'HH:MM', append ':00'
+    const formatTime = (t: string) => t.length === 5 ? `${t}:00` : t;
+    
+    const dayStartZoned = toDate(`${dateString}T${formatTime(availability.start_time)}`, { timeZone: SOURCE_TZ });
+    const dayEndZoned = toDate(`${dateString}T${formatTime(availability.end_time)}`, { timeZone: SOURCE_TZ });
 
     // Check full-day blocks
     const fullDayBlock = blocked.find(b => b.block_date === dateString && !b.start_time);
@@ -81,8 +84,8 @@ export function generateSlots(
       // Check blocked slots (partial day)
       const partialBlock = blocked.find(b => {
         if (b.block_date !== dateString || !b.start_time || !b.end_time) return false;
-        const blockStartZoned = toDate(`${dateString}T${b.start_time}:00`, { timeZone: SOURCE_TZ });
-        const blockEndZoned = toDate(`${dateString}T${b.end_time}:00`, { timeZone: SOURCE_TZ });
+        const blockStartZoned = toDate(`${dateString}T${formatTime(b.start_time)}`, { timeZone: SOURCE_TZ });
+        const blockEndZoned = toDate(`${dateString}T${formatTime(b.end_time)}`, { timeZone: SOURCE_TZ });
         
         return (isBefore(currentSlotStart, blockEndZoned) && isBefore(blockStartZoned, currentSlotEnd));
       });
