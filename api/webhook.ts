@@ -62,7 +62,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Process event
     if (event === 'order.paid') {
       const order = payload.order.entity;
-      const orderId = order.id;
       const bookingId = order.receipt; // We stored bookingId in receipt
 
       if (bookingId) {
