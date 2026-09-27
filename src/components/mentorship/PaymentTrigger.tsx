@@ -28,9 +28,11 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
       setError(null);
 
       // 1. Create booking record (pending) using anon key
-      const { data: booking, error: insertError } = await supabase
+      const bookingId = crypto.randomUUID();
+      const { error: insertError } = await supabase
         .from('mentorship_bookings')
         .insert([{
+          id: bookingId,
           ...formData,
           slot_start: selectedSlot.slotStart,
           slot_end: selectedSlot.slotEnd,
@@ -38,15 +40,11 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
           amount_minor: 0, // Will be set by server
           payment_status: 'pending',
           booking_status: 'pending'
-        }])
-        .select('id')
-        .single();
+        }]);
 
-      if (insertError || !booking) {
-        throw new Error(insertError?.message || 'Failed to initialize booking');
+      if (insertError) {
+        throw new Error(insertError.message || 'Failed to initialize booking');
       }
-
-      const bookingId = booking.id;
 
       // 2. Call server to reserve slot and create Razorpay order
       const orderResponse = await fetch('/api/create-order', {
