@@ -14,6 +14,10 @@ const PaperReader = lazy(() => import('./pages/PaperReader'));
 const MentorshipPage = lazy(() => import('./pages/MentorshipPage'));
 const MentorshipConfirmed = lazy(() => import('./pages/MentorshipConfirmed'));
 
+const ReferralLanding = lazy(() => import('./pages/ReferralLanding'));
+const ReferralDashboard = lazy(() => import('./pages/ReferralDashboard'));
+const ReferralAdmin = lazy(() => import('./pages/ReferralAdmin'));
+
 const ResourceLandingPage = lazy(() => import('./pages/ResourceLandingPage'));
 const ResourceDeliveryPage = lazy(() => import('./pages/ResourceDeliveryPage'));
 const BookPage = lazy(() => import('./pages/BookPage'));
@@ -53,6 +57,11 @@ function App() {
           {/* Mentorship */}
           <Route path="/mentorship" element={<MentorshipPage />} />
           <Route path="/mentorship/confirmed" element={<MentorshipConfirmed />} />
+
+          {/* Referral Program */}
+          <Route path="/join" element={<ReferralLanding />} />
+          <Route path="/referral/dashboard" element={<ReferralDashboard />} />
+          <Route path="/admin/referrals" element={<ReferralAdmin />} />
         </Routes>
       </Suspense>
     </BrowserRouter>
