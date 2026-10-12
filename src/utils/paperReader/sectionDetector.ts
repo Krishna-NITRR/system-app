@@ -1,5 +1,5 @@
 // ──────────────────────────────────────────────────────────
-// Section Detector — detects academic paper sections from raw text
+// Section Detector : detects academic paper sections from raw text
 // ──────────────────────────────────────────────────────────
 import type { PaperSection, SectionType } from '../../types/paperReader';
 

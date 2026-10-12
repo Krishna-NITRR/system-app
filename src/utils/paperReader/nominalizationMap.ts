@@ -1,5 +1,5 @@
 // ──────────────────────────────────────────────────────────
-// Nominalization Map — curated noun → verb/simpler-form mappings
+// Nominalization Map : curated noun → verb/simpler-form mappings
 // These enable deterministic reversal WITHOUT introducing new information.
 // E.g. "the implementation of X was performed" → "X was implemented"
 // NOT → "We implemented X" (introduces "we" not in original)

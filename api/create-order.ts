@@ -50,7 +50,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Booking is not in a state to be paid' });
     }
 
-    // 2. Validate referral code if provided (non-blocking — discount is best-effort)
+    // 2. Validate referral code if provided (non-blocking : discount is best-effort)
     let discountApplied = false;
     if (referralCode && typeof referralCode === 'string') {
       try {

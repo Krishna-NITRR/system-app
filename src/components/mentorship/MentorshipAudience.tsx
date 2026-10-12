@@ -32,12 +32,12 @@ export default function MentorshipAudience() {
           {/* Who it is NOT for */}
           <div style={{ background: 'var(--bg)', padding: '32px', borderRadius: 'var(--radius-lg)', border: '1px solid var(--div)' }}>
             <h3 style={{ fontSize: '1.2rem', marginBottom: '24px', color: 'var(--text)', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ color: '#e74c3c' }}>âœ—</span> This is NOT for you if:
+              <span style={{ color: '#e74c3c' }}>âœ:</span> This is NOT for you if:
             </h3>
             <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {mentorshipConfig.notFor.map((item, i) => (
                 <li key={i} style={{ color: 'var(--tl)', fontSize: '0.95rem', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-                  <span style={{ color: '#e74c3c', flexShrink: 0 }}>âœ—</span>
+                  <span style={{ color: '#e74c3c', flexShrink: 0 }}>âœ:</span>
                   <span>{item}</span>
                 </li>
               ))}

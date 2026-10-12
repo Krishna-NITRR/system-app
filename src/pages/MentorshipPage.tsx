@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 
 export default function MentorshipPage() {
   usePageMeta({
-    title: '1:1 Mentorship — Research, Internships & Career Guidance · Krishna Mahawar',
+    title: '1:1 Mentorship : Research, Internships & Career Guidance · Krishna Mahawar',
     description: 'Book a 30-minute 1:1 session with Krishna Mahawar. Get practical guidance on research internships, cold emails, career direction, and publishing. ₹399 / $20.',
     canonical: 'https://www.krishnamahawar.in/mentorship',
   });
@@ -117,7 +117,7 @@ export default function MentorshipPage() {
 
             <div style={{ background: '#fff5f5', padding: '36px', borderRadius: '16px', border: '1px solid #fecaca' }}>
               <h3 style={{ fontSize: '1.2rem', marginBottom: '24px', color: '#111827', display: 'flex', alignItems: 'center', gap: '10px', fontWeight: 700 }}>
-                <span style={{ color: '#dc2626', background: 'rgba(220,38,38,0.1)', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem' }}>×</span>
+                <span style={{ color: '#dc2626', background: 'rgba(220,38,38,0.1)', width: '32px', height: '32px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem' }}>�:</span>
                 This is NOT for you if:
               </h3>
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '14px' }}>

@@ -1,5 +1,5 @@
 // ──────────────────────────────────────────────────────────
-// Paper Reader Orchestrator — ties the entire processing
+// Paper Reader Orchestrator : ties the entire processing
 // pipeline together:
 // Extract → Parse → Transform → Annotate → Output
 // All processing is 100% client-side.

@@ -107,7 +107,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       metadata: { code, valid: true }
     }]);
 
-    // Return sanitized response — no internal IDs, no email, no token
+    // Return sanitized response : no internal IDs, no email, no token
     const displayName = referrer.name.split(' ')[0] + (referrer.name.split(' ').length > 1 ? ' ' + referrer.name.split(' ')[1][0] + '.' : '');
 
     return res.status(200).json({

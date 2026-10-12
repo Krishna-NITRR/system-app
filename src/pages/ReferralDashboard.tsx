@@ -18,7 +18,7 @@ export default function ReferralDashboard() {
   const [newInvite, setNewInvite] = useState<{code: string, url: string} | null>(null);
   
   usePageMeta({
-    title: 'Referrer Dashboard — Krishna Mahawar',
+    title: 'Referrer Dashboard : Krishna Mahawar',
     description: 'Manage your exclusive mentorship invitations.',
   });
 

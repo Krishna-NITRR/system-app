@@ -134,7 +134,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const { referrerId } = params;
         if (!referrerId) return res.status(400).json({ success: false, error: { code: 'MISSING_PARAM', message: 'referrerId required.' } });
 
-        // Generate access token — returned ONCE
+        // Generate access token : returned ONCE
         const rawToken = generateAccessToken();
         const tokenHash = hashToken(rawToken);
         const now = new Date();
@@ -162,7 +162,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           success: true,
           data: {
             accessToken: rawToken, // ← RETURNED ONCE, never stored/logged
-            message: 'Referrer approved. Save this access token — it will not be shown again.'
+            message: 'Referrer approved. Save this access token : it will not be shown again.'
           }
         });
       }
@@ -212,7 +212,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           success: true,
           data: {
             accessToken: rawToken,
-            message: 'Referrer created and approved. Save this access token — it will not be shown again.'
+            message: 'Referrer created and approved. Save this access token : it will not be shown again.'
           }
         });
       }

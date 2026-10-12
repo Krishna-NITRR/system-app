@@ -1,11 +1,11 @@
 // ──────────────────────────────────────────────────────────
-// Metadata Extractor — extracts title, authors, year, DOI from raw text
+// Metadata Extractor : extracts title, authors, year, DOI from raw text
 // ──────────────────────────────────────────────────────────
 import type { PaperMetadata } from '../../types/paperReader';
 
 /**
  * Extract paper metadata from the raw text.
- * Uses heuristics — the first substantive line is likely the title,
+ * Uses heuristics : the first substantive line is likely the title,
  * followed by author lines, then possibly a journal/year line.
  */
 export function extractMetadata(text: string): PaperMetadata {

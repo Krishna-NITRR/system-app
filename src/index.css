@@ -1,6 +1,6 @@
 /* Google Fonts loaded via <link> in index.html for non-blocking performance */
 /* ═══════════════════════════════════════════
-   KRISHNA MAHAWAR — styles.css
+   KRISHNA MAHAWAR : styles.css
    Design: Sharp editorial, high-authority
    Fonts: Montserrat (display) + DM Sans (body)
 ═══════════════════════════════════════════ */
@@ -288,7 +288,7 @@ h1,h2,h3,h4,h5 { font-family: 'Inter', sans-serif; font-weight: 600; line-height
 .proof-item:last-child { border-right: none; margin-right: 0; padding-right: 0; }
 .proof-item.highlight { color: var(--purple); }
 
-/* Hero right — stats block */
+/* Hero right : stats block */
 .hero-right {
   background: var(--bg2);
   border: 1px solid var(--div);
@@ -1100,7 +1100,7 @@ footer {
 }
 
 /* ══════════════════════════════════════════
-   MENTORSHIP PAGE — RESPONSIVE
+   MENTORSHIP PAGE : RESPONSIVE
 ══════════════════════════════════════════ */
 
 /* Hero buttons */
@@ -1137,7 +1137,7 @@ footer {
   flex-wrap: wrap;
 }
 
-/* Credibility strip — allow wrapping on small screens */
+/* Credibility strip : allow wrapping on small screens */
 @media (max-width: 600px) {
   .cred-inner {
     flex-direction: column;

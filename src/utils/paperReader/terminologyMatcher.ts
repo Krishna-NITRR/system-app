@@ -1,5 +1,5 @@
 // ──────────────────────────────────────────────────────────
-// Terminology Matcher — dictionary-based term annotation
+// Terminology Matcher : dictionary-based term annotation
 // Uses a trie for efficient longest-match-first scanning.
 // ──────────────────────────────────────────────────────────
 import type { TermAnnotation, TermEntry } from '../../types/paperReader';

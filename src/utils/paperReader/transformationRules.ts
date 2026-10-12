@@ -1,5 +1,5 @@
 // ──────────────────────────────────────────────────────────
-// Transformation Rules — deterministic, meaning-preserving
+// Transformation Rules : deterministic, meaning-preserving
 // readability transformations for academic text.
 //
 // CORE PRINCIPLE: Never introduce information not present in
@@ -392,7 +392,7 @@ export const TRANSFORMATION_RULES: TransformationRule[] = [
   },
 
   // ═══════════════════════════════════════════════
-  // RULE 3: Nominalization (Safe — no subject insertion)
+  // RULE 3: Nominalization (Safe : no subject insertion)
   // Only handles patterns like:
   //   "the X of Y was performed" → "Y was X-ed"
   //   "the X of Y" → "X-ing Y" (in some contexts)

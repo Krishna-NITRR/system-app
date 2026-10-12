@@ -196,7 +196,7 @@ CREATE POLICY "anon_update_booking_expired"
 -- service_role bypasses RLS by default, so no policy needed.
 
 -- Payment events: no anon access
--- (service_role only — no policy for anon means denied)
+-- (service_role only : no policy for anon means denied)
 
 -- Analytics: anon can insert
 CREATE POLICY "anon_insert_analytics"

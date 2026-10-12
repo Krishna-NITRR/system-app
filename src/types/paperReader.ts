@@ -1,5 +1,5 @@
 // ──────────────────────────────────────────────────────────
-// Research Paper Reader — Type Definitions
+// Research Paper Reader : Type Definitions
 // ──────────────────────────────────────────────────────────
 
 /* ── Processed Paper ── */

@@ -1,5 +1,5 @@
 // ──────────────────────────────────────────────────────────
-// Transformation Engine — applies rules to individual sentences
+// Transformation Engine : applies rules to individual sentences
 // with safety verification.
 //
 // Core principle: Scientific fidelity first, readability second.
@@ -35,7 +35,7 @@ export function transformSentence(
       text: sentence,
       wasTransformed: false,
       ruleApplied: null,
-      skippedReason: 'References section — preserved unchanged.',
+      skippedReason: 'References section : preserved unchanged.',
     };
   }
 
@@ -68,7 +68,7 @@ export function transformSentence(
       // Replace only the matched portion
       transformed = sentence.substring(0, match.index) + result + sentence.substring(match.index + match[0].length);
     } else {
-      // Simple string replacement — reset lastIndex for global
+      // Simple string replacement : reset lastIndex for global
       rule.pattern.lastIndex = 0;
       transformed = sentence.replace(rule.pattern, rule.replacement);
     }
@@ -109,5 +109,5 @@ export function transformSentence(
  * Get a human-readable description of what transformation was applied.
  */
 export function getTransformationDescription(rule: TransformationRule): string {
-  return `${rule.name} — ${rule.description}`;
+  return `${rule.name} : ${rule.description}`;
 }

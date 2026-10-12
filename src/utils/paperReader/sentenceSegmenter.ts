@@ -1,5 +1,5 @@
 // ──────────────────────────────────────────────────────────
-// Sentence Segmenter — rule-based sentence boundary detection
+// Sentence Segmenter : rule-based sentence boundary detection
 // Handles abbreviations, decimals, citations, and ellipsis
 // ──────────────────────────────────────────────────────────
 
@@ -89,7 +89,7 @@ function isSentenceBoundary(text: string, pos: number, _accumulated: string): bo
     return false;
   }
 
-  // 3. "et al." — never a boundary by itself
+  // 3. "et al." : never a boundary by itself
   if (pos >= 5 && text.substring(pos - 5, pos + 1).match(/et\s+al\./)) {
     return false;
   }
@@ -104,7 +104,7 @@ function isSentenceBoundary(text: string, pos: number, _accumulated: string): bo
     return false;
   }
 
-  // 6. Inside brackets/parentheses at surface level — common in citations
+  // 6. Inside brackets/parentheses at surface level : common in citations
   if (isInsideBrackets(text, pos)) {
     return false;
   }

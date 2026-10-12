@@ -122,7 +122,7 @@ export default function ReferenceChecker() {
                                 </div>
                                 <div className="rc-dashboard-body">
                                     <div className="rc-mockup-item rc-error">
-                                        <span className="rc-icon">Ã—</span>
+                                        <span className="rc-icon">Ã:</span>
                                         <div className="rc-mockup-text">
                                             <strong>Missing Citations Detected</strong>
                                             <span>Reference [14] in bibliography is not cited in text</span>
@@ -267,8 +267,8 @@ export default function ReferenceChecker() {
                                             <>
                                                 <li><span className="rc-icon rc-warning">!</span> 2 duplicate references detected</li>
                                                 <li><span className="rc-icon rc-warning">!</span> 1 missing citation in text</li>
-                                                <li><span className="rc-icon rc-error">Ã—</span> 3 references in bibliography not cited</li>
-                                                <li><span className="rc-icon rc-error">Ã—</span> Citation numbering mismatch at Reference 18</li>
+                                                <li><span className="rc-icon rc-error">Ã:</span> 3 references in bibliography not cited</li>
+                                                <li><span className="rc-icon rc-error">Ã:</span> Citation numbering mismatch at Reference 18</li>
                                             </>
                                         )}
                                         {analysisResult && analysisResult.score === 100 && (
@@ -281,10 +281,10 @@ export default function ReferenceChecker() {
                                             <li key={`mit-${i}`}><span className="rc-icon rc-warning">!</span> {msg}</li>
                                         ))}
                                         {analysisResult && analysisResult.missingInBibliography.map((msg, i) => (
-                                            <li key={`mib-${i}`}><span className="rc-icon rc-error">Ã—</span> {msg}</li>
+                                            <li key={`mib-${i}`}><span className="rc-icon rc-error">Ã:</span> {msg}</li>
                                         ))}
                                         {analysisResult && analysisResult.numberingErrors.map((msg, i) => (
-                                            <li key={`num-${i}`}><span className="rc-icon rc-error">Ã—</span> {msg}</li>
+                                            <li key={`num-${i}`}><span className="rc-icon rc-error">Ã:</span> {msg}</li>
                                         ))}
                                     </ul>
                                 </div>

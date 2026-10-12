@@ -32,7 +32,7 @@ export default function ReferralLanding() {
   });
 
   usePageMeta({
-    title: 'Apply for Mentorship — Private Invitation',
+    title: 'Apply for Mentorship : Private Invitation',
     description: 'You have been invited to apply for the exclusive mentorship program.',
     canonical: 'https://www.krishnamahawar.in/join',
   });

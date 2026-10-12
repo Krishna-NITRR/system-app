@@ -1,5 +1,5 @@
 // ──────────────────────────────────────────────────────────
-// Terminology Index — loads datasets from bundled JSON and
+// Terminology Index : loads datasets from bundled JSON and
 // optionally from Supabase for centrally-updated definitions.
 // Paper content never leaves the client.
 // ──────────────────────────────────────────────────────────
@@ -63,7 +63,7 @@ export async function loadTerminology(): Promise<Map<string, TermEntry>> {
       }
     }
   } catch {
-    // Supabase unavailable — silently fall back to bundled data
+    // Supabase unavailable : silently fall back to bundled data
     console.info('[Terminology] Supabase unavailable, using bundled datasets.');
   }
 

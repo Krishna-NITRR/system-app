@@ -1,5 +1,5 @@
 // ──────────────────────────────────────────────────────────
-// Safety Classifier — detects protected content in sentences
+// Safety Classifier : detects protected content in sentences
 // NEVER modify: numbers, units, equations, variables, statistics,
 // citations, negation, uncertainty, causality, comparisons, conditions
 // ──────────────────────────────────────────────────────────
@@ -154,7 +154,7 @@ export function isTransformationSafe(
   // 3. Ensure no new factual content is introduced
   // The transformed text should only contain words from the original
   // (minus removed filler words) or dictionary simplifications
-  // This is enforced by the rule definitions themselves — each rule
+  // This is enforced by the rule definitions themselves : each rule
   // only replaces specific patterns with specific outputs
 
   return true;
