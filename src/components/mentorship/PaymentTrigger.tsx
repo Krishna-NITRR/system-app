@@ -218,7 +218,7 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
               <span style={labelStyle}>Session</span>
-              <span style={valueStyle}>1:1 Mentorship — {mentorshipConfig.durationMinutes} min</span>
+              <span style={valueStyle}>1:1 Mentorship · {mentorshipConfig.durationMinutes} min</span>
             </div>
             <div style={{ textAlign: 'right' }}>
               <span style={labelStyle}>Price</span>
@@ -241,7 +241,7 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
           <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '16px' }}>
             <span style={labelStyle}>Date &amp; Time</span>
             <div style={valueStyle}>{slotStart.date}</div>
-            <div style={{ color: '#6b7280', fontSize: '0.95rem' }}>{slotStart.time} — {slotEnd.time}</div>
+            <div style={{ color: '#6b7280', fontSize: '0.95rem' }}>{slotStart.time} to {slotEnd.time}</div>
           </div>
 
           <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '16px' }}>
@@ -255,7 +255,7 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
       {/* Referral Code Box */}
       <div style={{ marginBottom: '20px' }}>
         <label style={{ ...labelStyle, color: '#374151', textTransform: 'none', fontSize: '0.85rem', fontWeight: 600, letterSpacing: 0 }}>
-          Have a referral code? (optional — get 10% off)
+          Have a referral code? Get 10% off your session.
         </label>
         <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
           <input
@@ -311,7 +311,7 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
 
         {refStatus === 'valid' && (
           <div style={{ marginTop: '8px', color: '#16a34a', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
-            ✓ Code applied{refReferrer ? ` — referred by ${refReferrer}` : ''}. 10% discount applied!
+            ✓ Code applied{refReferrer ? `. Referred by ${refReferrer}` : ''}. 10% discount applied!
           </div>
         )}
         {refStatus === 'invalid' && (

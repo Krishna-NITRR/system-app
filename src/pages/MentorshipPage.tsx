@@ -54,7 +54,7 @@ export default function MentorshipPage() {
               onMouseOver={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(108,76,241,0.4)'; }}
               onMouseOut={e => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(108,76,241,0.3)'; }}
             >
-              Book a Session — ₹{mentorshipConfig.priceINR}
+              Book a Session · ₹{mentorshipConfig.priceINR}
             </a>
             <a
               href="#includes"
@@ -157,7 +157,7 @@ export default function MentorshipPage() {
       <div id="booking" style={{ padding: '80px 24px', background: '#fff' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
           <h2 style={{ textAlign: 'center', fontSize: '2.2rem', fontWeight: 700, marginBottom: '8px', color: '#111827', letterSpacing: '-0.02em' }}>Book Your Session</h2>
-          <p style={{ textAlign: 'center', color: '#6b7280', marginBottom: '48px', fontSize: '1rem' }}>Fill the form, pick a slot, pay — and you're confirmed.</p>
+          <p style={{ textAlign: 'center', color: '#6b7280', marginBottom: '48px', fontSize: '1rem' }}>Fill the form, pick a slot, pay. You're confirmed.</p>
           <div style={{ background: '#f9fafb', padding: '40px 24px', borderRadius: '20px', border: '1px solid #e5e7eb' }}>
             <MentorshipBooking />
           </div>
