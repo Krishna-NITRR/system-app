@@ -26,14 +26,43 @@ function formatSlotDateTime(isoString: string): { date: string; time: string } {
   return { date, time };
 }
 
+const REFERRAL_DISCOUNT = 0.10; // 10% off with valid referral code
+
 export default function PaymentTrigger({ formData, selectedSlot, currency, onSuccess, onCancel }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const price = currency === 'INR' ? mentorshipConfig.priceINR : mentorshipConfig.priceUSD;
+  // Referral state
+  const [refCode, setRefCode] = useState('');
+  const [refStatus, setRefStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle');
+  const [refReferrer, setRefReferrer] = useState<string | null>(null);
+
+  const basePrice = currency === 'INR' ? mentorshipConfig.priceINR : mentorshipConfig.priceUSD;
   const symbol = currency === 'INR' ? '₹' : '$';
+  const discount = refStatus === 'valid' ? Math.round(basePrice * REFERRAL_DISCOUNT) : 0;
+  const finalPrice = basePrice - discount;
+
   const slotStart = formatSlotDateTime(selectedSlot.slotStart);
   const slotEnd = formatSlotDateTime(selectedSlot.slotEnd);
+
+  const handleApplyRef = async () => {
+    const code = refCode.trim().toUpperCase();
+    if (!code) return;
+    setRefStatus('checking');
+    setRefReferrer(null);
+    try {
+      const res = await fetch(`/api/referral/validate?code=${encodeURIComponent(code)}`);
+      const data = await res.json();
+      if (data.success && data.data?.valid) {
+        setRefStatus('valid');
+        setRefReferrer(data.data.referrer?.name || null);
+      } else {
+        setRefStatus('invalid');
+      }
+    } catch {
+      setRefStatus('invalid');
+    }
+  };
 
   const handlePayment = async () => {
     try {
@@ -52,7 +81,8 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
           currency,
           amount_minor: 0, // Will be set by server
           payment_status: 'pending',
-          booking_status: 'pending'
+          booking_status: 'pending',
+          ...(refStatus === 'valid' ? { referral_code: refCode.trim().toUpperCase() } : {})
         }]);
 
       if (insertError) {
@@ -63,7 +93,11 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
       const orderResponse = await fetch('/api/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ bookingId, currency })
+        body: JSON.stringify({
+          bookingId,
+          currency,
+          ...(refStatus === 'valid' ? { referralCode: refCode.trim().toUpperCase() } : {})
+        })
       });
 
       let orderData;
@@ -79,7 +113,6 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
 
       // 3. Initialize Razorpay checkout
       if (!window.Razorpay) {
-        // Dynamically load Razorpay script if not already there
         await new Promise((resolve, reject) => {
           const script = document.createElement('script');
           script.src = 'https://checkout.razorpay.com/v1/checkout.js';
@@ -97,7 +130,6 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
         description: '1:1 Mentorship Session',
         order_id: orderData.orderId,
         handler: async function (response: any) {
-          // 4. Verify payment on server
           try {
             setLoading(true);
             const verifyResponse = await fetch('/api/verify-payment', {
@@ -112,7 +144,7 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
             });
 
             const verifyData = await verifyResponse.json();
-            
+
             if (verifyResponse.ok && verifyData.status === 'confirmed') {
               onSuccess(bookingId);
             } else {
@@ -128,13 +160,9 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
           name: formData.student_name,
           email: formData.student_email,
         },
-        theme: {
-          color: '#6C4CF1'
-        },
+        theme: { color: '#6C4CF1' },
         modal: {
-          ondismiss: function() {
-            setLoading(false);
-          }
+          ondismiss: function() { setLoading(false); }
         }
       };
 
@@ -154,65 +182,197 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
     }
   };
 
+  const card: React.CSSProperties = {
+    background: '#ffffff',
+    borderRadius: '16px',
+    border: '1px solid #e5e7eb',
+    padding: '32px',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.06)'
+  };
+
+  const labelStyle: React.CSSProperties = {
+    display: 'block',
+    fontSize: '0.75rem',
+    fontWeight: 600,
+    textTransform: 'uppercase',
+    letterSpacing: '0.07em',
+    color: '#9ca3af',
+    marginBottom: '4px'
+  };
+
+  const valueStyle: React.CSSProperties = {
+    color: '#111827',
+    fontWeight: 600,
+    fontSize: '1rem'
+  };
+
   return (
-    <div style={{ background: 'var(--bg)', borderRadius: 'var(--radius-lg)', border: '1px solid var(--div)', padding: '32px' }}>
-      <h3 style={{ fontSize: '1.3rem', marginBottom: '24px', color: 'var(--text)', textAlign: 'center' }}>Confirm & Pay</h3>
+    <div style={card}>
+      <h3 style={{ fontSize: '1.3rem', marginBottom: '24px', color: '#111827', textAlign: 'center', fontWeight: 700 }}>
+        Confirm &amp; Pay
+      </h3>
 
       {/* Order Summary */}
-      <div style={{ background: 'rgba(108,76,241,0.05)', border: '1px solid rgba(108,76,241,0.15)', borderRadius: '12px', padding: '24px', marginBottom: '24px' }}>
+      <div style={{ background: '#f9fafb', border: '1px solid #e5e7eb', borderRadius: '12px', padding: '24px', marginBottom: '20px' }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
             <div>
-              <div style={{ color: 'var(--tl)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>Session</div>
-              <div style={{ color: 'var(--text)', fontWeight: 600 }}>1:1 Mentorship — {mentorshipConfig.durationMinutes} min</div>
+              <span style={labelStyle}>Session</span>
+              <span style={valueStyle}>1:1 Mentorship — {mentorshipConfig.durationMinutes} min</span>
             </div>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ color: 'var(--tl)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>Price</div>
-              <div style={{ color: '#a085ff', fontWeight: 700, fontSize: '1.2rem' }}>{symbol}{price.toLocaleString()}</div>
+              <span style={labelStyle}>Price</span>
+              {discount > 0 && (
+                <div style={{ fontSize: '0.85rem', color: '#9ca3af', textDecoration: 'line-through' }}>
+                  {symbol}{basePrice.toLocaleString()}
+                </div>
+              )}
+              <div style={{ color: '#6C4CF1', fontWeight: 700, fontSize: '1.3rem' }}>
+                {symbol}{finalPrice.toLocaleString()}
+              </div>
+              {discount > 0 && (
+                <div style={{ color: '#16a34a', fontSize: '0.8rem', fontWeight: 600 }}>
+                  You save {symbol}{discount} (10% off)
+                </div>
+              )}
             </div>
           </div>
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '16px' }}>
-            <div style={{ color: 'var(--tl)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>Date & Time</div>
-            <div style={{ color: 'var(--text)', fontWeight: 500 }}>{slotStart.date}</div>
-            <div style={{ color: 'var(--tm)', fontSize: '0.95rem' }}>{slotStart.time} — {slotEnd.time}</div>
+
+          <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '16px' }}>
+            <span style={labelStyle}>Date &amp; Time</span>
+            <div style={valueStyle}>{slotStart.date}</div>
+            <div style={{ color: '#6b7280', fontSize: '0.95rem' }}>{slotStart.time} — {slotEnd.time}</div>
           </div>
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '16px' }}>
-            <div style={{ color: 'var(--tl)', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>Booking for</div>
-            <div style={{ color: 'var(--text)', fontWeight: 500 }}>{formData.student_name}</div>
-            <div style={{ color: 'var(--tm)', fontSize: '0.9rem' }}>{formData.student_email}</div>
+
+          <div style={{ borderTop: '1px solid #e5e7eb', paddingTop: '16px' }}>
+            <span style={labelStyle}>Booking for</span>
+            <div style={valueStyle}>{formData.student_name}</div>
+            <div style={{ color: '#6b7280', fontSize: '0.9rem' }}>{formData.student_email}</div>
           </div>
         </div>
       </div>
 
-      <p style={{ color: 'var(--tm)', marginBottom: '24px', textAlign: 'center', fontSize: '0.9rem' }}>
+      {/* Referral Code Box */}
+      <div style={{ marginBottom: '20px' }}>
+        <label style={{ ...labelStyle, color: '#374151', textTransform: 'none', fontSize: '0.85rem', fontWeight: 600, letterSpacing: 0 }}>
+          Have a referral code? (optional — get 10% off)
+        </label>
+        <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
+          <input
+            type="text"
+            placeholder="e.g. KRISHNA10"
+            value={refCode}
+            onChange={e => { setRefCode(e.target.value); setRefStatus('idle'); setRefReferrer(null); }}
+            disabled={refStatus === 'valid' || loading}
+            style={{
+              flex: 1,
+              padding: '10px 14px',
+              border: `1.5px solid ${refStatus === 'valid' ? '#16a34a' : refStatus === 'invalid' ? '#dc2626' : '#d1d5db'}`,
+              borderRadius: '8px',
+              fontSize: '0.95rem',
+              fontFamily: 'inherit',
+              background: refStatus === 'valid' ? '#f0fdf4' : '#fff',
+              color: '#111827',
+              outline: 'none',
+              transition: 'border-color 0.2s'
+            }}
+          />
+          {refStatus !== 'valid' ? (
+            <button
+              type="button"
+              onClick={handleApplyRef}
+              disabled={!refCode.trim() || refStatus === 'checking' || loading}
+              style={{
+                padding: '10px 18px',
+                background: '#6C4CF1',
+                color: '#fff',
+                borderRadius: '8px',
+                fontWeight: 600,
+                fontSize: '0.9rem',
+                fontFamily: 'inherit',
+                cursor: refCode.trim() ? 'pointer' : 'not-allowed',
+                opacity: refCode.trim() ? 1 : 0.6,
+                transition: 'all 0.2s',
+                whiteSpace: 'nowrap'
+              }}
+            >
+              {refStatus === 'checking' ? '...' : 'Apply'}
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => { setRefStatus('idle'); setRefCode(''); setRefReferrer(null); }}
+              style={{ padding: '10px 14px', background: '#fee2e2', color: '#dc2626', borderRadius: '8px', fontWeight: 600, fontSize: '0.85rem', fontFamily: 'inherit', cursor: 'pointer', whiteSpace: 'nowrap' }}
+            >
+              Remove
+            </button>
+          )}
+        </div>
+
+        {refStatus === 'valid' && (
+          <div style={{ marginTop: '8px', color: '#16a34a', fontSize: '0.85rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '6px' }}>
+            ✓ Code applied{refReferrer ? ` — referred by ${refReferrer}` : ''}. 10% discount applied!
+          </div>
+        )}
+        {refStatus === 'invalid' && (
+          <div style={{ marginTop: '8px', color: '#dc2626', fontSize: '0.85rem' }}>
+            ✗ Invalid or expired referral code.
+          </div>
+        )}
+      </div>
+
+      <p style={{ color: '#6b7280', marginBottom: '20px', textAlign: 'center', fontSize: '0.875rem' }}>
         Your slot is reserved the moment payment clears. You'll receive a Google Meet link and calendar invite by email.
       </p>
-      
+
       {error && (
-        <div style={{ color: '#e74c3c', marginBottom: '16px', background: 'rgba(231,76,60,0.1)', padding: '12px', borderRadius: '8px', textAlign: 'center' }}>
+        <div style={{ color: '#dc2626', marginBottom: '16px', background: '#fef2f2', padding: '12px 16px', borderRadius: '8px', textAlign: 'center', fontSize: '0.9rem', border: '1px solid #fecaca' }}>
           {error}
         </div>
       )}
 
-      <div className="payment-trigger-actions">
-        <button 
-          className="btn btn-outline" 
+      <div style={{ display: 'flex', gap: '12px' }}>
+        <button
           onClick={onCancel}
           disabled={loading}
-          style={{ padding: '12px 24px' }}
+          style={{
+            flex: '0 0 auto',
+            padding: '12px 24px',
+            border: '1.5px solid #d1d5db',
+            borderRadius: '8px',
+            fontWeight: 600,
+            fontSize: '0.95rem',
+            background: '#fff',
+            color: '#374151',
+            cursor: 'pointer',
+            fontFamily: 'inherit',
+            transition: 'all 0.2s'
+          }}
         >
           Back
         </button>
-        <button 
-          className="btn btn-primary" 
+        <button
           onClick={handlePayment}
           disabled={loading}
-          style={{ padding: '12px 32px' }}
+          style={{
+            flex: 1,
+            padding: '12px 24px',
+            background: '#6C4CF1',
+            color: '#fff',
+            border: 'none',
+            borderRadius: '8px',
+            fontWeight: 700,
+            fontSize: '1rem',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            fontFamily: 'inherit',
+            opacity: loading ? 0.7 : 1,
+            transition: 'all 0.2s',
+            boxShadow: '0 4px 14px rgba(108,76,241,0.35)'
+          }}
         >
-          {loading ? 'Processing...' : `Pay ${symbol}${price.toLocaleString()}`}
+          {loading ? 'Processing...' : `Pay ${symbol}${finalPrice.toLocaleString()} via Razorpay`}
         </button>
       </div>
     </div>
   );
 }
-
