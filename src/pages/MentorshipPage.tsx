@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 export default function MentorshipPage() {
   usePageMeta({
     title: '1:1 Mentorship — Research, Internships & Career Guidance · Krishna Mahawar',
-    description: 'Book a 30-minute 1:1 session with Krishna Mahawar. Get practical guidance on research internships, cold emails, career direction, and publishing. ₹1,699 / $20.',
+    description: 'Book a 30-minute 1:1 session with Krishna Mahawar. Get practical guidance on research internships, cold emails, career direction, and publishing. ₹399 / $20.',
     canonical: 'https://www.krishnamahawar.in/mentorship',
   });
 

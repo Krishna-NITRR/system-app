@@ -72,7 +72,7 @@ CREATE TABLE mentorship_bookings (
   currency            text NOT NULL CHECK (currency IN ('INR', 'USD')),
   amount_minor        integer NOT NULL,
     -- Amount in smallest unit: paise (INR) or cents (USD)
-    -- INR 1699 => 169900, USD 20 => 2000
+    -- INR 399 => 39900, USD 20 => 2000
 
   -- Payment state
   payment_status      text NOT NULL DEFAULT 'pending'

@@ -1,7 +1,7 @@
 import type { MentorshipConfig } from '../types/mentorship';
 
 export const mentorshipConfig: MentorshipConfig = {
-  priceINR: 1699,
+  priceINR: 399,
   priceUSD: 20,
   durationMinutes: 30,
   

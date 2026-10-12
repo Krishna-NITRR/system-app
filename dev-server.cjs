@@ -27,7 +27,7 @@ app.post('/api/create-order', async (req, res) => {
     const { createClient } = await import('@supabase/supabase-js');
 
     const { bookingId, currency } = req.body;
-    const PRICES = { INR: 169900, USD: 2000 };
+    const PRICES = { INR: 39900, USD: 2000 };
 
     if (!bookingId || typeof bookingId !== 'string') {
       return res.status(400).json({ error: 'Invalid bookingId' });
@@ -193,6 +193,123 @@ app.post('/api/verify-payment', async (req, res) => {
 
   } catch (error) {
     console.error('Unexpected error in verify-payment:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// ─── API: Roadmaps Create Order ─────────────────────────────────────
+app.post('/api/roadmaps/create-order', async (req, res) => {
+  try {
+    const { default: Razorpay } = await import('razorpay');
+    const { createClient } = await import('@supabase/supabase-js');
+    const { customerName, customerEmail, customerPhone, currency = 'INR' } = req.body;
+
+    if (!customerEmail || !customerEmail.includes('@')) {
+      return res.status(400).json({ error: 'Please enter a valid email address' });
+    }
+    if (!customerName || customerName.trim().length === 0) {
+      return res.status(400).json({ error: 'Please enter your name' });
+    }
+
+    const cur = (currency === 'USD' ? 'USD' : 'INR');
+    const amount = cur === 'USD' ? 200 : 14900;
+    const razorpayKeyId = process.env.RAZORPAY_KEY_ID;
+    const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET;
+
+    if (!razorpayKeyId || !razorpayKeySecret) {
+      return res.status(500).json({ error: 'Payment gateway configuration error' });
+    }
+
+    const razorpay = new Razorpay({ key_id: razorpayKeyId, key_secret: razorpayKeySecret });
+    const receipt = `rm_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 6)}`;
+    const order = await razorpay.orders.create({
+      amount,
+      currency: cur,
+      receipt,
+      notes: {
+        product: 'Placement Prep System (Career Roadmaps)',
+        customerName: customerName.trim(),
+        customerEmail: customerEmail.trim(),
+        customerPhone: customerPhone ? customerPhone.trim() : ''
+      }
+    });
+
+    const supabaseUrl = process.env.VITE_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (supabaseUrl && supabaseKey) {
+      try {
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        await supabase.from('leads').insert([{
+          name: customerName.trim(),
+          email: customerEmail.trim(),
+          resource: 'career-roadmaps-checkout'
+        }]);
+      } catch (err) {
+        console.warn('Lead logging non-blocking error:', err);
+      }
+    }
+
+    return res.status(200).json({
+      orderId: order.id,
+      receipt,
+      amount,
+      currency: cur,
+      keyId: razorpayKeyId
+    });
+  } catch (error) {
+    console.error('Unexpected error in roadmaps/create-order:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// ─── API: Roadmaps Verify Payment ───────────────────────────────────
+app.post('/api/roadmaps/verify-payment', async (req, res) => {
+  try {
+    const { createClient } = await import('@supabase/supabase-js');
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature, customerName, customerEmail } = req.body;
+
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({ error: 'Missing required payment parameters' });
+    }
+
+    const razorpayKeySecret = process.env.RAZORPAY_KEY_SECRET;
+    if (!razorpayKeySecret) {
+      return res.status(500).json({ error: 'Server configuration error' });
+    }
+
+    const text = `${razorpay_order_id}|${razorpay_payment_id}`;
+    const generatedSignature = crypto
+      .createHmac('sha256', razorpayKeySecret)
+      .update(text)
+      .digest('hex');
+
+    if (generatedSignature !== razorpay_signature) {
+      return res.status(400).json({ error: 'Payment verification failed' });
+    }
+
+    const supabaseUrl = process.env.VITE_SUPABASE_URL;
+    const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (supabaseUrl && supabaseKey) {
+      try {
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        await supabase.from('leads').insert([{
+          name: customerName || 'Roadmaps Student',
+          email: customerEmail,
+          resource: 'career-roadmaps-paid'
+        }]);
+      } catch (dbErr) {
+        console.warn('Supabase logging non-blocking error:', dbErr);
+      }
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: 'Payment verified successfully',
+      orderId: razorpay_order_id,
+      paymentId: razorpay_payment_id
+    });
+  } catch (error) {
+    console.error('Unexpected error in roadmaps/verify-payment:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 });

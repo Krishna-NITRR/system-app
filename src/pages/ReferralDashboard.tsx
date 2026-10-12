@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import usePageMeta from '../hooks/usePageMeta';
-import type { DashboardStats, DashboardApplication, DashboardCode } from '../types/referral';
+import type { DashboardStats } from '../types/referral';
 import './ReferralDashboard.css';
 
 export default function ReferralDashboard() {

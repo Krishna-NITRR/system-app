@@ -3,7 +3,7 @@ import Razorpay from 'razorpay';
 import { createClient } from '@supabase/supabase-js';
 
 const PRICES = {
-  INR: 169900,  // ₹1,699 in paise
+  INR: 39900,   // ₹399 in paise
   USD: 2000,    // $20 in cents
 } as const;
 
