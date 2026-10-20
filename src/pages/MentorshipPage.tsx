@@ -68,11 +68,6 @@ export default function MentorshipPage() {
         </div>
       </section>
 
-      {/* Price tag strip */}
-      <div style={{ background: '#6C4CF1', padding: '14px 24px', textAlign: 'center', color: '#fff', fontSize: '0.9rem', fontWeight: 500 }}>
-        💡 Have a referral code from a friend? Enter it at checkout to get <strong>10% off</strong>.
-      </div>
-
       {/* What You Get */}
       <section id="includes" style={{ padding: '80px 24px', background: '#f9fafb', borderTop: '1px solid #e5e7eb' }}>
         <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
