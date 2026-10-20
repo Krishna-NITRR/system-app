@@ -52,7 +52,7 @@
       "domain": "Materials Science",
       "subdomain": null,
       "simple_definition": "The small-scale internal structure of a material, visible under a microscope.",
-      "technical_definition": "The structure of a prepared surface or thin foil of material as revealed by a microscope above 25Ã: magnification, including the phases, grains, and defects present.",
+      "technical_definition": "The structure of a prepared surface or thin foil of material as revealed by a microscope above 25ï¿½: magnification, including the phases, grains, and defects present.",
       "related_terms": ["grain size", "phase", "morphology", "SEM"],
       "context_example": "The microstructure was characterized using scanning electron microscopy (SEM).",
       "confidence": "high",

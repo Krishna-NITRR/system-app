@@ -316,7 +316,7 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
         )}
         {refStatus === 'invalid' && (
           <div style={{ marginTop: '8px', color: '#dc2626', fontSize: '0.85rem' }}>
-            âœ: Invalid or expired referral code.
+            ï¿½: Invalid or expired referral code.
           </div>
         )}
       </div>
