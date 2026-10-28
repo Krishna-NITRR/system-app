@@ -28,3 +28,4 @@ dist-ssr
 
 # Local PDFs for scripts/test-parser.ts
 test-fixtures
+scripts/_*

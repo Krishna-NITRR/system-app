@@ -11,7 +11,6 @@ import type {
   ProcessingStep,
 } from '../../types/paperReader';
 import { extractDocument } from '../documentParser';
-import { classifySectionType } from './sectionDetector';
 import { parsePaper } from './parsePaper';
 import { classifySentence } from './safetyClassifier';
 import { transformSentence } from './transformationEngine';
@@ -64,10 +63,17 @@ export async function processPaper(
   let processedCount = 0;
 
   for (const section of sections) {
-    const sectionType = classifySectionType(section.title);
+    const sectionType = section.type;
 
     for (const paragraph of section.paragraphs) {
       for (const sentence of paragraph.sentences) {
+        // Captions and reference entries are shown exactly as printed
+        if (paragraph.kind === 'caption' || sectionType === 'references') {
+          stats.totalSentences++;
+          processedCount++;
+          continue;
+        }
+
         // Classify safety
         const context = classifySentence(sentence.original, sectionType);
 
@@ -76,6 +82,9 @@ export async function processPaper(
         sentence.transformed = result.text;
         sentence.wasTransformed = result.wasTransformed;
         sentence.transformationType = result.ruleApplied?.type ?? null;
+        sentence.transformationRule = result.ruleApplied
+          ? { name: result.ruleApplied.name, description: result.ruleApplied.description }
+          : null;
         sentence.skippedReason = result.skippedReason;
 
         stats.totalSentences++;

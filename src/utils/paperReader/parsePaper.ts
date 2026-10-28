@@ -9,10 +9,10 @@ import type {
   PaperParagraph,
   PaperSentence,
 } from '../../types/paperReader';
-import { detectSections } from './sectionDetector';
+import { buildBodyCasing, buildSections, displayTitle } from './sectionDetector';
 import { segmentSentences } from './sentenceSegmenter';
 import { extractMetadata } from './metadataExtractor';
-import { blocksToText, type DocInput } from './docBlocks';
+import type { DocBlock, DocInput } from './docBlocks';
 
 export interface ParsedPaper {
   metadata: PaperMetadata;
@@ -20,78 +20,55 @@ export interface ParsedPaper {
 }
 
 export function parsePaper(input: DocInput): ParsedPaper {
-  const { metadata, consumed } = extractMetadata(input);
-  const rawText = blocksToText(input.blocks.filter(b => !consumed.has(b.index)));
-  const rawSections = detectSections(rawText);
-  const sections = parseSectionsContent(rawSections, rawText);
+  const { metadata, consumed, titleIndex } = extractMetadata(input);
+  const { sections: raw, keywords, notes } = buildSections(input, consumed, titleIndex);
+  metadata.keywords = keywords;
+  metadata.notes = notes;
+
+  const casing = buildBodyCasing(raw.flatMap(s => s.blocks.map(b => b.text)));
+  const sections: PaperSection[] = raw.map((s, i) => {
+    const title = displayTitle(s.title, casing);
+    const id = `sec-${i}-${slugify(title)}`;
+    return {
+      id,
+      title,
+      level: s.level,
+      type: s.type,
+      paragraphs: blocksToParagraphs(s.blocks, id),
+    };
+  });
+
+  const abstract = sections.find(s => s.type === 'abstract');
+  if (abstract) {
+    metadata.rawAbstract = abstract.paragraphs
+      .map(p => p.sentences.map(x => x.original).join(' '))
+      .join(' ');
+  }
+
   return { metadata, sections };
 }
 
-/**
- * Given raw sections from detectSections (which have empty paragraph.sentences),
- * fill them in by re-extracting content from the raw text.
- */
-function parseSectionsContent(
-  rawSections: PaperSection[],
-  fullText: string
-): PaperSection[] {
-  const lines = fullText.split('\n');
-  const sectionBoundaries: { title: string; startLine: number }[] = [];
-
-  // Find section heading line numbers
-  let lineNum = 0;
-  for (const section of rawSections) {
-    // Find the title line in the text
-    for (let i = lineNum; i < lines.length; i++) {
-      if (lines[i].trim() === section.title.trim() || lines[i].trim().length === 0) {
-        if (lines[i].trim() === section.title.trim()) {
-          sectionBoundaries.push({ title: section.title, startLine: i });
-          lineNum = i + 1;
-          break;
-        }
-      }
-    }
-  }
-
-  // If we couldn't find boundaries, treat the whole text as one section
-  if (sectionBoundaries.length === 0) {
-    const singleSection = rawSections[0] || {
-      id: 'sec-0-full-paper',
-      title: 'Full Paper',
-      level: 1,
-      paragraphs: [],
-    };
-    singleSection.paragraphs = textToParagraphs(fullText, singleSection.id);
-    return [singleSection];
-  }
-
-  // Extract content between section headings
-  for (let s = 0; s < rawSections.length; s++) {
-    const startLine = s < sectionBoundaries.length
-      ? sectionBoundaries[s].startLine + 1
-      : 0;
-    const endLine = s + 1 < sectionBoundaries.length
-      ? sectionBoundaries[s + 1].startLine
-      : lines.length;
-
-    const contentText = lines.slice(startLine, endLine).join('\n');
-    rawSections[s].paragraphs = textToParagraphs(contentText, rawSections[s].id);
-  }
-
-  return rawSections;
+/** Generate a slug from a section title */
+function slugify(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '')
+    .substring(0, 60);
 }
 
-/** Convert raw text content into PaperParagraph[] with PaperSentence[] */
-function textToParagraphs(text: string, sectionId: string): PaperParagraph[] {
-  const blocks = text.split(/\n\s*\n/);
+/** One paragraph per block; captions keep their own paragraph kind */
+function blocksToParagraphs(blocks: DocBlock[], sectionId: string): PaperParagraph[] {
   const paragraphs: PaperParagraph[] = [];
 
-  for (let i = 0; i < blocks.length; i++) {
-    const block = blocks[i].trim();
-    if (block.length < 5) continue; // skip trivial fragments
+  blocks.forEach((block, i) => {
+    const text = block.text.trim();
+    if (text.length < 2) return;
 
-    const sentenceTexts = segmentSentences(block);
-    if (sentenceTexts.length === 0) continue;
+    const sentenceTexts = block.kind === 'caption' ? [text] : segmentSentences(text);
+    if (sentenceTexts.length === 0) return;
 
     const sentences: PaperSentence[] = sentenceTexts.map((s, j) => ({
       id: `${sectionId}-p${i}-s${j}`,
@@ -99,15 +76,17 @@ function textToParagraphs(text: string, sectionId: string): PaperParagraph[] {
       transformed: s,         // will be overwritten by engine
       wasTransformed: false,
       transformationType: null,
+      transformationRule: null,
       skippedReason: null,
       annotations: [],
     }));
 
     paragraphs.push({
       id: `${sectionId}-p${i}`,
+      kind: block.kind,
       sentences,
     });
-  }
+  });
 
   return paragraphs;
 }

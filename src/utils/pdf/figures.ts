@@ -76,8 +76,10 @@ export function imageBoxes(
 
 /* ── Captions ── */
 
-const FIGURE_CAPTION = /^(?:fig\.?|figure)\s*(?:\d+|[ivxlc]+)[a-z]?\s*[.:|—–-]/i;
-const TABLE_CAPTION = /^table\s*(?:\d+|[IVXLC]+)\s*(?:[.:|—–-]|$)/i;
+// "Fig. 3." / "Figure 3:" / "Fig. 3 Elliptic curve" (Elsevier style, capital
+// after the number), but not body text such as "Fig. 3 shows…"
+const FIGURE_CAPTION = /^(?:fig\.?|figure)\s*(?:\d+|[ivxlc]+)[a-z]?(?:\s*[.:|—–-]|\s+[A-Z(])/i;
+const TABLE_CAPTION = /^(?:Table|TABLE|table)\s*(?:\d+|[IVXLC]+)(?:\s*[.:|—–-]|\s+[A-Z(]|\s*$)/;
 
 export function isCaptionStart(text: string): boolean {
   return FIGURE_CAPTION.test(text) || TABLE_CAPTION.test(text);
@@ -140,6 +142,9 @@ export function isGarbageBlock(block: PdfBlock): boolean {
   if ((text.match(PRIVATE_USE)?.length ?? 0) >= 3) return true;
   // Mostly numbers and symbols: axis ticks, table cells of figures
   if (text.replace(/\s+/g, '').length >= 3 && letterRatio(text) < 0.3) return true;
+  // Stray cells such as "6", "N", "(D)": never prose
+  const letters = text.match(/\p{L}/gu)?.length ?? 0;
+  if (letters === 0 || (letters <= 2 && text.length <= 8)) return true;
   return false;
 }
 

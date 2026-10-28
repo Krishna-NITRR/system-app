@@ -27,11 +27,14 @@ export interface PaperSection {
   id: string;
   title: string;
   level: number;
+  type: SectionType;
   paragraphs: PaperParagraph[];
 }
 
 export interface PaperParagraph {
   id: string;
+  /** Captions ("Fig. 3. …") are shown apart from body text and never rewritten */
+  kind: 'text' | 'caption';
   sentences: PaperSentence[];
 }
 
@@ -41,6 +44,8 @@ export interface PaperSentence {
   transformed: string;
   wasTransformed: boolean;
   transformationType: TransformationType | null;
+  /** The rule that rewrote this sentence, for showing what changed */
+  transformationRule: { name: string; description: string } | null;
   skippedReason: string | null;
   annotations: TermAnnotation[];
 }

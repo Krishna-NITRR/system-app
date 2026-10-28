@@ -55,7 +55,21 @@ async function runOne(path: string): Promise<{ report: string; rawText: string }
   out.push(`=== ${basename(path)} (${pdf.numPages} pages) ===`);
   out.push(`TITLE: ${metadata.title}`);
   out.push(`AUTHORS: ${metadata.authors.join('; ') || '(none)'}`);
+  out.push(`KEYWORDS: ${metadata.keywords.join('; ') || '(none)'}`);
+  out.push(`NOTES: ${metadata.notes.length} (footnotes / first-page notes kept out of sections)`);
   out.push(`CLEANUP: ${Object.entries(layout.stats).map(([k, v]) => `${k}=${v}`).join(' ')}`);
+  // Every piece of text must belong to exactly one section
+  const seen = new Map<string, string>();
+  const dupes = new Set<string>();
+  for (const sec of sections)
+    for (const p of sec.paragraphs)
+      for (const x of p.sentences) {
+        if (x.original.length < 40) continue;
+        const prev = seen.get(x.original);
+        if (prev !== undefined && prev !== sec.id) dupes.add(x.original);
+        seen.set(x.original, sec.id);
+      }
+  out.push(`DUPLICATED ACROSS SECTIONS: ${dupes.size}`);
   out.push('');
   out.push(`SECTIONS (${sections.length}):`);
   for (const s of sections) {

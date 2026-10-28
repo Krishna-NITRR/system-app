@@ -32,8 +32,10 @@ const STAMP_PATTERNS: RegExp[] = [
 const MARGIN_PATTERNS: RegExp[] = [
   /^(?:doi|DOI)\s*:?\s*10\.\d{4,}\/\S+$/,
   /^(?:https?:\/\/)?(?:dx\.)?doi\.org\/10\.\d{4,}\/\S+$/i,
-  /^(?:page\s*)?\d{1,4}(?:\s*(?:of|\/)\s*\d{1,4})?$/i, // page numbers
 ];
+
+/** Page numbers, when nothing else shares their line ("1 Introduction" keeps its "1") */
+const PAGE_NUMBER = /^(?:page\s*)?\d{1,4}(?:\s*(?:of|\/)\s*\d{1,4})?$/i;
 
 const DOI_IN_STAMP = /10\.\d{4,}\/[^\s]+/;
 
@@ -66,21 +68,37 @@ export function removeFurniture(pages: FurniturePage[]): {
 
   let dropped = 0;
   let doi: string | null = null;
-  const result = pages.map((p, i) =>
-    p.frags.filter((f, j) => {
+  const result = pages.map((p, i) => {
+    // Pass 1: stamps and repeated header/footer text
+    const furniture = p.frags.map((f, j) => {
       const text = texts[i][j];
       const margin = inMargin(p, f);
-      const isFurniture =
+      return (
         STAMP_PATTERNS.some(re => re.test(text)) ||
         (margin && MARGIN_PATTERNS.some(re => re.test(text))) ||
-        (margin && n >= 2 && (pageCounts.get(key(text)) ?? 0) >= repeatThreshold);
-      if (isFurniture) {
-        dropped++;
-        if (!doi) doi = text.match(DOI_IN_STAMP)?.[0].replace(/[.,;]+$/, '') ?? null;
-      }
-      return !isFurniture;
-    })
-  );
+        (margin &&
+          n >= 2 &&
+          !PAGE_NUMBER.test(text) &&
+          (pageCounts.get(key(text)) ?? 0) >= repeatThreshold)
+      );
+    });
+    // Pass 2: a number in the margin is a page number when nothing but
+    // furniture shares its line ("1 Introduction" keeps its "1")
+    p.frags.forEach((f, j) => {
+      if (furniture[j] || !inMargin(p, f) || !PAGE_NUMBER.test(texts[i][j])) return;
+      const alone = !p.frags.some(
+        (o, k) => k !== j && !furniture[k] && Math.abs(o.baseline - f.baseline) < 0.5 * f.size
+      );
+      if (alone) furniture[j] = true;
+    });
+
+    return p.frags.filter((_, j) => {
+      if (!furniture[j]) return true;
+      dropped++;
+      if (!doi) doi = texts[i][j].match(DOI_IN_STAMP)?.[0].replace(/[.,;]+$/, '') ?? null;
+      return false;
+    });
+  });
 
   return { pages: result, dropped, doi };
 }
