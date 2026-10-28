@@ -15,7 +15,7 @@ import { basename, join, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { extractPdfText } from '../src/utils/pdf';
+import { extractPdfLayout, layoutToText } from '../src/utils/pdf';
 import { parsePaperText } from '../src/utils/paperReader/parsePaper';
 
 const FIXTURES_DIR = resolve(import.meta.dirname, '../test-fixtures');
@@ -46,13 +46,15 @@ async function runOne(path: string): Promise<{ report: string; rawText: string }
   });
   const pdf = await task.promise;
 
-  const rawText = await extractPdfText(pdf);
+  const layout = await extractPdfLayout(pdf);
+  const rawText = layoutToText(layout);
   const { metadata, sections } = parsePaperText(rawText);
 
   const out: string[] = [];
   out.push(`=== ${basename(path)} (${pdf.numPages} pages) ===`);
   out.push(`TITLE: ${metadata.title}`);
   out.push(`AUTHORS: ${metadata.authors.join('; ') || '(none)'}`);
+  out.push(`CLEANUP: ${Object.entries(layout.stats).map(([k, v]) => `${k}=${v}`).join(' ')}`);
   out.push('');
   out.push(`SECTIONS (${sections.length}):`);
   for (const s of sections) {

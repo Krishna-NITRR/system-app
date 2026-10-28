@@ -68,6 +68,12 @@ export interface PdfLayout {
   pages: PdfPageLayout[];
   /** Most common font size in the document (body text) */
   bodySize: number;
+  stats: PdfExtractStats;
+}
+
+/** What the cleanup passes removed (for the harness and quality checks) */
+export interface PdfExtractStats {
+  duplicateItems: number;
 }
 
 /** Minimal slice of the pdf.js document API that we use */

@@ -125,17 +125,69 @@ function findXCut(frags: PdfFragment[], minGap: number): number | null {
   return best;
 }
 
-function findYCut(frags: PdfFragment[], minGap: number): number | null {
+/**
+ * Where a column gutter would be if the fragments crossing it were
+ * removed: the x in the middle of the region crossed by the fewest
+ * fragments, with a clear band of at least `minGap` around it.
+ */
+function findBlockedGutter(frags: PdfFragment[], minGap: number): number | null {
+  const x0 = Math.min(...frags.map(f => f.x0));
+  const x1 = Math.max(...frags.map(f => f.x1));
+  const w = x1 - x0;
+  const mid = (x0 + x1) / 2;
   let best: number | null = null;
-  let bestHeight = 0;
-  for (const [g0, g1] of mergedGaps(frags.map(f => [f.top, f.bottom]))) {
-    if (g1 - g0 < minGap) continue;
-    if (g1 - g0 > bestHeight) {
-      bestHeight = g1 - g0;
-      best = (g0 + g1) / 2;
+  let bestCount = Infinity;
+  for (let x = x0 + 0.2 * w; x <= x1 - 0.2 * w; x += 1) {
+    let crossing = 0;
+    let clear = true;
+    for (const f of frags) {
+      if (f.x0 < x - 1 && f.x1 > x + 1) {
+        crossing++;
+      } else if (f.x1 > x - minGap / 2 && f.x0 < x + minGap / 2) {
+        clear = false;
+        break;
+      }
+    }
+    if (!clear) continue;
+    if (crossing < bestCount || (crossing === bestCount && best !== null && Math.abs(x - mid) < Math.abs(best - mid))) {
+      bestCount = crossing;
+      best = x;
     }
   }
-  return best;
+  return bestCount <= frags.length * 0.25 ? best : null;
+}
+
+/**
+ * Horizontal cut. When something spans an otherwise two-column region
+ * (title, full-width figure, a stamped footer), cut right next to that
+ * spanning content so the columns stay whole; otherwise use the widest gap.
+ */
+function findYCut(frags: PdfFragment[], minGapX: number, minGapY: number): number | null {
+  const gutter = findBlockedGutter(frags, minGapX);
+  const spans = (f: PdfFragment) => gutter !== null && f.x0 < gutter - 1 && f.x1 > gutter + 1;
+
+  let best: number | null = null;
+  let bestHeight = 0;
+  let bestAdjacent: number | null = null;
+  let bestAdjacentHeight = 0;
+  for (const [g0, g1] of mergedGaps(frags.map(f => [f.top, f.bottom]))) {
+    const h = g1 - g0;
+    if (h >= minGapY && h > bestHeight) {
+      bestHeight = h;
+      best = (g0 + g1) / 2;
+    }
+    // Next to spanning content any clear gap will do: stamped footers
+    // can sit just a few points below the last line of the columns.
+    if (h < 1) continue;
+    const adjacent = frags.some(
+      f => spans(f) && (Math.abs(f.bottom - g0) < 1 || Math.abs(f.top - g1) < 1)
+    );
+    if (adjacent && h > bestAdjacentHeight) {
+      bestAdjacentHeight = h;
+      bestAdjacent = (g0 + g1) / 2;
+    }
+  }
+  return bestAdjacent ?? best;
 }
 
 export function xyCut(frags: PdfFragment[], opts: CutOptions, out: PdfFragment[][] = []): PdfFragment[][] {
@@ -150,7 +202,7 @@ export function xyCut(frags: PdfFragment[], opts: CutOptions, out: PdfFragment[]
     xyCut(frags.filter(f => f.x1 > xc), opts, out);
     return out;
   }
-  const yc = findYCut(frags, opts.minGapY);
+  const yc = findYCut(frags, opts.minGapX, opts.minGapY);
   if (yc !== null) {
     xyCut(frags.filter(f => f.bottom <= yc), opts, out);
     xyCut(frags.filter(f => f.bottom > yc), opts, out);

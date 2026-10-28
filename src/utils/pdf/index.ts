@@ -3,8 +3,9 @@
 // document so the same code runs in the browser and in the Node
 // test harness (scripts/test-parser.ts).
 // ──────────────────────────────────────────────────────────
-import type { PdfDocLike, PdfLayout, PdfPageLayout } from './types';
+import type { PdfDocLike, PdfExtractStats, PdfLayout, PdfPageLayout } from './types';
 import { readPage, type RawPage } from './items';
+import { dedupeItems } from './dedupe';
 import {
   dominantSize,
   fragmentsToLines,
@@ -14,12 +15,16 @@ import {
   xyCut,
 } from './layout';
 
-export type { PdfLayout, PdfBlock, PdfPageLayout, PdfDocLike } from './types';
+export type { PdfLayout, PdfBlock, PdfPageLayout, PdfDocLike, PdfExtractStats } from './types';
 
 export async function extractPdfLayout(pdf: PdfDocLike): Promise<PdfLayout> {
+  const stats: PdfExtractStats = { duplicateItems: 0 };
   const raw: RawPage[] = [];
   for (let i = 1; i <= pdf.numPages; i++) {
-    raw.push(await readPage(await pdf.getPage(i)));
+    const page = await readPage(await pdf.getPage(i));
+    const deduped = dedupeItems(page.items);
+    stats.duplicateItems += deduped.dropped;
+    raw.push({ ...page, items: deduped.items });
   }
 
   const bodySize = dominantSize(raw.flatMap(p => p.items));
@@ -36,7 +41,7 @@ export async function extractPdfLayout(pdf: PdfDocLike): Promise<PdfLayout> {
     return { number: idx + 1, width: p.width, height: p.height, blocks };
   });
 
-  return { pages, bodySize };
+  return { pages, bodySize, stats };
 }
 
 /** Flatten a layout to plain text: lines joined by \n, blocks by a blank line */
