@@ -6,6 +6,7 @@
 import type { PdfDocLike, PdfExtractStats, PdfLayout, PdfPageLayout } from './types';
 import { readPage, type RawPage } from './items';
 import { dedupeItems } from './dedupe';
+import { removeFurniture } from './furniture';
 import {
   dominantSize,
   fragmentsToLines,
@@ -18,7 +19,7 @@ import {
 export type { PdfLayout, PdfBlock, PdfPageLayout, PdfDocLike, PdfExtractStats } from './types';
 
 export async function extractPdfLayout(pdf: PdfDocLike): Promise<PdfLayout> {
-  const stats: PdfExtractStats = { duplicateItems: 0 };
+  const stats: PdfExtractStats = { duplicateItems: 0, furnitureLines: 0 };
   const raw: RawPage[] = [];
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await readPage(await pdf.getPage(i));
@@ -31,17 +32,20 @@ export async function extractPdfLayout(pdf: PdfDocLike): Promise<PdfLayout> {
   const minGapX = Math.max(6, 0.7 * bodySize);
   const minGapY = 0.5 * bodySize;
 
+  const furniture = removeFurniture(
+    raw.map(p => ({ height: p.height, frags: rowsToFragments(groupRows(p.items), minGapX) }))
+  );
+  stats.furnitureLines = furniture.dropped;
+
   const pages: PdfPageLayout[] = raw.map((p, idx) => {
-    const rows = groupRows(p.items);
-    const frags = rowsToFragments(rows, minGapX);
-    const regions = xyCut(frags, { minGapX, minGapY });
+    const regions = xyCut(furniture.pages[idx], { minGapX, minGapY });
     const blocks = regions.flatMap(region =>
       linesToBlocks(fragmentsToLines(region), idx + 1)
     );
     return { number: idx + 1, width: p.width, height: p.height, blocks };
   });
 
-  return { pages, bodySize, stats };
+  return { pages, bodySize, doi: furniture.doi, stats };
 }
 
 /** Flatten a layout to plain text: lines joined by \n, blocks by a blank line */

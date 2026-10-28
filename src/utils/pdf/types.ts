@@ -68,12 +68,15 @@ export interface PdfLayout {
   pages: PdfPageLayout[];
   /** Most common font size in the document (body text) */
   bodySize: number;
+  /** DOI found in a removed footer/stamp line, if any */
+  doi: string | null;
   stats: PdfExtractStats;
 }
 
 /** What the cleanup passes removed (for the harness and quality checks) */
 export interface PdfExtractStats {
   duplicateItems: number;
+  furnitureLines: number;
 }
 
 /** Minimal slice of the pdf.js document API that we use */
