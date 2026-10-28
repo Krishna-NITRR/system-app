@@ -1,7 +1,7 @@
 import * as pdfjsLib from 'pdfjs-dist';
 // @ts-ignore
 import mammoth from 'mammoth/mammoth.browser.js';
-import { extractPdfText } from './pdfExtract';
+import { extractPdfText } from './pdf';
 
 // Setup pdf.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;

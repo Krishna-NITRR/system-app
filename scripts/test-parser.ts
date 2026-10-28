@@ -4,6 +4,7 @@
 //   npm run test:parser                 # every PDF in test-fixtures/
 //   npm run test:parser -- paper.pdf    # specific files
 //   npm run test:parser -- --out dir    # also write <name>.txt reports to dir
+//   npm run test:parser -- --raw        # also write <name>.raw.txt (full extracted text)
 //
 // Runs the same extraction + parse code the browser uses and
 // prints the title, the section list and the first 500
@@ -14,7 +15,7 @@ import { basename, join, resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
-import { extractPdfText } from '../src/utils/pdfExtract';
+import { extractPdfText } from '../src/utils/pdf';
 import { parsePaperText } from '../src/utils/paperReader/parsePaper';
 
 const FIXTURES_DIR = resolve(import.meta.dirname, '../test-fixtures');
@@ -27,14 +28,16 @@ pdfjs.GlobalWorkerOptions.workerSrc = pathToFileURL(
 function parseArgs(argv: string[]) {
   const files: string[] = [];
   let outDir: string | null = null;
+  let raw = false;
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--out') outDir = argv[++i];
+    else if (argv[i] === '--raw') raw = true;
     else files.push(argv[i]);
   }
-  return { files, outDir };
+  return { files, outDir, raw };
 }
 
-async function runOne(path: string): Promise<string> {
+async function runOne(path: string): Promise<{ report: string; rawText: string }> {
   const data = new Uint8Array(readFileSync(path));
   const task = pdfjs.getDocument({
     data,
@@ -64,11 +67,11 @@ async function runOne(path: string): Promise<string> {
     out.push(text.slice(0, 500) + (text.length > 500 ? ' …' : ''));
   }
   await task.destroy();
-  return out.join('\n');
+  return { report: out.join('\n'), rawText };
 }
 
 async function main() {
-  const { files, outDir } = parseArgs(process.argv.slice(2));
+  const { files, outDir, raw } = parseArgs(process.argv.slice(2));
   let targets = files;
   if (targets.length === 0) {
     if (!existsSync(FIXTURES_DIR)) {
@@ -87,9 +90,11 @@ async function main() {
 
   for (const t of targets) {
     try {
-      const report = await runOne(t);
+      const { report, rawText } = await runOne(t);
       console.log(report + '\n');
-      if (outDir) writeFileSync(join(outDir, basename(t, '.pdf') + '.txt'), report);
+      const dir = outDir ?? '.';
+      if (outDir) writeFileSync(join(dir, basename(t, '.pdf') + '.txt'), report);
+      if (raw) writeFileSync(join(dir, basename(t, '.pdf') + '.raw.txt'), rawText);
     } catch (err) {
       console.error(`!! ${basename(t)}: ${(err as Error).message}`);
     }
