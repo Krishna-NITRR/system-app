@@ -18,9 +18,11 @@ import {
   fragmentsToLines,
   groupRows,
   linesToBlocks,
+  makeBlock,
   rowsToFragments,
   xyCut,
 } from './layout';
+import { mergeContinuations } from './text';
 
 export type { PdfLayout, PdfBlock, PdfPageLayout, PdfDocLike, PdfExtractStats } from './types';
 
@@ -63,6 +65,14 @@ export async function extractPdfLayout(pdf: PdfDocLike): Promise<PdfLayout> {
     });
     return { number: idx + 1, width: p.width, height: p.height, blocks };
   });
+
+  // Rejoin paragraphs split by column and page breaks; a joined
+  // paragraph stays on the page where it starts.
+  const merged = mergeContinuations(
+    pages.flatMap(p => p.blocks),
+    (a, b) => makeBlock([...a.lines, ...b.lines], a.page)
+  );
+  for (const p of pages) p.blocks = merged.filter(b => b.page === p.number);
 
   return { pages, bodySize, doi: furniture.doi, stats };
 }

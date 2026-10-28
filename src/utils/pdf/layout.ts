@@ -13,6 +13,7 @@
 //    font change and first-line indentation.
 // ──────────────────────────────────────────────────────────
 import type { PdfBlock, PdfFragment, PdfLine, PdfTextItem } from './types';
+import { joinLines } from './text';
 
 /** Most common font size, weighted by character count */
 export function dominantSize(items: PdfTextItem[]): number {
@@ -323,7 +324,7 @@ export function makeBlock(lines: PdfLine[], page: number, kind: PdfBlock['kind']
     page,
     kind,
     lines,
-    text: lines.map(l => l.text).join('\n'),
+    text: joinLines(lines.map(l => l.text)),
     x0: Math.min(...lines.map(l => l.x0)),
     x1: Math.max(...lines.map(l => l.x1)),
     top: Math.min(...lines.map(l => l.baseline - l.size * 0.8)),

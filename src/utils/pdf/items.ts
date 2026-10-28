@@ -3,6 +3,7 @@
 // ──────────────────────────────────────────────────────────
 import type { PdfPageLike, PdfTextItem } from './types';
 import { imageBoxes, type Box } from './figures';
+import { normalizeChars } from './text';
 
 interface RawItem {
   str: string;
@@ -43,7 +44,8 @@ export async function readPage(page: PdfPageLike): Promise<RawPage> {
   const items: PdfTextItem[] = [];
   for (const raw of content.items as RawItem[]) {
     if (!raw.transform || typeof raw.str !== 'string') continue;
-    if (raw.str.trim().length === 0) continue;
+    const str = normalizeChars(raw.str);
+    if (str.trim().length === 0) continue;
 
     const [a, b, c, d, e, f] = raw.transform;
     // Skip rotated text (arXiv side stamps, rotated axis labels)
@@ -78,7 +80,7 @@ export async function readPage(page: PdfPageLike): Promise<RawPage> {
 
     const x0 = e - vx0;
     items.push({
-      str: raw.str,
+      str,
       x0,
       x1: x0 + Math.max(raw.width, 0),
       baseline: vy1 - f,
