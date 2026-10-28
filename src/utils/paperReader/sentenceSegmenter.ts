@@ -1,13 +1,14 @@
 // ──────────────────────────────────────────────────────────
 // Sentence Segmenter : rule-based sentence boundary detection
-// Handles abbreviations, decimals, citations, and ellipsis
+// Handles abbreviations, decimals, DOIs/URLs, citations, and ellipsis
 // ──────────────────────────────────────────────────────────
 
 /** Common abbreviations that should NOT trigger sentence boundaries */
 const ABBREVIATIONS = new Set([
   'dr', 'mr', 'mrs', 'ms', 'prof', 'sr', 'jr', 'st',
   'fig', 'figs', 'eq', 'eqs', 'ref', 'refs', 'sect', 'sec',
-  'vol', 'no', 'nos', 'vs', 'etc', 'al', 'approx',
+  'vol', 'vols', 'no', 'nos', 'vs', 'al', 'approx', 'pp', 'resp', 'incl', 'esp',
+  'ch', 'tab', 'tabs', 'sects', 'proc', 'conf', 'univ', 'ibid',
   'dept', 'div', 'est', 'govt', 'natl', 'intl',
   'temp', 'min', 'max', 'avg', 'std', 'dev',
   'inc', 'corp', 'ltd', 'co', 'org',
@@ -58,8 +59,20 @@ export function segmentSentences(paragraph: string): string[] {
     sentences.push(remaining);
   }
 
-  return sentences;
+  // A citation placed after the full stop ("…as shown. [16].") belongs
+  // to the sentence before it
+  const merged: string[] = [];
+  for (const sentence of sentences) {
+    if (merged.length > 0 && CITATION_ONLY.test(sentence)) {
+      merged[merged.length - 1] += ' ' + sentence;
+    } else {
+      merged.push(sentence);
+    }
+  }
+  return merged;
 }
+
+const CITATION_ONLY = /^(?:\[[\d,\s–—-]+\]\s*)+[.,;]?$/;
 
 /**
  * Determine if the period/question/exclamation at position `pos` in `text`
@@ -77,6 +90,15 @@ function isSentenceBoundary(text: string, pos: number, _accumulated: string): bo
 
   // For periods:
   if (char !== '.') return false;
+
+  // 0. A full stop is followed by a space (after any closing quote or
+  //    bracket). "10.1109/JRFID.2023", "doi.org", "Node.js", "U.S.A",
+  //    "e.g.," never end a sentence.
+  let next = pos + 1;
+  while (next < text.length && /[)"”’\]]/.test(text[next])) next++;
+  if (next < text.length && !/\s/.test(text[next])) {
+    return false;
+  }
 
   // 1. Inside a number: "3.14", "0.05"
   if (pos > 0 && pos < text.length - 1 && /\d/.test(text[pos - 1]) && /\d/.test(text[pos + 1])) {
@@ -134,15 +156,30 @@ function getCharAfterWhitespace(text: string, pos: number): string {
   return j < text.length ? text[j] : '';
 }
 
-/** Simple check: is position inside [...] or (...) brackets */
+/**
+ * Is position inside a short (...) or [...] span, i.e. an opening bracket
+ * shortly before it that closes shortly after? Only nearby text counts,
+ * so a stray "(" or a list marker like "i)" does not disable splitting
+ * for the rest of the paragraph.
+ */
 function isInsideBrackets(text: string, pos: number): boolean {
-  let bracketDepth = 0;
-  let parenDepth = 0;
-  for (let i = 0; i < pos; i++) {
-    if (text[i] === '[') bracketDepth++;
-    else if (text[i] === ']') bracketDepth = Math.max(0, bracketDepth - 1);
-    else if (text[i] === '(') parenDepth++;
-    else if (text[i] === ')') parenDepth = Math.max(0, parenDepth - 1);
+  const WINDOW = 200;
+  for (const [open, close] of [['(', ')'], ['[', ']']]) {
+    let depth = 0;
+    let opened = false;
+    for (let i = pos - 1; i >= Math.max(0, pos - WINDOW); i--) {
+      if (text[i] === close) depth++;
+      else if (text[i] === open) {
+        if (depth === 0) {
+          opened = true;
+          break;
+        }
+        depth--;
+      }
+    }
+    if (!opened) continue;
+    const end = text.indexOf(close, pos);
+    if (end !== -1 && end - pos <= WINDOW) return true;
   }
-  return bracketDepth > 0 || parenDepth > 0;
+  return false;
 }

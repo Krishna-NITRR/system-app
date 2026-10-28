@@ -70,6 +70,9 @@ async function runOne(path: string): Promise<{ report: string; rawText: string }
         seen.set(x.original, sec.id);
       }
   out.push(`DUPLICATED ACROSS SECTIONS: ${dupes.size}`);
+  const allSentences = sections.flatMap(sec => sec.paragraphs.filter(p => p.kind === 'text').flatMap(p => p.sentences.map(x => x.original)));
+  const short = allSentences.filter(x => x.split(/\s+/).length < 4);
+  out.push(`SENTENCES: ${allSentences.length} (under 4 words: ${short.length}${short.length ? ` e.g. ${short.slice(0, 4).map(x => JSON.stringify(x)).join(', ')}` : ''})`);
   out.push('');
   out.push(`SECTIONS (${sections.length}):`);
   for (const s of sections) {
