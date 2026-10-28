@@ -14,6 +14,7 @@ import {
   separateCaptions,
 } from './figures';
 import {
+  attachDropCaps,
   dominantSize,
   fragmentsToLines,
   groupRows,
@@ -41,7 +42,10 @@ export async function extractPdfLayout(pdf: PdfDocLike): Promise<PdfLayout> {
   const minGapY = 0.5 * bodySize;
 
   const furniture = removeFurniture(
-    raw.map(p => ({ height: p.height, frags: rowsToFragments(groupRows(p.items), minGapX) }))
+    raw.map(p => ({
+      height: p.height,
+      frags: rowsToFragments(groupRows(attachDropCaps(p.items, bodySize)), minGapX),
+    }))
   );
   stats.furnitureLines = furniture.dropped;
 

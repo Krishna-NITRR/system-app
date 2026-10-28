@@ -33,6 +33,42 @@ export function dominantSize(items: PdfTextItem[]): number {
   return best;
 }
 
+/**
+ * Drop caps: a 1–2 letter item at 2× body size or more ("T" of "THIS
+ * paper", spanning several lines). Left alone, its baseline sits on a
+ * later line and pulls two lines into one row. Move it onto the first
+ * body line to its right so it reads "THIS paper presents…".
+ */
+export function attachDropCaps(items: PdfTextItem[], bodySize: number): PdfTextItem[] {
+  const caps = items.filter(it => it.size >= 2 * bodySize && /^\p{Lu}{1,2}$/u.test(it.str.trim()));
+  if (caps.length === 0) return items;
+
+  for (const cap of caps) {
+    const candidates = items.filter(
+      it =>
+        it !== cap &&
+        it.size < 1.5 * bodySize &&
+        it.x0 >= cap.x1 - 1 &&
+        it.x0 <= cap.x1 + 1.5 * bodySize &&
+        it.baseline >= cap.baseline - cap.size &&
+        it.baseline <= cap.baseline + 0.5 * bodySize
+    );
+    if (candidates.length === 0) continue;
+    const first = candidates.reduce((a, b) => (b.baseline < a.baseline ? b : a));
+    // Same line as `first`, ending exactly where it starts (no space)
+    Object.assign(cap, {
+      size: first.size,
+      baseline: first.baseline,
+      x1: first.x0,
+      x0: first.x0 - (cap.x1 - cap.x0) * (first.size / cap.size),
+      font: first.font,
+      bold: first.bold,
+      italic: first.italic,
+    });
+  }
+  return items;
+}
+
 /** Group items into rows by baseline. Superscripts join their row. */
 export function groupRows(items: PdfTextItem[]): PdfTextItem[][] {
   const sorted = [...items].sort((a, b) => a.baseline - b.baseline || a.x0 - b.x0);
