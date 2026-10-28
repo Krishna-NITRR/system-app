@@ -313,6 +313,58 @@
   /* background-color: rgba(108, 76, 241, 0.05); */
 }
 
+/* Figure and table captions */
+.rpr-caption {
+  margin: 0 0 20px;
+  padding: 10px 14px;
+  border-left: 3px solid var(--div);
+  background: var(--bg2);
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--tm);
+}
+
+/* In-text citations and the reference list */
+.rpr-cite {
+  color: var(--purple);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+}
+.rpr-cite:hover {
+  border-bottom-color: var(--purple);
+}
+
+.rpr-references {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rpr-reference {
+  display: flex;
+  gap: 10px;
+  padding: 8px 10px;
+  margin: 0 -10px;
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--text);
+  border-radius: var(--radius);
+  transition: background-color 0.6s ease;
+  scroll-margin-top: 40px;
+}
+
+.rpr-reference-label {
+  flex-shrink: 0;
+  min-width: 2.5em;
+  color: var(--tm);
+  font-variant-numeric: tabular-nums;
+}
+
+.rpr-reference.is-target {
+  background: var(--purple-light);
+}
+
 /* Terminology Annotations */
 .rpr-term {
   color: var(--purple);

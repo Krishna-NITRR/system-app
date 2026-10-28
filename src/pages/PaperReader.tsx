@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo, type ReactNode } from 'react';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import usePageMeta from '../hooks/usePageMeta';
@@ -21,6 +21,18 @@ export default function PaperReader() {
   const [isDragOver, setIsDragOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const [flashRef, setFlashRef] = useState<string | null>(null);
+
+  // Reference entries that in-text citations like [5] can jump to
+  const refIds = useMemo(
+    () =>
+      new Set(
+        state.phase === 'ready'
+          ? state.paper.sections.flatMap(s => s.references?.map(r => r.id) ?? [])
+          : []
+      ),
+    [state]
+  );
 
   // Handle term click
   const handleTermClick = (termId: string, e: React.MouseEvent) => {
@@ -72,6 +84,17 @@ export default function PaperReader() {
 
   const scrollToSection = (id: string) => {
     setUI(prev => ({ ...prev, activeSection: id }));
+    scrollToElement(id);
+  };
+
+  // Jump from an in-text citation to its reference entry and flash it
+  const handleCite = (refId: string) => {
+    scrollToElement(refId);
+    setFlashRef(refId);
+    window.setTimeout(() => setFlashRef(current => (current === refId ? null : current)), 1600);
+  };
+
+  const scrollToElement = (id: string) => {
     const element = document.getElementById(id);
     if (element && contentRef.current) {
       // Calculate position relative to container
@@ -340,19 +363,19 @@ export default function PaperReader() {
               <h2 className="rpr-section-title">{section.title}</h2>
               
               {section.paragraphs.map(p => (
-                <p key={p.id} className="rpr-paragraph">
+                <p key={p.id} className={p.kind === 'caption' ? 'rpr-caption' : 'rpr-paragraph'}>
                   {p.sentences.map(sentence => {
                     const textToShow = ui.viewMode === 'readable' ? sentence.transformed : sentence.original;
-                    
+
                     // If no annotations or in original mode, just show text
                     if (!ui.showAnnotations || sentence.annotations.length === 0 || ui.viewMode === 'original') {
                       return (
-                        <span 
-                          key={sentence.id} 
+                        <span
+                          key={sentence.id}
                           className={`rpr-sentence ${ui.viewMode === 'readable' && sentence.wasTransformed ? 'is-transformed' : ''}`}
                           title={sentence.wasTransformed && ui.viewMode === 'readable' ? `Original: ${sentence.original}` : undefined}
                         >
-                          {textToShow}{' '}
+                          {withCitations(textToShow, refIds, handleCite, sentence.id)}{' '}
                         </span>
                       );
                     }
@@ -360,18 +383,22 @@ export default function PaperReader() {
                     // Render text with inline annotations
                     const elements: React.ReactNode[] = [];
                     let lastIdx = 0;
-                    
+
                     // Sort annotations by startOffset to render sequentially
                     const sortedAnns = [...sentence.annotations].sort((a, b) => a.startOffset - b.startOffset);
-                    
+
                     sortedAnns.forEach((ann, idx) => {
                       if (ann.startOffset > lastIdx) {
-                        elements.push(<span key={`text-${idx}`}>{textToShow.substring(lastIdx, ann.startOffset)}</span>);
+                        elements.push(
+                          <span key={`text-${idx}`}>
+                            {withCitations(textToShow.substring(lastIdx, ann.startOffset), refIds, handleCite, `${sentence.id}-${idx}`)}
+                          </span>
+                        );
                       }
-                      
+
                       elements.push(
-                        <span 
-                          key={`term-${idx}`} 
+                        <span
+                          key={`term-${idx}`}
                           className={`rpr-term ${ui.activeTerm === ann.termId ? 'active' : ''}`}
                           onClick={(e) => handleTermClick(ann.termId, e)}
                         >
@@ -380,14 +407,18 @@ export default function PaperReader() {
                       );
                       lastIdx = ann.endOffset;
                     });
-                    
+
                     if (lastIdx < textToShow.length) {
-                      elements.push(<span key="text-last">{textToShow.substring(lastIdx)}</span>);
+                      elements.push(
+                        <span key="text-last">
+                          {withCitations(textToShow.substring(lastIdx), refIds, handleCite, `${sentence.id}-last`)}
+                        </span>
+                      );
                     }
 
                     return (
-                      <span 
-                        key={sentence.id} 
+                      <span
+                        key={sentence.id}
                         className={`rpr-sentence ${sentence.wasTransformed ? 'is-transformed' : ''}`}
                         title={sentence.wasTransformed ? `Original: ${sentence.original}` : undefined}
                       >
@@ -397,6 +428,21 @@ export default function PaperReader() {
                   })}
                 </p>
               ))}
+
+              {section.references && (
+                <ol className="rpr-references">
+                  {section.references.map(ref => (
+                    <li
+                      key={ref.id}
+                      id={ref.id}
+                      className={`rpr-reference ${flashRef === ref.id ? 'is-target' : ''}`}
+                    >
+                      {ref.label && <span className="rpr-reference-label">{ref.label}</span>}
+                      <span>{ref.text}</span>
+                    </li>
+                  ))}
+                </ol>
+              )}
             </section>
           ))}
         </div>
@@ -414,4 +460,58 @@ export default function PaperReader() {
       </div>
     </div>
   );
+}
+
+// In-text numeric citations: [5], [5, 6], [3]–[7], [12-14]
+const CITATION = /\[(\d{1,4}(?:\s*[–—-]\s*\d{1,4})?(?:\s*,\s*\d{1,4}(?:\s*[–—-]\s*\d{1,4})?)*)\]/g;
+
+/** Render text with each cited number linked to its reference entry */
+function withCitations(
+  text: string,
+  refIds: Set<string>,
+  onCite: (refId: string) => void,
+  keyPrefix: string
+): ReactNode[] {
+  if (refIds.size === 0 || !text.includes('[')) return [text];
+
+  const out: ReactNode[] = [];
+  let last = 0;
+  for (const match of text.matchAll(CITATION)) {
+    const start = match.index ?? 0;
+    if (start > last) out.push(text.slice(last, start));
+
+    // Link every number inside the brackets that has a reference entry
+    const inner = match[1];
+    const parts: ReactNode[] = ['['];
+    let pos = 0;
+    for (const num of inner.matchAll(/\d+/g)) {
+      const i = num.index ?? 0;
+      if (i > pos) parts.push(inner.slice(pos, i));
+      const refId = `ref-${num[0]}`;
+      parts.push(
+        refIds.has(refId) ? (
+          <a
+            key={`${keyPrefix}-c${start}-${i}`}
+            href={`#${refId}`}
+            className="rpr-cite"
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              onCite(refId);
+            }}
+          >
+            {num[0]}
+          </a>
+        ) : (
+          num[0]
+        )
+      );
+      pos = i + num[0].length;
+    }
+    parts.push(inner.slice(pos), ']');
+    out.push(...parts);
+    last = start + match[0].length;
+  }
+  if (last < text.length) out.push(text.slice(last));
+  return out;
 }

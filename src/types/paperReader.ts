@@ -29,6 +29,17 @@ export interface PaperSection {
   level: number;
   type: SectionType;
   paragraphs: PaperParagraph[];
+  /** Parsed entries of a references section (its paragraphs are empty) */
+  references?: PaperReference[];
+}
+
+export interface PaperReference {
+  /** DOM id, "ref-5": the target of in-text citations like [5] */
+  id: string;
+  number: number;
+  /** "[5]" or "5." as printed; empty for author–year lists */
+  label: string;
+  text: string;
 }
 
 export interface PaperParagraph {

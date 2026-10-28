@@ -76,6 +76,13 @@ async function runOne(path: string): Promise<{ report: string; rawText: string }
     out.push(`${'  '.repeat(Math.max(0, s.level - 1))}- ${s.title}`);
   }
   for (const s of sections) {
+    if (s.references) {
+      out.push('');
+      out.push(`--- ${s.title} (${s.references.length} entries) ---`);
+      for (const r of s.references.slice(0, 3)) out.push(`${r.label || '•'} ${r.text}`);
+      if (s.references.length > 3) out.push(`… last: ${s.references.at(-1)!.label || '•'} ${s.references.at(-1)!.text}`);
+      continue;
+    }
     const text = s.paragraphs
       .map(p => p.sentences.map(x => x.original).join(' '))
       .join('\n¶ ');

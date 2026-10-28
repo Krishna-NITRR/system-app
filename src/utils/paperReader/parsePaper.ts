@@ -13,6 +13,7 @@ import { buildBodyCasing, buildSections, displayTitle } from './sectionDetector'
 import { segmentSentences } from './sentenceSegmenter';
 import { extractMetadata } from './metadataExtractor';
 import type { DocBlock, DocInput } from './docBlocks';
+import { parseReferences } from './references';
 
 export interface ParsedPaper {
   metadata: PaperMetadata;
@@ -29,6 +30,10 @@ export function parsePaper(input: DocInput): ParsedPaper {
   const sections: PaperSection[] = raw.map((s, i) => {
     const title = displayTitle(s.title, casing);
     const id = `sec-${i}-${slugify(title)}`;
+    if (s.type === 'references') {
+      // Reference entries are kept verbatim, never split into sentences
+      return { id, title, level: s.level, type: s.type, paragraphs: [], references: parseReferences(s.blocks) };
+    }
     return {
       id,
       title,
