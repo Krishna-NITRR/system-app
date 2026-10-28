@@ -59,6 +59,7 @@ async function runOne(path: string, withTerms: boolean): Promise<{ report: strin
   const out: string[] = [];
   out.push(`=== ${basename(path)} (${pdf.numPages} pages) ===`);
   out.push(`TITLE: ${metadata.title}`);
+  out.push(`YEAR: ${metadata.year ?? "(none)"}  DOI: ${metadata.doi ?? "(none)"}`);
   out.push(`AUTHORS: ${metadata.authors.join('; ') || '(none)'}`);
   out.push(`KEYWORDS: ${metadata.keywords.join('; ') || '(none)'}`);
   out.push(`NOTES: ${metadata.notes.length} (footnotes / first-page notes kept out of sections)`);

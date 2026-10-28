@@ -144,18 +144,25 @@ export function extractMetadata(input: DocInput): MetadataResult {
   }
   metadata.authors = [...new Set(metadata.authors)].slice(0, 40);
 
-  // ── Year: prefer page-1 text, then anywhere
-  const page1 = blocks.filter(b => b.page === firstPage).map(b => b.text).join(' ');
-  const yearOf = (s: string) =>
-    s.match(/(?:©|\(|\b)((?:19|20)\d{2})(?:\)|\b)/)?.[1] ?? null;
-  metadata.year = yearOf(page1) ?? yearOf(blocks.map(b => b.text).join(' '));
-
   // ── DOI
   if (!metadata.doi) {
     const all = blocks.map(b => b.text).join(' ');
     const m = all.match(/(?:doi[:\s]*|https?:\/\/(?:dx\.)?doi\.org\/)(10\.\d{4,}\/[^\s]+)/i);
     if (m) metadata.doi = m[1].replace(/[.,;)\]]+$/, '');
   }
+
+  // ── Year: "© 2019" on page 1, else a year inside the DOI
+  //    ("10.1109/JRFID.2023.3268422"), else the latest year on page 1
+  //    (the first one is often history: "Since 1990, ...")
+  const page1 = blocks.filter(b => b.page === firstPage).map(b => b.text).join(' ');
+  const latestAllowed = new Date().getFullYear() + 1;
+  const page1Years = [...page1.matchAll(/\b((?:19|20)\d{2})\b/g)]
+    .map(m => Number(m[1]))
+    .filter(y => y <= latestAllowed);
+  metadata.year =
+    page1.match(/©\s*((?:19|20)\d{2})\b/)?.[1] ??
+    metadata.doi?.match(/[./]((?:19|20)\d{2})[./]/)?.[1] ??
+    (page1Years.length > 0 ? String(Math.max(...page1Years)) : null);
 
   return { metadata, consumed, titleIndex: title.index };
 }
