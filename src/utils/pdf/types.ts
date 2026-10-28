@@ -77,6 +77,8 @@ export interface PdfLayout {
 export interface PdfExtractStats {
   duplicateItems: number;
   furnitureLines: number;
+  /** Fragments over images, figure-label lines and garbage blocks */
+  figureText: number;
 }
 
 /** Minimal slice of the pdf.js document API that we use */

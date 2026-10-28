@@ -8,6 +8,12 @@ import { readPage, type RawPage } from './items';
 import { dedupeItems } from './dedupe';
 import { removeFurniture } from './furniture';
 import {
+  dropFragmentsInImages,
+  isFigureLabelRegion,
+  isGarbageBlock,
+  separateCaptions,
+} from './figures';
+import {
   dominantSize,
   fragmentsToLines,
   groupRows,
@@ -19,7 +25,7 @@ import {
 export type { PdfLayout, PdfBlock, PdfPageLayout, PdfDocLike, PdfExtractStats } from './types';
 
 export async function extractPdfLayout(pdf: PdfDocLike): Promise<PdfLayout> {
-  const stats: PdfExtractStats = { duplicateItems: 0, furnitureLines: 0 };
+  const stats: PdfExtractStats = { duplicateItems: 0, furnitureLines: 0, figureText: 0 };
   const raw: RawPage[] = [];
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await readPage(await pdf.getPage(i));
@@ -38,10 +44,23 @@ export async function extractPdfLayout(pdf: PdfDocLike): Promise<PdfLayout> {
   stats.furnitureLines = furniture.dropped;
 
   const pages: PdfPageLayout[] = raw.map((p, idx) => {
-    const regions = xyCut(furniture.pages[idx], { minGapX, minGapY });
-    const blocks = regions.flatMap(region =>
-      linesToBlocks(fragmentsToLines(region), idx + 1)
-    );
+    const inImages = dropFragmentsInImages(furniture.pages[idx], p.images, p.width, p.height);
+    stats.figureText += inImages.dropped;
+
+    const regions = xyCut(inImages.frags, { minGapX, minGapY });
+    const textBlocks = regions.flatMap(region => {
+      const lines = fragmentsToLines(region);
+      if (isFigureLabelRegion(lines, bodySize)) {
+        stats.figureText += lines.length;
+        return [];
+      }
+      return linesToBlocks(lines, idx + 1);
+    });
+    const blocks = separateCaptions(textBlocks).filter(b => {
+      const garbage = isGarbageBlock(b);
+      if (garbage) stats.figureText += b.lines.length;
+      return !garbage;
+    });
     return { number: idx + 1, width: p.width, height: p.height, blocks };
   });
 

@@ -2,6 +2,7 @@
 // Read positioned text items (and font styles) from a pdf.js page.
 // ──────────────────────────────────────────────────────────
 import type { PdfPageLike, PdfTextItem } from './types';
+import { imageBoxes, type Box } from './figures';
 
 interface RawItem {
   str: string;
@@ -18,6 +19,8 @@ export interface RawPage {
   width: number;
   height: number;
   items: PdfTextItem[];
+  /** Image placements, for dropping text drawn over figures */
+  images: Box[];
 }
 
 export async function readPage(page: PdfPageLike): Promise<RawPage> {
@@ -26,11 +29,13 @@ export async function readPage(page: PdfPageLike): Promise<RawPage> {
   const height = vy1 - vy0;
 
   // The operator list loads the page's fonts into commonObjs, which is
-  // where the real font names (and so bold/italic) live.
+  // where the real font names (and so bold/italic) live. It also tells
+  // us where images are drawn.
+  let images: Box[] = [];
   try {
-    await page.getOperatorList();
+    images = imageBoxes(await page.getOperatorList(), page.view);
   } catch {
-    // Fonts are only used for styling hints; carry on without them.
+    // Fonts and images are only hints; carry on without them.
   }
   const content = await page.getTextContent();
   const fontCache = new Map<string, { name: string; bold: boolean; italic: boolean }>();
@@ -84,5 +89,5 @@ export async function readPage(page: PdfPageLike): Promise<RawPage> {
     });
   }
 
-  return { width, height, items };
+  return { width, height, items, images };
 }
