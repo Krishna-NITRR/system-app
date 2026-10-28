@@ -1,5 +1,5 @@
 // ──────────────────────────────────────────────────────────
-// Parse stage: raw extracted text → metadata + sections with
+// Parse stage: document blocks → metadata + sections with
 // sentences. Kept free of browser-only and network imports so
 // the Node test harness can run it directly.
 // ──────────────────────────────────────────────────────────
@@ -12,14 +12,16 @@ import type {
 import { detectSections } from './sectionDetector';
 import { segmentSentences } from './sentenceSegmenter';
 import { extractMetadata } from './metadataExtractor';
+import { blocksToText, type DocInput } from './docBlocks';
 
 export interface ParsedPaper {
   metadata: PaperMetadata;
   sections: PaperSection[];
 }
 
-export function parsePaperText(rawText: string): ParsedPaper {
-  const metadata = extractMetadata(rawText);
+export function parsePaper(input: DocInput): ParsedPaper {
+  const { metadata, consumed } = extractMetadata(input);
+  const rawText = blocksToText(input.blocks.filter(b => !consumed.has(b.index)));
   const rawSections = detectSections(rawText);
   const sections = parseSectionsContent(rawSections, rawText);
   return { metadata, sections };

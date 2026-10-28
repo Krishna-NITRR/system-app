@@ -10,9 +10,9 @@ import type {
   TransformationStats,
   ProcessingStep,
 } from '../../types/paperReader';
-import { extractTextFromFile } from '../documentParser';
+import { extractDocument } from '../documentParser';
 import { classifySectionType } from './sectionDetector';
-import { parsePaperText } from './parsePaper';
+import { parsePaper } from './parsePaper';
 import { classifySentence } from './safetyClassifier';
 import { transformSentence } from './transformationEngine';
 import { buildTrie, matchTermsInSentence } from './terminologyMatcher';
@@ -31,10 +31,11 @@ export async function processPaper(
 
   // ── Step 1: Extract text ──
   onProgress?.('extracting', 0);
-  const rawText = await extractTextFromFile(file);
+  const doc = await extractDocument(file);
   onProgress?.('extracting', 100);
 
-  if (!rawText || rawText.trim().length < 50) {
+  const textLength = doc.blocks.reduce((n, b) => n + b.text.length, 0);
+  if (textLength < 50) {
     throw new Error(
       'Could not extract readable text from this document. It may be a scanned (image-only) PDF.'
     );
@@ -43,7 +44,7 @@ export async function processPaper(
   // ── Step 2: Parse structure ──
   onProgress?.('parsing', 0);
 
-  const { metadata, sections } = parsePaperText(rawText);
+  const { metadata, sections } = parsePaper(doc);
 
   onProgress?.('parsing', 100);
 

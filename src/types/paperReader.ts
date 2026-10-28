@@ -13,6 +13,10 @@ export interface ProcessedPaper {
 export interface PaperMetadata {
   title: string;
   authors: string[];
+  affiliations: string[];
+  keywords: string[];
+  /** Footnotes and first-page notes kept out of the section text */
+  notes: string[];
   year: string | null;
   journal: string | null;
   doi: string | null;

@@ -1,7 +1,8 @@
 import * as pdfjsLib from 'pdfjs-dist';
 // @ts-ignore
 import mammoth from 'mammoth/mammoth.browser.js';
-import { extractPdfText } from './pdf';
+import { extractPdfLayout, layoutToText } from './pdf';
+import { fromPdfLayout, fromPlainText, type DocInput } from './paperReader/docBlocks';
 
 // Setup pdf.js worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
@@ -19,10 +20,25 @@ export async function extractTextFromFile(file: File): Promise<string> {
   throw new Error("Unsupported file type");
 }
 
-async function extractTextFromPDF(file: File): Promise<string> {
+function isPdf(file: File): boolean {
+  return file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+}
+
+async function loadPdf(file: File) {
   const arrayBuffer = await file.arrayBuffer();
-  const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-  return extractPdfText(pdf);
+  return pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+}
+
+async function extractTextFromPDF(file: File): Promise<string> {
+  return layoutToText(await extractPdfLayout(await loadPdf(file)));
+}
+
+/** Structured blocks for the Paper Reader (font styles when the source is a PDF) */
+export async function extractDocument(file: File): Promise<DocInput> {
+  if (isPdf(file)) {
+    return fromPdfLayout(await extractPdfLayout(await loadPdf(file)));
+  }
+  return fromPlainText(await extractTextFromFile(file));
 }
 
 async function extractTextFromDOCX(file: File): Promise<string> {

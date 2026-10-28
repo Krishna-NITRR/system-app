@@ -1,116 +1,161 @@
 // ──────────────────────────────────────────────────────────
-// Metadata Extractor : extracts title, authors, year, DOI from raw text
+// Metadata Extractor : title, authors, affiliations, year, DOI
+// from the first page's blocks.
+//
+// Title: the largest-font substantial block on page 1 (skipping the
+// journal masthead and lines repeated on other pages). Authors: the
+// block(s) just below it.
 // ──────────────────────────────────────────────────────────
 import type { PaperMetadata } from '../../types/paperReader';
+import type { DocBlock, DocInput } from './docBlocks';
 
-/**
- * Extract paper metadata from the raw text.
- * Uses heuristics : the first substantive line is likely the title,
- * followed by author lines, then possibly a journal/year line.
- */
-export function extractMetadata(text: string): PaperMetadata {
-  const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+export interface MetadataResult {
+  metadata: PaperMetadata;
+  /** Indexes of blocks used for the title, authors and affiliations */
+  consumed: Set<number>;
+  /** Index of the title block (-1 if none) */
+  titleIndex: number;
+}
 
+const MASTHEAD = /\b(?:journal|proceedings|transactions|letters|university|elsevier|sciencedirect|springer|www\.|https?:)/i;
+const STARTS_SECTION = /^(?:abstract|keywords?|index terms|a b s t r a c t|a r t i c l e)\b/i;
+const AFFILIATION = /\b(?:universit|institut|department|dept\.|school of|college|laborator|faculty|centre|center|inc\.|ltd|gmbh|corporation|research|hospital|@|e-?mail)/i;
+
+const words = (s: string) => s.split(/\s+/).filter(w => /\p{L}/u.test(w));
+
+function isTitleCandidate(b: DocBlock, repeated: Set<string>): boolean {
+  if (b.kind !== 'text' || b.lines.length > 4) return false;
+  const w = words(b.text);
+  if (w.length < 3 || b.text.length < 15 || b.text.length > 300) return false;
+  if (STARTS_SECTION.test(b.text)) return false;
+  if (MASTHEAD.test(b.text) && w.length <= 6) return false;
+  if (repeated.has(b.text.toLowerCase())) return false;
+  return true;
+}
+
+/** Strip footnote markers and stray symbols from a name */
+function cleanName(s: string): string {
+  return s
+    .replace(/[∗*†‡§¶#⁎✉]/g, '')
+    .replace(/\(\s*\)/g, '')
+    .replace(/\d+/g, '')
+    .replace(/\s+/g, ' ')
+    .replace(/^[\s,;.]+|[\s,;]+$/g, '')
+    .trim();
+}
+
+const NAME_WORD = /^(?:[A-ZÀ-ÖØ-ÞŁ][\p{L}'’-]*\.?|[A-Z]\.(?:-?[A-Z]\.)*|van|von|der|de|da|del|di|la|le|bin|al)$/u;
+
+function isNameLike(s: string): boolean {
+  const w = s.split(/\s+/).filter(Boolean);
+  if (w.length < 2 || w.length > 6) return false;
+  return w.every(x => NAME_WORD.test(x));
+}
+
+function splitAuthorList(s: string): string[] {
+  return s
+    .split(/\s*,\s*(?:and\s+)?|\s+and\s+|\s*&\s*|;\s*/)
+    .map(cleanName)
+    .filter(Boolean);
+}
+
+function parseAuthorBlock(b: DocBlock): string[] | null {
+  const text = b.plainText;
+  if (text.length > 500 || /\.\s+[A-Z][a-z]+\s+[a-z]+/.test(text)) return null;
+
+  // "Name, Name, and Name"
+  const parts = splitAuthorList(text);
+  const named = parts.filter(isNameLike);
+  if (parts.length > 0 && named.length / parts.length >= 0.6 && !AFFILIATION.test(text)) {
+    return named;
+  }
+
+  // Grid entry: name on the first line, affiliation/email below
+  if (b.lines.length >= 2) {
+    const first = cleanName(b.lines[0].text);
+    if (isNameLike(first) && AFFILIATION.test(b.lines.slice(1).map(l => l.text).join(' '))) {
+      return [first];
+    }
+  }
+  return null;
+}
+
+export function extractMetadata(input: DocInput): MetadataResult {
+  const { blocks } = input;
   const metadata: PaperMetadata = {
     title: 'Untitled Paper',
     authors: [],
+    affiliations: [],
+    keywords: [],
+    notes: [],
     year: null,
     journal: null,
-    doi: null,
+    doi: input.doi,
     rawAbstract: '',
   };
+  const consumed = new Set<number>();
+  if (blocks.length === 0) return { metadata, consumed, titleIndex: -1 };
 
-  if (lines.length === 0) return metadata;
+  // Text that appears on more than one page is a running header, not a title
+  const pagesByText = new Map<string, Set<number>>();
+  for (const b of blocks) {
+    const k = b.text.toLowerCase();
+    const set = pagesByText.get(k) ?? new Set<number>();
+    set.add(b.page);
+    pagesByText.set(k, set);
+  }
+  const repeated = new Set([...pagesByText].filter(([, p]) => p.size > 1).map(([k]) => k));
 
-  // ── Title: first substantial line (>10 chars, doesn't look like an author line)
-  let titleLineIdx = -1;
-  for (let i = 0; i < Math.min(lines.length, 15); i++) {
-    const line = lines[i];
-    if (line.length > 10 && !isLikelyAuthorLine(line) && !isLikelyHeaderFooter(line)) {
-      metadata.title = line;
-      titleLineIdx = i;
+  // ── Title
+  const firstPage = blocks[0].page;
+  const candidates = blocks
+    .slice(0, 60)
+    .filter(b => b.page === firstPage && isTitleCandidate(b, repeated));
+  let title: DocBlock | undefined;
+  if (input.hasStyles) {
+    title = candidates.reduce<DocBlock | undefined>(
+      (best, b) => (!best || b.size > best.size + 0.1 ? b : best),
+      undefined
+    );
+    if (title && title.size < input.bodySize) title = candidates[0];
+  } else {
+    title = candidates[0];
+  }
+  if (!title) return { metadata, consumed, titleIndex: -1 };
+  metadata.title = title.text.replace(/\s+/g, ' ').trim();
+  consumed.add(title.index);
+
+  // ── Authors (and affiliations) just below the title
+  for (let i = title.index + 1; i < Math.min(blocks.length, title.index + 16); i++) {
+    const b = blocks[i];
+    if (b.page !== title.page || b.kind !== 'text') break;
+    if (STARTS_SECTION.test(b.text) || /^(?:[IVX]+|\d+)\.?\s+[A-Z]/.test(b.text) && b.text.length < 80) break;
+
+    const names = parseAuthorBlock(b);
+    if (names && names.length > 0) {
+      metadata.authors.push(...names);
+      consumed.add(i);
+    } else if (metadata.authors.length > 0 && AFFILIATION.test(b.text) && b.text.length < 600) {
+      metadata.affiliations.push(b.text);
+      consumed.add(i);
+    } else if (metadata.authors.length > 0 || b.text.length > 300) {
       break;
     }
   }
+  metadata.authors = [...new Set(metadata.authors)].slice(0, 40);
 
-  // ── Authors: lines after title that look like author names
-  if (titleLineIdx >= 0) {
-    for (let i = titleLineIdx + 1; i < Math.min(lines.length, titleLineIdx + 8); i++) {
-      const line = lines[i];
-      if (isLikelyAuthorLine(line)) {
-        const authors = parseAuthors(line);
-        metadata.authors.push(...authors);
-      } else if (line.toLowerCase().startsWith('abstract') || metadata.authors.length > 0) {
-        break;
-      }
-    }
+  // ── Year: prefer page-1 text, then anywhere
+  const page1 = blocks.filter(b => b.page === firstPage).map(b => b.text).join(' ');
+  const yearOf = (s: string) =>
+    s.match(/(?:©|\(|\b)((?:19|20)\d{2})(?:\)|\b)/)?.[1] ?? null;
+  metadata.year = yearOf(page1) ?? yearOf(blocks.map(b => b.text).join(' '));
+
+  // ── DOI
+  if (!metadata.doi) {
+    const all = blocks.map(b => b.text).join(' ');
+    const m = all.match(/(?:doi[:\s]*|https?:\/\/(?:dx\.)?doi\.org\/)(10\.\d{4,}\/[^\s]+)/i);
+    if (m) metadata.doi = m[1].replace(/[.,;)\]]+$/, '');
   }
 
-  // ── Year: search for 4-digit year pattern (19xx or 20xx)
-  const yearMatch = text.match(/\b((?:19|20)\d{2})\b/);
-  if (yearMatch) {
-    metadata.year = yearMatch[1];
-  }
-
-  // ── DOI: search for DOI pattern
-  const doiMatch = text.match(/(?:doi[:\s]*|https?:\/\/doi\.org\/)(10\.\d{4,}\/[^\s]+)/i);
-  if (doiMatch) {
-    metadata.doi = doiMatch[1].replace(/[.,;)\]]+$/, ''); // clean trailing punctuation
-  }
-
-  // ── Abstract: find abstract section content
-  const abstractIdx = lines.findIndex(l => /^abstract/i.test(l));
-  if (abstractIdx >= 0) {
-    const abstractLines: string[] = [];
-    for (let i = abstractIdx + 1; i < lines.length && i < abstractIdx + 20; i++) {
-      const line = lines[i];
-      // Stop at next section heading or keywords line
-      if (/^(?:keywords?|introduction|\d+\.\s)/i.test(line)) break;
-      if (line.length > 10) abstractLines.push(line);
-    }
-    metadata.rawAbstract = abstractLines.join(' ');
-  }
-
-  return metadata;
-}
-
-/** Check if a line looks like an author list */
-function isLikelyAuthorLine(line: string): boolean {
-  // Author lines typically contain commas separating names, "and", superscript markers
-  // and are shorter than section body text
-  if (line.length > 200) return false;
-  if (line.length < 5) return false;
-
-  // Contains patterns like "A. Smith", "John Doe", comma-separated names
-  const namePattern = /[A-Z][a-z]+(?:\s+[A-Z]\.?\s*)*(?:\s+[A-Z][a-z]+)/;
-  const hasNames = namePattern.test(line);
-  const hasCommasOrAnd = /,|(?:\band\b)/.test(line);
-  const hasAffiliationMarkers = /[¹²³⁴⁵⁶\*†‡§]|\d+,?\s*$/.test(line);
-
-  // Doesn't contain sentence-like features
-  const hasSentenceEnd = /\.\s+[A-Z]/.test(line);
-
-  return hasNames && (hasCommasOrAnd || hasAffiliationMarkers) && !hasSentenceEnd;
-}
-
-/** Check if a line looks like a header/footer (page number, journal header) */
-function isLikelyHeaderFooter(line: string): boolean {
-  if (/^\d+$/.test(line.trim())) return true; // page number
-  if (line.length < 5) return true;
-  if (/^(page|vol\.|volume|issue|journal)/i.test(line)) return true;
-  return false;
-}
-
-/** Parse a comma/and-separated author line into individual names */
-function parseAuthors(line: string): string[] {
-  // Remove affiliation markers
-  const cleaned = line.replace(/[¹²³⁴⁵⁶⁷⁸⁹⁰\*†‡§]/g, '').trim();
-
-  // Split by comma and "and"
-  const parts = cleaned.split(/\s*(?:,\s*(?:and\s+)?|\s+and\s+)\s*/);
-
-  return parts
-    .map(p => p.trim())
-    .filter(p => p.length > 2 && /[A-Za-z]/.test(p))
-    .slice(0, 20); // reasonable cap
+  return { metadata, consumed, titleIndex: title.index };
 }

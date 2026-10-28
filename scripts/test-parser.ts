@@ -16,7 +16,8 @@ import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { extractPdfLayout, layoutToText } from '../src/utils/pdf';
-import { parsePaperText } from '../src/utils/paperReader/parsePaper';
+import { parsePaper } from '../src/utils/paperReader/parsePaper';
+import { fromPdfLayout } from '../src/utils/paperReader/docBlocks';
 
 const FIXTURES_DIR = resolve(import.meta.dirname, '../test-fixtures');
 const require = createRequire(import.meta.url);
@@ -48,7 +49,7 @@ async function runOne(path: string): Promise<{ report: string; rawText: string }
 
   const layout = await extractPdfLayout(pdf);
   const rawText = layoutToText(layout);
-  const { metadata, sections } = parsePaperText(rawText);
+  const { metadata, sections } = parsePaper(fromPdfLayout(layout));
 
   const out: string[] = [];
   out.push(`=== ${basename(path)} (${pdf.numPages} pages) ===`);
