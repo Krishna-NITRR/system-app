@@ -132,17 +132,23 @@ interface WordToken {
   text: string;
   lower: string;
   charStart: number;
+  /** Separated from the previous word only by a space, hyphen or slash */
+  joinable: boolean;
 }
 
 /** Tokenize a sentence into words with character positions */
 function tokenizeForMatching(sentence: string): WordToken[] {
   const tokens: WordToken[] = [];
+  let prevEnd = -1;
   for (const match of sentence.matchAll(WORD)) {
+    const start = match.index ?? 0;
     tokens.push({
       text: match[0],
       lower: match[0].toLowerCase(),
-      charStart: match.index ?? 0,
+      charStart: start,
+      joinable: prevEnd >= 0 && /^[\s\-/]+$/.test(sentence.slice(prevEnd, start)),
     });
+    prevEnd = start + match[0].length;
   }
   return tokens;
 }
@@ -175,6 +181,8 @@ function longestMatch(
   let bestMatch: MatchResult | null = null;
 
   for (let j = start; j < tokens.length; j++) {
+    // A phrase never spans punctuation: "(QR) code" is not "QR code"
+    if (j > start && !tokens[j].joinable) break;
     const word = key(tokens[j]);
 
     // A plural can only end a phrase ("QR codes")
