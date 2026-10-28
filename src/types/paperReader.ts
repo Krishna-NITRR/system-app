@@ -8,6 +8,14 @@ export interface ProcessedPaper {
   metadata: PaperMetadata;
   sections: PaperSection[];
   stats: TransformationStats;
+  quality: ExtractionQuality;
+}
+
+/** Whether the extracted text looks trustworthy */
+export interface ExtractionQuality {
+  ok: boolean;
+  /** Human-readable reasons, e.g. "22% of sentences are fragments under 4 words" */
+  issues: string[];
 }
 
 export interface PaperMetadata {

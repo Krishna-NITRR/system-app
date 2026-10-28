@@ -54,7 +54,7 @@ async function runOne(path: string, withTerms: boolean): Promise<{ report: strin
 
   const layout = await extractPdfLayout(pdf);
   const rawText = layoutToText(layout);
-  const { metadata, sections } = parsePaper(fromPdfLayout(layout));
+  const { metadata, sections, quality } = parsePaper(fromPdfLayout(layout));
 
   const out: string[] = [];
   out.push(`=== ${basename(path)} (${pdf.numPages} pages) ===`);
@@ -75,6 +75,7 @@ async function runOne(path: string, withTerms: boolean): Promise<{ report: strin
         if (prev !== undefined && prev !== sec.id) dupes.add(x.original);
         seen.set(x.original, sec.id);
       }
+  out.push(`QUALITY: ${quality.ok ? 'ok' : `banner shown (${quality.issues.join('; ')})`}`);
   out.push(`DUPLICATED ACROSS SECTIONS: ${dupes.size}`);
   const allSentences = sections.flatMap(sec => sec.paragraphs.filter(p => p.kind === 'text').flatMap(p => p.sentences.map(x => x.original)));
   const short = allSentences.filter(x => x.split(/\s+/).length < 4);

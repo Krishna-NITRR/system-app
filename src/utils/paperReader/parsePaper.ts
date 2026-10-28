@@ -4,6 +4,7 @@
 // the Node test harness can run it directly.
 // ──────────────────────────────────────────────────────────
 import type {
+  ExtractionQuality,
   PaperMetadata,
   PaperSection,
   PaperParagraph,
@@ -14,10 +15,12 @@ import { segmentSentences } from './sentenceSegmenter';
 import { extractMetadata } from './metadataExtractor';
 import type { DocBlock, DocInput } from './docBlocks';
 import { parseReferences } from './references';
+import { assessQuality } from './quality';
 
 export interface ParsedPaper {
   metadata: PaperMetadata;
   sections: PaperSection[];
+  quality: ExtractionQuality;
 }
 
 export function parsePaper(input: DocInput): ParsedPaper {
@@ -50,7 +53,7 @@ export function parsePaper(input: DocInput): ParsedPaper {
       .join(' ');
   }
 
-  return { metadata, sections };
+  return { metadata, sections, quality: assessQuality(sections) };
 }
 
 /** Generate a slug from a section title */

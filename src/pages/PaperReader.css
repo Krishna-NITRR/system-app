@@ -308,6 +308,59 @@
   border-radius: 3px;
 }
 
+/* Extraction quality warning */
+.rpr-quality-banner {
+  max-width: 800px;
+  margin: 0 auto 24px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  background: #fffbeb;
+  border: 1px solid #fcd34d;
+  border-radius: var(--radius);
+  color: #92400e;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+[data-theme="dark"] .rpr-quality-banner {
+  background: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.4);
+  color: #fcd34d;
+}
+.rpr-quality-banner p {
+  margin: 0;
+}
+.rpr-quality-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.rpr-quality-actions button {
+  padding: 4px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: inherit;
+  background: transparent;
+  border: 1px solid currentColor;
+  border-radius: 100px;
+  cursor: pointer;
+}
+.rpr-quality-actions .rpr-quality-dismiss {
+  border: none;
+  padding: 0 4px;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+@media (max-width: 768px) {
+  .rpr-quality-banner {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
 /* Rewritten sentences (Clear Reading) */
 .rpr-sentence.is-transformed {
   background-color: rgba(108, 76, 241, 0.07);

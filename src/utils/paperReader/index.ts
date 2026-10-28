@@ -43,7 +43,7 @@ export async function processPaper(
   // ── Step 2: Parse structure ──
   onProgress?.('parsing', 0);
 
-  const { metadata, sections } = parsePaper(doc);
+  const { metadata, sections, quality } = parsePaper(doc);
 
   onProgress?.('parsing', 100);
 
@@ -120,7 +120,7 @@ export async function processPaper(
 
   stats.uniqueTerms = uniqueTermIds.size;
 
-  return { metadata, sections, stats };
+  return { metadata, sections, stats, quality };
 }
 
 /** Count total sentences across all sections */

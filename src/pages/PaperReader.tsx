@@ -23,6 +23,7 @@ export default function PaperReader() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [flashRef, setFlashRef] = useState<string | null>(null);
+  const [qualityDismissed, setQualityDismissed] = useState(false);
   // Popover explaining a rewritten sentence: shown on hover, pinned on tap
   const [rewriteTip, setRewriteTip] = useState<{
     sentence: PaperSentence;
@@ -184,6 +185,7 @@ export default function PaperReader() {
       });
 
       setState({ phase: 'ready', paper: result });
+      setQualityDismissed(false);
       if (result.sections.length > 0) {
         setUI(prev => ({ ...prev, activeSection: result.sections[0].id }));
       }
@@ -485,6 +487,23 @@ export default function PaperReader() {
 
         {/* Content Area */}
         <div className="rpr-content" ref={contentRef}>
+          {!paper.quality.ok && !qualityDismissed && (
+            <div className="rpr-quality-banner" role="status" title={paper.quality.issues.join('; ')}>
+              <p>
+                This PDF's layout was hard to read. Some text may be out of order. Switch to Original view or try a different version of the paper.
+              </p>
+              <div className="rpr-quality-actions">
+                {ui.viewMode === 'readable' && (
+                  <button type="button" onClick={() => setUI(prev => ({ ...prev, viewMode: 'original' }))}>
+                    Switch to Original
+                  </button>
+                )}
+                <button type="button" aria-label="Dismiss" className="rpr-quality-dismiss" onClick={() => setQualityDismissed(true)}>
+                  &times;
+                </button>
+              </div>
+            </div>
+          )}
           {readable && rewrittenCount > 0 && (
             <p className="rpr-rewrite-hint">
               <span className="rpr-rewrite-swatch" aria-hidden="true" />
