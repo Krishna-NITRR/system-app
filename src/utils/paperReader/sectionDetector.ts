@@ -34,6 +34,8 @@ const SECTION_PATTERNS: { pattern: RegExp; type: SectionType }[] = [
 const KEYWORDS_HEADING = /^(?:keywords?|key\s*words|index\s*terms)\s*[:.—–-]?$/i;
 const ARTICLE_INFO = /^article\s*info(?:rmation)?$/i;
 const RUN_IN = /^(abstract|keywords?|key\s*words|index\s*terms)\s*(?:[—–:.]\s*|-\s+|\s+(?=[A-Z]))(.+)$/is;
+/** IEEE author biography: "Bernhard Suter (S'95–A'96) received the ..." */
+const BIOGRAPHY = /^\p{Lu}[\p{L}.' -]{2,60}\s\((?:S|M|SM|F|A|LM|StM|GS)['’]?\d{2}/u;
 const FRONT_NOTE = /^(?:received|accepted|available online|article history|published|revised)\b/i;
 
 const ROMAN = /^([IVXLC]+)\.\s+(.+)$/;
@@ -168,7 +170,7 @@ export function buildSections(input: DocInput, skip: Set<number>, titleIndex: nu
   const notes: string[] = [];
   const front: RawSection = { title: 'Front matter', level: 1, type: 'other', blocks: [] };
   let current: RawSection | null = null;
-  let mode: 'normal' | 'keywords' | 'articleInfo' = 'normal';
+  let mode: 'normal' | 'keywords' | 'articleInfo' | 'biographies' = 'normal';
 
   const open = (h: HeadingInfo) => {
     current = { ...h, blocks: [] };
@@ -182,6 +184,12 @@ export function buildSections(input: DocInput, skip: Set<number>, titleIndex: nu
 
     // Notices printed above the title, and front-page dates
     if (b.index < titleIndex || (!current && FRONT_NOTE.test(b.text))) {
+      notes.push(b.text);
+      continue;
+    }
+    // Author biographies after the reference list are notes, not references
+    if (inReferences && (mode === 'biographies' || BIOGRAPHY.test(b.text))) {
+      mode = 'biographies';
       notes.push(b.text);
       continue;
     }
