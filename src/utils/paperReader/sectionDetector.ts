@@ -33,7 +33,7 @@ const SECTION_PATTERNS: { pattern: RegExp; type: SectionType }[] = [
 
 const KEYWORDS_HEADING = /^(?:keywords?|key\s*words|index\s*terms)\s*[:.—–-]?$/i;
 const ARTICLE_INFO = /^article\s*info(?:rmation)?$/i;
-const RUN_IN = /^(abstract|keywords?|key\s*words|index\s*terms)\s*(?:[—–:.]\s*|-\s+|\s+(?=[A-Z]))(.+)$/is;
+const RUN_IN = /^(abstract|keywords?|key\s*words|index\s*terms)\s*(?:[—–:.]\s*|-\s*(?=\S)|\s+(?=[A-Z]))(.+)$/is;
 /** IEEE author biography: "Bernhard Suter (S'95–A'96) received the ..." */
 const BIOGRAPHY = /^\p{Lu}[\p{L}.' -]{2,60}\s\((?:S|M|SM|F|A|LM|StM|GS)['’]?\d{2}/u;
 const FRONT_NOTE = /^(?:received|accepted|available online|article history|published|revised)\b/i;
@@ -103,7 +103,8 @@ export function detectHeading(b: DocBlock, input: DocInput): HeadingInfo | null 
       b.bold ||
       b.italic
     : b.lines.length === 1 && text.length < 80;
-  const endsLikeSentence = /[.!?]$/.test(text) && !/\b(?:[IVXLC]+|\d+)\.$/.test(text);
+  // Headings may be questions ("A. Is FQ Sufficient?"), never statements
+  const endsLikeSentence = /[.!]$/.test(text) && !/\b(?:[IVXLC]+|\d+)\.$/.test(text);
   if (endsLikeSentence) return null;
   // Headings are never smaller than footnote-size text in a styled document
   if (input.hasStyles && b.size < input.bodySize - 2.5) return null;
