@@ -9,6 +9,13 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       injectRegister: 'script',
+      // The plain registration script never asks a new worker to take
+      // over, so returning visitors kept the old build until every tab
+      // was closed. Activate new builds as soon as they are installed.
+      workbox: {
+        skipWaiting: true,
+        clientsClaim: true,
+      },
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
         name: 'Krishna Mahawar',

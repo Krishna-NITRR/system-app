@@ -26,6 +26,24 @@ style.innerHTML = `
 `;
 document.head.insertBefore(style, document.head.firstChild);
 
+// After a deploy, a tab still running the previous build can ask for a
+// page chunk that no longer exists. Reload once to pick up the new build
+// (the timestamp guard prevents a reload loop if the chunk really fails).
+window.addEventListener('vite:preloadError', (event) => {
+  const key = 'chunk-reload-at';
+  let last = 0;
+  try {
+    last = Number(sessionStorage.getItem(key)) || 0;
+    sessionStorage.setItem(key, String(Date.now()));
+  } catch {
+    // Storage unavailable: still try one reload
+  }
+  if (Date.now() - last > 10_000) {
+    event.preventDefault();
+    window.location.reload();
+  }
+});
+
 createRoot(document.getElementById('app')!).render(
   <StrictMode>
     <App />
