@@ -59,22 +59,42 @@ function splitAuthorList(s: string): string[] {
     .filter(Boolean);
 }
 
-function parseAuthorBlock(b: DocBlock): string[] | null {
-  const text = b.plainText;
+/** Drop IEEE grade designations: "Bernhard Suter, Associate Member, IEEE," */
+function stripMemberships(s: string): string {
+  return s
+    .replace(/,?\s*(?:(?:Graduate\s+)?Student|Senior|Associate|Life(?:\s+Senior)?)?\s*(?:Member|Fellow),?\s*IEEE\b/gi, '')
+    // "…, Senior Member," with "IEEE" wrapped onto the next line
+    .replace(/,?\s*(?:(?:Graduate\s+)?Student|Senior|Associate|Life(?:\s+Senior)?)?\s*(?:Member|Fellow),?\s*$/i, '')
+    .replace(/^\s*IEEE\b\s*,?\s*/, '')
+    .replace(/\s+,/g, ',')
+    .trim();
+}
+
+interface AuthorBlock {
+  names: string[];
+  /** Affiliation lines printed under the names in the same block */
+  affiliation: string | null;
+}
+
+function parseAuthorBlock(b: DocBlock): AuthorBlock | null {
+  const text = stripMemberships(b.plainText);
   if (text.length > 500 || /\.\s+[A-Z][a-z]+\s+[a-z]+/.test(text)) return null;
 
   // "Name, Name, and Name"
   const parts = splitAuthorList(text);
   const named = parts.filter(isNameLike);
   if (parts.length > 0 && named.length / parts.length >= 0.6 && !AFFILIATION.test(text)) {
-    return named;
+    return { names: named, affiliation: null };
   }
 
-  // Grid entry: name on the first line, affiliation/email below
+  // Names on the first line, affiliation/email below: a single grid
+  // entry ("Ashish Vaswani / Google Brain") or a shared list
+  // ("Mohammed Ghazal, Rania Hamouda, Samr Ali / Electrical and ...")
   if (b.lines.length >= 2) {
-    const first = cleanName(b.lines[0].text);
-    if (isNameLike(first) && AFFILIATION.test(b.lines.slice(1).map(l => l.text).join(' '))) {
-      return [first];
+    const rest = b.lines.slice(1).map(l => l.text).join(' ');
+    const firstParts = splitAuthorList(stripMemberships(b.lines[0].text));
+    if (firstParts.length > 0 && firstParts.every(isNameLike) && AFFILIATION.test(rest)) {
+      return { names: firstParts, affiliation: rest };
     }
   }
   return null;
@@ -131,9 +151,10 @@ export function extractMetadata(input: DocInput): MetadataResult {
     if (b.page !== title.page || b.kind !== 'text') break;
     if (STARTS_SECTION.test(b.text) || /^(?:[IVX]+|\d+)\.?\s+[A-Z]/.test(b.text) && b.text.length < 80) break;
 
-    const names = parseAuthorBlock(b);
-    if (names && names.length > 0) {
-      metadata.authors.push(...names);
+    const parsed = parseAuthorBlock(b);
+    if (parsed && parsed.names.length > 0) {
+      metadata.authors.push(...parsed.names);
+      if (parsed.affiliation) metadata.affiliations.push(parsed.affiliation);
       consumed.add(i);
     } else if (metadata.authors.length > 0 && AFFILIATION.test(b.text) && b.text.length < 600) {
       metadata.affiliations.push(b.text);
