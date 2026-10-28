@@ -308,9 +308,100 @@
   border-radius: 3px;
 }
 
+/* Rewritten sentences (Clear Reading) */
 .rpr-sentence.is-transformed {
-  /* Subtle indicator that it was transformed */
-  /* background-color: rgba(108, 76, 241, 0.05); */
+  background-color: rgba(108, 76, 241, 0.07);
+  box-shadow: inset 0 -1px 0 rgba(108, 76, 241, 0.35);
+  cursor: help;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding: 1px 0;
+}
+
+.rpr-sentence.is-transformed:hover,
+.rpr-sentence.is-transformed:focus-visible,
+.rpr-sentence.is-transformed.is-open {
+  background-color: var(--purple-light);
+  outline: none;
+}
+
+.rpr-rewrite-hint {
+  max-width: 800px;
+  margin: 0 auto 28px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--tm);
+}
+
+.rpr-rewrite-swatch {
+  flex-shrink: 0;
+  width: 18px;
+  height: 12px;
+  border-radius: 2px;
+  background-color: rgba(108, 76, 241, 0.12);
+  box-shadow: inset 0 -1px 0 rgba(108, 76, 241, 0.45);
+}
+
+.rpr-rewrite-tip {
+  position: fixed;
+  z-index: 50;
+  width: min(360px, calc(100vw - 24px));
+  max-height: 50vh;
+  overflow-y: auto;
+  padding: 12px 14px;
+  background: var(--bg2);
+  border: 1px solid var(--div);
+  border-radius: var(--radius);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--text);
+}
+
+.rpr-rewrite-tip.is-above {
+  transform: translateY(-100%);
+}
+
+.rpr-rewrite-tip-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--purple);
+}
+
+.rpr-rewrite-tip-head button {
+  background: transparent;
+  border: none;
+  color: var(--tm);
+  font-size: 1.2rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+}
+
+.rpr-rewrite-tip-rule {
+  margin: 6px 0 10px;
+  color: var(--tm);
+}
+
+.rpr-rewrite-tip-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--tl);
+  margin-bottom: 2px;
+}
+
+.rpr-rewrite-tip-original {
+  margin: 0;
 }
 
 /* Figure and table captions */

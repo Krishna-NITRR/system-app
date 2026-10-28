@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect, useMemo, type ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import usePageMeta from '../hooks/usePageMeta';
 import { processPaper } from '../utils/paperReader';
-import type { ReaderState, ReaderUIState } from '../types/paperReader';
+import type { PaperSentence, ReaderState, ReaderUIState } from '../types/paperReader';
 import { getTermById } from '../data/terminology';
 import './PaperReader.css';
 
@@ -22,6 +23,24 @@ export default function PaperReader() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const [flashRef, setFlashRef] = useState<string | null>(null);
+  // Popover explaining a rewritten sentence: shown on hover, pinned on tap
+  const [rewriteTip, setRewriteTip] = useState<{
+    sentence: PaperSentence;
+    left: number;
+    top: number;
+    above: boolean;
+    pinned: boolean;
+  } | null>(null);
+  const tipCloseTimer = useRef<number | undefined>(undefined);
+  // Leave a moment to move the pointer from the sentence onto the popover
+  const scheduleTipClose = () => {
+    window.clearTimeout(tipCloseTimer.current);
+    tipCloseTimer.current = window.setTimeout(
+      () => setRewriteTip(tip => (tip && !tip.pinned ? null : tip)),
+      200
+    );
+  };
+  const cancelTipClose = () => window.clearTimeout(tipCloseTimer.current);
 
   // Reference entries that in-text citations like [5] can jump to
   const refIds = useMemo(
@@ -54,6 +73,39 @@ export default function PaperReader() {
     document.addEventListener('click', handleClickOutside);
     return () => document.removeEventListener('click', handleClickOutside);
   }, [ui.activeTerm]);
+
+  // Close a pinned rewrite popover on outside click; hide it on scroll
+  useEffect(() => {
+    if (!rewriteTip) return;
+    const onClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.rpr-rewrite-tip') && !target.closest('.rpr-sentence.is-transformed')) {
+        setRewriteTip(null);
+      }
+    };
+    const onScroll = () => setRewriteTip(null);
+    const container = contentRef.current;
+    document.addEventListener('click', onClick);
+    container?.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      document.removeEventListener('click', onClick);
+      container?.removeEventListener('scroll', onScroll);
+    };
+  }, [rewriteTip]);
+
+  const showRewrite = (sentence: PaperSentence, el: HTMLElement, pinned: boolean) => {
+    // Anchor to the sentence's first line, above it unless near the top
+    const rect = el.getClientRects()[0] ?? el.getBoundingClientRect();
+    const width = Math.min(360, window.innerWidth - 24);
+    const above = rect.top > 240;
+    setRewriteTip({
+      sentence,
+      left: Math.max(12, Math.min(rect.left, window.innerWidth - width - 12)),
+      top: above ? rect.top - 8 : rect.bottom + 8,
+      above,
+      pinned,
+    });
+  };
 
   // Handle section scroll highlighting
   useEffect(() => {
@@ -296,6 +348,81 @@ export default function PaperReader() {
 
   // ── Rendering Ready (Reader) ──
   const paper = state.paper;
+  const readable = ui.viewMode === 'readable';
+  const rewrittenCount = paper.stats.transformedSentences;
+
+  const renderSentence = (sentence: PaperSentence) => {
+    const textToShow = readable ? sentence.transformed : sentence.original;
+
+    // Glossary terms (Clear Reading only), with citations linked in the text between them
+    const elements: ReactNode[] = [];
+    let lastIdx = 0;
+    const anns = readable && ui.showAnnotations
+      ? [...sentence.annotations].sort((a, b) => a.startOffset - b.startOffset)
+      : [];
+    anns.forEach((ann, idx) => {
+      if (ann.startOffset > lastIdx) {
+        elements.push(...withCitations(textToShow.substring(lastIdx, ann.startOffset), refIds, handleCite, `${sentence.id}-${idx}`));
+      }
+      elements.push(
+        <span
+          key={`term-${idx}`}
+          className={`rpr-term ${ui.activeTerm === ann.termId ? 'active' : ''}`}
+          onClick={(e) => handleTermClick(ann.termId, e)}
+        >
+          {ann.surfaceForm}
+        </span>
+      );
+      lastIdx = ann.endOffset;
+    });
+    if (lastIdx < textToShow.length) {
+      elements.push(...withCitations(textToShow.substring(lastIdx), refIds, handleCite, `${sentence.id}-last`));
+    }
+
+    if (!(readable && sentence.wasTransformed)) {
+      return (
+        <span key={sentence.id} className="rpr-sentence">
+          {elements}{' '}
+        </span>
+      );
+    }
+
+    // Rewritten sentence: marked, and explained on hover / tap / focus
+    const open = rewriteTip?.sentence.id === sentence.id;
+    return (
+      <span key={sentence.id}>
+        <span
+          className={`rpr-sentence is-transformed ${open ? 'is-open' : ''}`}
+          role="button"
+          tabIndex={0}
+          aria-expanded={open}
+          aria-label="Rewritten sentence. Show the original."
+          onMouseEnter={e => {
+            cancelTipClose();
+            if (!rewriteTip?.pinned) showRewrite(sentence, e.currentTarget, false);
+          }}
+          onMouseLeave={scheduleTipClose}
+          onFocus={e => showRewrite(sentence, e.currentTarget, false)}
+          onBlur={() => setRewriteTip(tip => (tip && !tip.pinned ? null : tip))}
+          onClick={e => {
+            if ((e.target as HTMLElement).closest('.rpr-term, .rpr-cite')) return;
+            if (rewriteTip?.pinned && open) setRewriteTip(null);
+            else showRewrite(sentence, e.currentTarget, true);
+          }}
+          onKeyDown={e => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              showRewrite(sentence, e.currentTarget, true);
+            } else if (e.key === 'Escape') {
+              setRewriteTip(null);
+            }
+          }}
+        >
+          {elements}
+        </span>{' '}
+      </span>
+    );
+  };
   
   return (
     <div className="rpr-reader-wrapper">
@@ -358,74 +485,19 @@ export default function PaperReader() {
 
         {/* Content Area */}
         <div className="rpr-content" ref={contentRef}>
+          {readable && rewrittenCount > 0 && (
+            <p className="rpr-rewrite-hint">
+              <span className="rpr-rewrite-swatch" aria-hidden="true" />
+              {rewrittenCount} {rewrittenCount === 1 ? 'sentence was' : 'sentences were'} rewritten for clarity. Hover or tap one to see the original.
+            </p>
+          )}
           {paper.sections.map(section => (
             <section key={section.id} id={section.id} className="rpr-section">
               <h2 className="rpr-section-title">{section.title}</h2>
               
               {section.paragraphs.map(p => (
                 <p key={p.id} className={p.kind === 'caption' ? 'rpr-caption' : 'rpr-paragraph'}>
-                  {p.sentences.map(sentence => {
-                    const textToShow = ui.viewMode === 'readable' ? sentence.transformed : sentence.original;
-
-                    // If no annotations or in original mode, just show text
-                    if (!ui.showAnnotations || sentence.annotations.length === 0 || ui.viewMode === 'original') {
-                      return (
-                        <span
-                          key={sentence.id}
-                          className={`rpr-sentence ${ui.viewMode === 'readable' && sentence.wasTransformed ? 'is-transformed' : ''}`}
-                          title={sentence.wasTransformed && ui.viewMode === 'readable' ? `Original: ${sentence.original}` : undefined}
-                        >
-                          {withCitations(textToShow, refIds, handleCite, sentence.id)}{' '}
-                        </span>
-                      );
-                    }
-
-                    // Render text with inline annotations
-                    const elements: React.ReactNode[] = [];
-                    let lastIdx = 0;
-
-                    // Sort annotations by startOffset to render sequentially
-                    const sortedAnns = [...sentence.annotations].sort((a, b) => a.startOffset - b.startOffset);
-
-                    sortedAnns.forEach((ann, idx) => {
-                      if (ann.startOffset > lastIdx) {
-                        elements.push(
-                          <span key={`text-${idx}`}>
-                            {withCitations(textToShow.substring(lastIdx, ann.startOffset), refIds, handleCite, `${sentence.id}-${idx}`)}
-                          </span>
-                        );
-                      }
-
-                      elements.push(
-                        <span
-                          key={`term-${idx}`}
-                          className={`rpr-term ${ui.activeTerm === ann.termId ? 'active' : ''}`}
-                          onClick={(e) => handleTermClick(ann.termId, e)}
-                        >
-                          {ann.surfaceForm}
-                        </span>
-                      );
-                      lastIdx = ann.endOffset;
-                    });
-
-                    if (lastIdx < textToShow.length) {
-                      elements.push(
-                        <span key="text-last">
-                          {withCitations(textToShow.substring(lastIdx), refIds, handleCite, `${sentence.id}-last`)}
-                        </span>
-                      );
-                    }
-
-                    return (
-                      <span
-                        key={sentence.id}
-                        className={`rpr-sentence ${sentence.wasTransformed ? 'is-transformed' : ''}`}
-                        title={sentence.wasTransformed ? `Original: ${sentence.original}` : undefined}
-                      >
-                        {elements}{' '}
-                      </span>
-                    );
-                  })}
+                  {p.sentences.map(renderSentence)}
                 </p>
               ))}
 
@@ -446,6 +518,28 @@ export default function PaperReader() {
             </section>
           ))}
         </div>
+
+        {/* Portal: a transformed ancestor would offset position: fixed */}
+        {rewriteTip && createPortal(
+          <div
+            className={`rpr-rewrite-tip ${rewriteTip.above ? 'is-above' : ''}`}
+            role="tooltip"
+            style={{ left: rewriteTip.left, top: rewriteTip.top }}
+            onMouseEnter={cancelTipClose}
+            onMouseLeave={scheduleTipClose}
+          >
+            <div className="rpr-rewrite-tip-head">
+              <span>Rewritten{rewriteTip.sentence.transformationRule ? ` · ${rewriteTip.sentence.transformationRule.name}` : ''}</span>
+              <button type="button" aria-label="Close" onClick={() => setRewriteTip(null)}>&times;</button>
+            </div>
+            {rewriteTip.sentence.transformationRule && (
+              <p className="rpr-rewrite-tip-rule">{rewriteTip.sentence.transformationRule.description}</p>
+            )}
+            <div className="rpr-rewrite-tip-label">Original</div>
+            <p className="rpr-rewrite-tip-original">{rewriteTip.sentence.original}</p>
+          </div>,
+          document.body
+        )}
 
         {/* Terminology Panel */}
         <aside className={`rpr-term-panel ${ui.activeTerm ? 'visible' : 'hidden'}`}>
