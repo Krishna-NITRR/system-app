@@ -5,6 +5,7 @@
 //   npm run test:parser -- paper.pdf    # specific files
 //   npm run test:parser -- --out dir    # also write <name>.txt reports to dir
 //   npm run test:parser -- --raw        # also write <name>.raw.txt (full extracted text)
+//   npm run test:parser -- --terms      # also list glossary terms highlighted per section
 //
 // Runs the same extraction + parse code the browser uses and
 // prints the title, the section list and the first 500
@@ -18,6 +19,8 @@ import * as pdfjs from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { extractPdfLayout, layoutToText } from '../src/utils/pdf';
 import { parsePaper } from '../src/utils/paperReader/parsePaper';
 import { fromPdfLayout } from '../src/utils/paperReader/docBlocks';
+import { annotateSection, buildTrie } from '../src/utils/paperReader/terminologyMatcher';
+import { getAllTerms, loadTerminology } from '../src/data/terminology';
 
 const FIXTURES_DIR = resolve(import.meta.dirname, '../test-fixtures');
 const require = createRequire(import.meta.url);
@@ -30,15 +33,17 @@ function parseArgs(argv: string[]) {
   const files: string[] = [];
   let outDir: string | null = null;
   let raw = false;
+  let terms = false;
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === '--out') outDir = argv[++i];
     else if (argv[i] === '--raw') raw = true;
+    else if (argv[i] === '--terms') terms = true;
     else files.push(argv[i]);
   }
-  return { files, outDir, raw };
+  return { files, outDir, raw, terms };
 }
 
-async function runOne(path: string): Promise<{ report: string; rawText: string }> {
+async function runOne(path: string, withTerms: boolean): Promise<{ report: string; rawText: string }> {
   const data = new Uint8Array(readFileSync(path));
   const task = pdfjs.getDocument({
     data,
@@ -73,6 +78,17 @@ async function runOne(path: string): Promise<{ report: string; rawText: string }
   const allSentences = sections.flatMap(sec => sec.paragraphs.filter(p => p.kind === 'text').flatMap(p => p.sentences.map(x => x.original)));
   const short = allSentences.filter(x => x.split(/\s+/).length < 4);
   out.push(`SENTENCES: ${allSentences.length} (under 4 words: ${short.length}${short.length ? ` e.g. ${short.slice(0, 4).map(x => JSON.stringify(x)).join(', ')}` : ''})`);
+  if (withTerms) {
+    await loadTerminology();
+    const index = buildTrie(getAllTerms());
+    out.push('');
+    out.push('GLOSSARY TERMS (first occurrence per section):');
+    for (const sec of sections) {
+      annotateSection(sec, index);
+      const found = sec.paragraphs.flatMap(p => p.sentences.flatMap(x => x.annotations.map(a => a.surfaceForm)));
+      if (found.length) out.push(`  ${sec.title}: ${found.join(', ')}`);
+    }
+  }
   out.push('');
   out.push(`SECTIONS (${sections.length}):`);
   for (const s of sections) {
@@ -98,7 +114,7 @@ async function runOne(path: string): Promise<{ report: string; rawText: string }
 }
 
 async function main() {
-  const { files, outDir, raw } = parseArgs(process.argv.slice(2));
+  const { files, outDir, raw, terms } = parseArgs(process.argv.slice(2));
   let targets = files;
   if (targets.length === 0) {
     if (!existsSync(FIXTURES_DIR)) {
@@ -117,7 +133,7 @@ async function main() {
 
   for (const t of targets) {
     try {
-      const { report, rawText } = await runOne(t);
+      const { report, rawText } = await runOne(t, terms);
       console.log(report + '\n');
       const dir = outDir ?? '.';
       if (outDir) writeFileSync(join(dir, basename(t, '.pdf') + '.txt'), report);

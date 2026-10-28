@@ -4,16 +4,17 @@
 // Paper content never leaves the client.
 // ──────────────────────────────────────────────────────────
 import type { TermEntry, TermDataset } from '../../types/paperReader';
-import { supabase } from '../../supabaseClient';
 
 // Bundled datasets (static imports for offline fallback)
 import generalAcademic from './general-academic.json';
 import materialsScience from './materials-science.json';
+import computerScience from './computer-science.json';
 
 /** All locally-bundled datasets */
 const BUNDLED_DATASETS: TermDataset[] = [
   generalAcademic as TermDataset,
   materialsScience as TermDataset,
+  computerScience as TermDataset,
 ];
 
 /** In-memory term lookup */
@@ -36,8 +37,11 @@ export async function loadTerminology(): Promise<Map<string, TermEntry>> {
     }
   }
 
-  // 2. Try to load from Supabase (overrides bundled definitions)
+  // 2. Try to load from Supabase (overrides bundled definitions).
+  //    Imported lazily so the bundled glossary works without it (and
+  //    in the Node test harness, where there is no Vite env).
   try {
+    const { supabase } = await import('../../supabaseClient');
     const { data, error } = await supabase
       .from('terminology')
       .select('*')
@@ -48,7 +52,7 @@ export async function loadTerminology(): Promise<Map<string, TermEntry>> {
         const entry: TermEntry = {
           id: row.id,
           term: row.term,
-          aliases: row.aliases ?? [],
+          aliases: Array.isArray(row.aliases) ? row.aliases : [],
           abbreviation: row.abbreviation ?? null,
           domain: row.domain,
           subdomain: row.subdomain ?? null,

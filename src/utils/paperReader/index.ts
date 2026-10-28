@@ -14,7 +14,7 @@ import { extractDocument } from '../documentParser';
 import { parsePaper } from './parsePaper';
 import { classifySentence } from './safetyClassifier';
 import { transformSentence } from './transformationEngine';
-import { buildTrie, matchTermsInSentence } from './terminologyMatcher';
+import { annotateSection, buildTrie } from './terminologyMatcher';
 import { loadTerminology, getAllTerms } from '../../data/terminology/index';
 
 type ProgressCallback = (step: ProcessingStep, progress: number) => void;
@@ -107,24 +107,16 @@ export async function processPaper(
   const trie = buildTrie(allTerms);
   const uniqueTermIds = new Set<string>();
 
-  processedCount = 0;
-  for (const section of sections) {
+  sections.forEach((section, i) => {
+    annotateSection(section, trie);
     for (const paragraph of section.paragraphs) {
       for (const sentence of paragraph.sentences) {
-        // Match against the transformed text (what the user will read)
-        const annotations = matchTermsInSentence(sentence.transformed, trie);
-        sentence.annotations = annotations;
-
-        stats.annotatedTerms += annotations.length;
-        for (const a of annotations) uniqueTermIds.add(a.termId);
-
-        processedCount++;
-        if (totalSentences > 0) {
-          onProgress?.('annotating', Math.round((processedCount / totalSentences) * 100));
-        }
+        stats.annotatedTerms += sentence.annotations.length;
+        for (const a of sentence.annotations) uniqueTermIds.add(a.termId);
       }
     }
-  }
+    onProgress?.('annotating', Math.round(((i + 1) / sections.length) * 100));
+  });
 
   stats.uniqueTerms = uniqueTermIds.size;
 
