@@ -2,7 +2,7 @@
 // Read positioned text items (and font styles) from a pdf.js page.
 // ──────────────────────────────────────────────────────────
 import type { PdfPageLike, PdfTextItem } from './types';
-import { imageBoxes, type Box } from './figures';
+import { figureBoxes, type Box } from './figures';
 import { normalizeChars } from './text';
 
 interface RawItem {
@@ -20,7 +20,7 @@ export interface RawPage {
   width: number;
   height: number;
   items: PdfTextItem[];
-  /** Image placements, for dropping text drawn over figures */
+  /** Images and vector drawings, for dropping text drawn over figures */
   images: Box[];
 }
 
@@ -34,7 +34,7 @@ export async function readPage(page: PdfPageLike): Promise<RawPage> {
   // us where images are drawn.
   let images: Box[] = [];
   try {
-    images = imageBoxes(await page.getOperatorList(), page.view);
+    images = figureBoxes(await page.getOperatorList(), page.view);
   } catch {
     // Fonts and images are only hints; carry on without them.
   }

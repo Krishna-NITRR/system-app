@@ -155,7 +155,7 @@ function splitKeywords(text: string, lines: string[]): string[] {
 
 function isFootnote(b: DocBlock, input: DocInput): boolean {
   if (!input.hasStyles || b.kind !== 'text') return false;
-  return b.size < input.bodySize - 0.5 && b.top > b.pageHeight * 0.55 && b.text.length < 800;
+  return b.size < input.bodySize - 0.5 && b.top > b.pageHeight * 0.55 && b.text.length < 2000;
 }
 
 /**

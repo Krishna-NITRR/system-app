@@ -20,6 +20,7 @@ const OP_TRANSFORM = 12;
 const OP_FORM_BEGIN = 74;
 const OP_FORM_END = 75;
 const IMAGE_OPS = new Set([83, 84, 85, 86, 87, 88, 90]);
+const OP_CONSTRUCT_PATH = 91;
 
 type Matrix = [number, number, number, number, number, number];
 
@@ -34,13 +35,27 @@ function multiply(m: Matrix, n: number[]): Matrix {
   ];
 }
 
-/** Bounding boxes (top-down page coordinates) of images painted on the page */
-export function imageBoxes(
+/**
+ * Figure areas on the page (top-down page coordinates): images, plus
+ * dense clusters of drawn paths (vector charts and diagrams).
+ */
+export function figureBoxes(
   ops: { fnArray: number[]; argsArray: unknown[] },
   view: number[]
 ): Box[] {
-  const [vx0, , , vy1] = view;
+  const [vx0, vy0, vx1, vy1] = view;
   const boxes: Box[] = [];
+  const paths: Box[] = [];
+  const toPage = (m: Matrix, x0: number, y0: number, x1: number, y1: number): Box => {
+    const xs = [x0, x1, x0, x1].map((x, k) => m[0] * x + m[2] * [y0, y0, y1, y1][k] + m[4]);
+    const ys = [x0, x1, x0, x1].map((x, k) => m[1] * x + m[3] * [y0, y0, y1, y1][k] + m[5]);
+    return {
+      x0: Math.min(...xs) - vx0,
+      x1: Math.max(...xs) - vx0,
+      top: vy1 - Math.max(...ys),
+      bottom: vy1 - Math.min(...ys),
+    };
+  };
   const stack: Matrix[] = [];
   let ctm: Matrix = [1, 0, 0, 1, 0, 0];
 
@@ -61,17 +76,57 @@ export function imageBoxes(
       ctm = stack.pop() ?? ctm;
     } else if (IMAGE_OPS.has(fn)) {
       // Images are drawn into the unit square of the current matrix
-      const xs = [ctm[4], ctm[0] + ctm[4], ctm[2] + ctm[4], ctm[0] + ctm[2] + ctm[4]];
-      const ys = [ctm[5], ctm[1] + ctm[5], ctm[3] + ctm[5], ctm[1] + ctm[3] + ctm[5]];
-      boxes.push({
-        x0: Math.min(...xs) - vx0,
-        x1: Math.max(...xs) - vx0,
-        top: vy1 - Math.max(...ys),
-        bottom: vy1 - Math.min(...ys),
-      });
+      boxes.push(toPage(ctm, 0, 0, 1, 1));
+    } else if (fn === OP_CONSTRUCT_PATH && args) {
+      // [op, data, minMax]: minMax is the path's bounding box in user space
+      const mm = args[2] as ArrayLike<number> | null | undefined;
+      if (mm && mm.length >= 4 && Number.isFinite(mm[0])) {
+        paths.push(toPage(ctm, mm[0], mm[1], mm[2], mm[3]));
+      }
     }
   }
-  return boxes;
+  return [...boxes, ...vectorFigures(paths, vx1 - vx0, vy1 - vy0)];
+}
+
+/**
+ * Cluster path bounding boxes; a cluster of many shapes covering a
+ * reasonable area is a vector figure. A few rule lines (table borders,
+ * separators) or a page-sized frame are not.
+ */
+function vectorFigures(paths: Box[], pageWidth: number, pageHeight: number): Box[] {
+  const pageArea = pageWidth * pageHeight;
+  const NEAR = 6;
+  const clusters: { box: Box; count: number }[] = [];
+  for (const p of paths) {
+    const area = (p.x1 - p.x0) * (p.bottom - p.top);
+    if (area > 0.5 * pageArea) continue;
+    let target: { box: Box; count: number } = { box: { ...p }, count: 1 };
+    // Absorb every cluster this box touches
+    for (let i = clusters.length - 1; i >= 0; i--) {
+      const c = clusters[i].box;
+      const touches =
+        p.x0 <= c.x1 + NEAR && p.x1 >= c.x0 - NEAR && p.top <= c.bottom + NEAR && p.bottom >= c.top - NEAR;
+      if (!touches) continue;
+      target = {
+        box: {
+          x0: Math.min(target.box.x0, c.x0),
+          x1: Math.max(target.box.x1, c.x1),
+          top: Math.min(target.box.top, c.top),
+          bottom: Math.max(target.box.bottom, c.bottom),
+        },
+        count: target.count + clusters[i].count,
+      };
+      clusters.splice(i, 1);
+    }
+    clusters.push(target);
+  }
+  return clusters
+    .filter(c => {
+      const w = c.box.x1 - c.box.x0;
+      const h = c.box.bottom - c.box.top;
+      return c.count >= 6 && w > 40 && h > 40 && w * h < 0.5 * pageArea;
+    })
+    .map(c => c.box);
 }
 
 /* ── Captions ── */
