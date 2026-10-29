@@ -2,7 +2,7 @@ import type { Product } from '../types/product';
 
 export const book: Product = {
   id: 'think-research-publish',
-  name: 'Think Research Publish',
+  name: 'Careers Through Research',
   
   defaultHero: {
     headline: 'A practical system for starting research, publishing papers, and building a career',

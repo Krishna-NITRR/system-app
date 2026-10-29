@@ -31,7 +31,7 @@ export default function BetaReader() {
   const shouldReduceMotion = useReducedMotion();
 
   usePageMeta({
-    title: 'Become a Beta Reader - Think Research Publish',
+    title: 'Become a Beta Reader - Careers Through Research',
     description: 'Join the exclusive beta reading group for Krishna Mahawar\'s upcoming book on starting research, publishing, and building a career.',
     canonical: 'https://www.krishnamahawar.in/beta-reader',
   });

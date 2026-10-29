@@ -56,7 +56,7 @@ export default function EmailSignup() {
             <li>Cold email templates based on 130+ real emails</li>
             <li>Fellowship list with 50+ programs and deadlines</li>
             <li>Internship application system step by step</li>
-            <li>Early chapters of Think Research Publish</li>
+            <li>Early chapters of Careers Through Research</li>
             <li>Professor outreach database access</li>
           </ul>
         </motion.div>
