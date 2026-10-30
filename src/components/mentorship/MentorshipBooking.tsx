@@ -6,23 +6,32 @@ import PaymentTrigger from './PaymentTrigger';
 import type { Slot } from '../../types/mentorship';
 import { mentorshipConfig } from '../../config/mentorship';
 import { track } from '../../utils/analytics';
+import { saveLead } from '../../utils/mentorshipLead';
 
 export default function MentorshipBooking() {
   const [currency, setCurrency] = useState<'INR' | 'USD'>('INR');
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [formData, setFormData] = useState<PreSessionFormData | null>(null);
   const [selectedSlot, setSelectedSlot] = useState<Slot | null>(null);
+  // One lead row per visit, updated as the student moves through the steps
+  const [leadId] = useState(() => crypto.randomUUID());
   const navigate = useNavigate();
 
   const handleFormSubmit = (data: PreSessionFormData) => {
     setFormData(data);
+    saveLead({ leadId, stage: 'form', form: data, currency });
     setStep(2);
   };
 
   const handleSlotSelect = (slot: Slot) => {
     setSelectedSlot(slot);
     track('slot_selected');
+    if (formData) saveLead({ leadId, stage: 'slot', form: formData, slot, currency });
     setStep(3);
+  };
+
+  const handlePayClick = (bookingId: string) => {
+    if (formData) saveLead({ leadId, stage: 'pay', form: formData, slot: selectedSlot, currency, bookingId });
   };
 
   const handlePaymentSuccess = (bookingId: string) => {
@@ -75,6 +84,7 @@ export default function MentorshipBooking() {
             selectedSlot={selectedSlot}
             currency={currency}
             onSuccess={handlePaymentSuccess}
+            onPayClick={handlePayClick}
             onCancel={() => setStep(2)}
           />
         )}

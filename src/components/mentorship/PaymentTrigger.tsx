@@ -18,6 +18,7 @@ interface Props {
   currency: 'INR' | 'USD';
   onSuccess: (bookingId: string) => void;
   onCancel: () => void;
+  onPayClick?: (bookingId: string) => void;
 }
 
 function formatSlotDateTime(isoString: string): { date: string; time: string } {
@@ -29,7 +30,7 @@ function formatSlotDateTime(isoString: string): { date: string; time: string } {
 
 const REFERRAL_DISCOUNT = 0.10; // 10% off with valid referral code
 
-export default function PaymentTrigger({ formData, selectedSlot, currency, onSuccess, onCancel }: Props) {
+export default function PaymentTrigger({ formData, selectedSlot, currency, onSuccess, onCancel, onPayClick }: Props) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -74,6 +75,7 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
 
       // 1. Create booking record (pending) using anon key
       const bookingId = crypto.randomUUID();
+      onPayClick?.(bookingId);
       const { error: insertError } = await supabase
         .from('mentorship_bookings')
         .insert([{
