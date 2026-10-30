@@ -33,12 +33,12 @@ export const mentorshipConfig: MentorshipConfig = {
     },
     {
       title: 'During: 30 focused minutes',
-      description: 'Clarify the goal → diagnose → weigh the options → set priorities. Live on Google Meet.',
+      description: 'We go through your actual email, CV or shortlist together and decide what to change. Live on Google Meet.',
       icon: 'video',
     },
     {
       title: 'After: a written plan in 24 h',
-      description: '3–5 prioritised actions, what to improve, and the first step to take.',
+      description: 'A short note of what we decided: what to fix, who to contact, and what to do first.',
       icon: 'plan',
     },
     {
