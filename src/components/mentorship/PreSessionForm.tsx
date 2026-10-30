@@ -21,9 +21,10 @@ const SOURCES = ['LinkedIn', 'Google search', 'YouTube', 'A friend or senior', '
 
 // Extra intake answers that have no column of their own; they are appended to
 // student_situation so they reach the booking row without a schema change.
-function withIntakeNotes(situation: string, deadline: string, source: string): string {
+function withIntakeNotes(situation: string, deadline: string, source: string, phone: string): string {
   const utm = captureUtm();
   const notes = [
+    phone && `Contact no. (WhatsApp): ${phone}`,
     deadline && `Nearest deadline: ${deadline}`,
     source && `Found via: ${source}`,
     Object.keys(utm).length > 0 && `UTM: ${Object.entries(utm).map(([k, v]) => `${k}=${v}`).join(', ')}`,
@@ -49,6 +50,7 @@ export default function PreSessionForm({ onSubmit, loading }: Props) {
   const [started, setStarted] = useState(false);
   const [deadline, setDeadline] = useState('');
   const [source, setSource] = useState('');
+  const [phone, setPhone] = useState('');
   const [formData, setFormData] = useState<PreSessionFormData>({
     student_name: '',
     student_email: '',
@@ -94,7 +96,7 @@ export default function PreSessionForm({ onSubmit, loading }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     track('form_complete', { stage: formData.academic_stage });
-    onSubmit({ ...formData, student_situation: withIntakeNotes(formData.student_situation, deadline, source) });
+    onSubmit({ ...formData, student_situation: withIntakeNotes(formData.student_situation, deadline, source, phone.trim()) });
   };
 
   return (
@@ -129,6 +131,22 @@ export default function PreSessionForm({ onSubmit, loading }: Props) {
               onChange={handleChange}
             />
           </div>
+        </div>
+
+        <div className="f-field">
+          <label htmlFor="phone">Contact no. <span style={hintStyle}>(WhatsApp preferred, optional)</span></label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            autoComplete="tel"
+            inputMode="tel"
+            pattern="\+?[0-9 \-]{7,20}"
+            title="Digits only, with an optional + country code"
+            placeholder="E.g., +91 98765 43210"
+            value={phone}
+            onChange={e => setPhone(e.target.value)}
+          />
         </div>
 
         <div className="mentorship-form-grid">
