@@ -37,7 +37,7 @@ function NotReadyCapture() {
         <div>
           <h2 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#111827', margin: '0 0 8px 0' }}>Not ready to book?</h2>
           <p style={{ color: '#6b7280', margin: 0, lineHeight: 1.6 }}>
-            Start with the free research tools and resources: cold-email templates, the professor database and more. Book later if you get stuck.
+            Start with the free research tools and career roadmaps for Finance, IT, Core and Research. Each track is mapped end to end, so you always know what comes next. Book later if you get stuck.
           </p>
         </div>
         <Link
