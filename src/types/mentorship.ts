@@ -6,7 +6,7 @@ export interface MentorshipFAQItem {
 export interface MentorshipInclude {
   title: string;
   description: string;
-  icon: string;
+  icon: 'form' | 'video' | 'plan' | 'calendar';
 }
 
 export interface MentorshipProcessStep {
@@ -14,11 +14,18 @@ export interface MentorshipProcessStep {
   description: string;
 }
 
+export interface MentorshipBlocker {
+  quote: string;
+  description: string;
+}
+
 export interface MentorshipConfig {
   priceINR: number; // in rupees
   priceUSD: number; // in dollars
   durationMinutes: number;
+  blockers: MentorshipBlocker[];
   includes: MentorshipInclude[];
+  credentials: string[];
   process: MentorshipProcessStep[];
   faq: MentorshipFAQItem[];
   goodFor: string[];

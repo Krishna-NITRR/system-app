@@ -110,7 +110,7 @@ export default function SlotPicker({ onSelectSlot, selectedSlot }: Props) {
                 onClick={() => onSelectSlot(slot)}
                 style={{
                   padding: '12px',
-                  borderRadius: '6px',
+                  borderRadius: '8px',
                   border: `1px solid ${isSelected ? 'var(--purple)' : 'var(--div)'}`,
                   background: isSelected ? 'var(--purple)' : 'transparent',
                   color: isSelected ? 'white' : 'var(--text)',

@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import CurrencyToggle from './CurrencyToggle';
 import PreSessionForm, { type PreSessionFormData } from './PreSessionForm';
 import SlotPicker from './SlotPicker';
 import PaymentTrigger from './PaymentTrigger';
 import type { Slot } from '../../types/mentorship';
+import { mentorshipConfig } from '../../config/mentorship';
+import { track } from '../../utils/analytics';
 
 export default function MentorshipBooking() {
   const [currency, setCurrency] = useState<'INR' | 'USD'>('INR');
@@ -20,62 +21,77 @@ export default function MentorshipBooking() {
 
   const handleSlotSelect = (slot: Slot) => {
     setSelectedSlot(slot);
+    track('slot_selected');
     setStep(3);
   };
 
   const handlePaymentSuccess = (bookingId: string) => {
+    track('payment_success', { currency });
     navigate(`/mentorship/confirmed?booking=${bookingId}`);
   };
 
+  const price = currency === 'INR' ? `₹${mentorshipConfig.priceINR}` : `$${mentorshipConfig.priceUSD}`;
+  const steps = ['About you', 'Time', `Pay ${price}`];
+
   return (
-    <section className="sec bg2" id="booking">
-      <div className="wrap fade vis">
-        <div className="eyebrow" style={{ textAlign: 'center', marginBottom: '16px' }}>Book Your Session</div>
-        <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '40px' }}>Let's figure it out</h2>
-
-        <CurrencyToggle currency={currency} onChange={setCurrency} />
-
-        {/* Stepper Header */}
-        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '40px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ fontWeight: step >= 1 ? 600 : 400, color: step >= 1 ? 'var(--purple)' : 'var(--tl)' }}>1. Form</div>
-            <div style={{ height: '1px', width: '32px', background: 'var(--div)' }} />
-            <div style={{ fontWeight: step >= 2 ? 600 : 400, color: step >= 2 ? 'var(--purple)' : 'var(--tl)' }}>2. Time</div>
-            <div style={{ height: '1px', width: '32px', background: 'var(--div)' }} />
-            <div style={{ fontWeight: step >= 3 ? 600 : 400, color: step >= 3 ? 'var(--purple)' : 'var(--tl)' }}>3. Pay</div>
-          </div>
-        </div>
-
-        <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-          {step === 1 && (
-            <PreSessionForm onSubmit={handleFormSubmit} loading={false} />
-          )}
-
-          {step === 2 && (
-            <div>
-              <div style={{ marginBottom: '16px' }}>
-                <button 
-                  onClick={() => setStep(1)} 
-                  style={{ background: 'none', border: 'none', color: 'var(--tm)', cursor: 'pointer', padding: 0 }}
-                >
-                  ← Back to form
-                </button>
-              </div>
-              <SlotPicker selectedSlot={selectedSlot} onSelectSlot={handleSlotSelect} />
+    <div>
+      {/* Stepper Header : kept on one line, even on phones */}
+      <div className="mentorship-stepper" aria-label="Booking steps">
+        {steps.map((label, i) => {
+          const n = (i + 1) as 1 | 2 | 3;
+          return (
+            <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+              {i > 0 && <div style={{ height: '1px', width: '20px', background: 'var(--div)', flexShrink: 0 }} />}
+              <span style={{ fontWeight: step >= n ? 600 : 400, color: step >= n ? 'var(--purple)' : 'var(--tl)', whiteSpace: 'nowrap' }}>
+                {n} · {label}
+              </span>
             </div>
-          )}
-
-          {step === 3 && formData && selectedSlot && (
-            <PaymentTrigger 
-              formData={formData} 
-              selectedSlot={selectedSlot} 
-              currency={currency}
-              onSuccess={handlePaymentSuccess}
-              onCancel={() => setStep(2)}
-            />
-          )}
-        </div>
+          );
+        })}
       </div>
-    </section>
+
+      <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+        {step === 1 && (
+          <PreSessionForm onSubmit={handleFormSubmit} loading={false} />
+        )}
+
+        {step === 2 && (
+          <div>
+            <div style={{ marginBottom: '16px' }}>
+              <button
+                onClick={() => setStep(1)}
+                style={{ background: 'none', border: 'none', color: 'var(--tm)', cursor: 'pointer', padding: 0 }}
+              >
+                ← Back to form
+              </button>
+            </div>
+            <SlotPicker selectedSlot={selectedSlot} onSelectSlot={handleSlotSelect} />
+          </div>
+        )}
+
+        {step === 3 && formData && selectedSlot && (
+          <PaymentTrigger
+            formData={formData}
+            selectedSlot={selectedSlot}
+            currency={currency}
+            onSuccess={handlePaymentSuccess}
+            onCancel={() => setStep(2)}
+          />
+        )}
+
+        {/* India-first: INR by default, USD tucked behind a small link */}
+        <p style={{ textAlign: 'center', marginTop: '20px', fontSize: '0.85rem', color: 'var(--tl)' }}>
+          Secure payment via Razorpay · UPI, cards
+          {' · '}
+          <button
+            type="button"
+            onClick={() => setCurrency(currency === 'INR' ? 'USD' : 'INR')}
+            style={{ background: 'none', border: 'none', padding: 0, color: 'var(--purple)', cursor: 'pointer', fontSize: 'inherit', fontFamily: 'inherit', textDecoration: 'underline' }}
+          >
+            {currency === 'INR' ? `Paying from abroad? ($${mentorshipConfig.priceUSD})` : `Pay in INR (₹${mentorshipConfig.priceINR})`}
+          </button>
+        </p>
+      </div>
+    </div>
   );
 }

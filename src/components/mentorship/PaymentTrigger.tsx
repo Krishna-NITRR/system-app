@@ -3,6 +3,7 @@ import type { PreSessionFormData } from './PreSessionForm';
 import type { Slot } from '../../types/mentorship';
 import { supabase } from '../../supabaseClient';
 import { mentorshipConfig } from '../../config/mentorship';
+import { track } from '../../utils/analytics';
 
 // Add razorpay to window
 declare global {
@@ -36,6 +37,7 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
   const [refCode, setRefCode] = useState('');
   const [refStatus, setRefStatus] = useState<'idle' | 'checking' | 'valid' | 'invalid'>('idle');
   const [refReferrer, setRefReferrer] = useState<string | null>(null);
+  const [showRef, setShowRef] = useState(false);
 
   const basePrice = currency === 'INR' ? mentorshipConfig.priceINR : mentorshipConfig.priceUSD;
   const symbol = currency === 'INR' ? '₹' : '$';
@@ -65,6 +67,7 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
   };
 
   const handlePayment = async () => {
+    track('pay_click', { currency });
     try {
       setLoading(true);
       setError(null);
@@ -186,7 +189,7 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
     background: '#ffffff',
     borderRadius: '16px',
     border: '1px solid #e5e7eb',
-    padding: '32px',
+    padding: 'clamp(18px, 5vw, 32px)',
     boxShadow: '0 4px 24px rgba(0,0,0,0.06)'
   };
 
@@ -252,11 +255,19 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
         </div>
       </div>
 
-      {/* Referral Code Box */}
+      {/* Referral Code : collapsed to a small link so buyers don't leave to hunt for a code */}
+      {!showRef && refStatus !== 'valid' ? (
+        <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+          <button
+            type="button"
+            onClick={() => setShowRef(true)}
+            style={{ background: 'none', border: 'none', padding: 0, color: '#6b7280', fontSize: '0.85rem', fontFamily: 'inherit', cursor: 'pointer', textDecoration: 'underline' }}
+          >
+            Have a referral code?
+          </button>
+        </div>
+      ) : (
       <div style={{ marginBottom: '20px' }}>
-        <label style={{ ...labelStyle, color: '#374151', textTransform: 'none', fontSize: '0.85rem', fontWeight: 600, letterSpacing: 0 }}>
-          Have a referral code? Get 10% off your session.
-        </label>
         <div style={{ display: 'flex', gap: '8px', marginTop: '6px' }}>
           <input
             type="text"
@@ -264,8 +275,11 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
             value={refCode}
             onChange={e => { setRefCode(e.target.value); setRefStatus('idle'); setRefReferrer(null); }}
             disabled={refStatus === 'valid' || loading}
+            aria-label="Referral code"
+            autoFocus
             style={{
               flex: 1,
+              minWidth: 0,
               padding: '10px 14px',
               border: `1.5px solid ${refStatus === 'valid' ? '#16a34a' : refStatus === 'invalid' ? '#dc2626' : '#d1d5db'}`,
               borderRadius: '8px',
@@ -316,10 +330,11 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
         )}
         {refStatus === 'invalid' && (
           <div style={{ marginTop: '8px', color: '#dc2626', fontSize: '0.85rem' }}>
-            �: Invalid or expired referral code.
+            Invalid or expired referral code.
           </div>
         )}
       </div>
+      )}
 
       <p style={{ color: '#6b7280', marginBottom: '20px', textAlign: 'center', fontSize: '0.875rem' }}>
         Your slot is reserved the moment payment clears. You'll receive a Google Meet link and calendar invite by email.
@@ -331,7 +346,7 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
         </div>
       )}
 
-      <div style={{ display: 'flex', gap: '12px' }}>
+      <div className="payment-trigger-actions">
         <button
           onClick={onCancel}
           disabled={loading}
@@ -355,8 +370,8 @@ export default function PaymentTrigger({ formData, selectedSlot, currency, onSuc
           onClick={handlePayment}
           disabled={loading}
           style={{
-            flex: 1,
-            padding: '12px 24px',
+            flex: '1 1 200px',
+            padding: '14px 24px',
             background: '#6C4CF1',
             color: '#fff',
             border: 'none',
