@@ -51,7 +51,8 @@ export const mentorshipConfig: MentorshipConfig = {
   credentials: [
     'IIT Madras Summer Research Fellow',
     'IIT BHU Research Intern',
-    'First author, ISAMET 2026',
+    'First author, International Conference 2026',
+    'Author of Careers Through Research',
     '130+ professor cold emails analysed',
   ],
 
