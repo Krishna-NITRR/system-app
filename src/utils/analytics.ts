@@ -16,7 +16,7 @@ export type MentorshipEvent =
   | 'slot_selected'
   | 'pay_click'
   | 'payment_success'
-  | 'optin_submit';
+  | 'click_tools';
 
 export function track(event: MentorshipEvent, params: Record<string, string> = {}) {
   try {

@@ -1,11 +1,9 @@
-import { useEffect, useState } from 'react';
-import type { FormEvent } from 'react';
+import { useEffect } from 'react';
 import usePageMeta from '../hooks/usePageMeta';
 import { mentorshipConfig } from '../config/mentorship';
 import type { MentorshipInclude } from '../types/mentorship';
 import MentorshipBooking from '../components/mentorship/MentorshipBooking';
 import { Link } from 'react-router-dom';
-import { supabase } from '../supabaseClient';
 import { captureUtm, track } from '../utils/analytics';
 
 const PURPLE = '#6C4CF1';
@@ -33,64 +31,22 @@ const h2Style: React.CSSProperties = { textAlign: 'center', fontSize: 'clamp(1.7
 const eyebrowStyle: React.CSSProperties = { textAlign: 'center', color: PURPLE, fontSize: '0.78rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '10px' };
 
 function NotReadyCapture() {
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!email.includes('@')) return;
-    setStatus('loading');
-    const utm = captureUtm();
-    const { error } = await supabase
-      .from('signups')
-      .insert([{
-        email: email.toLowerCase().trim(),
-        // signups has no source column; tag the stage field so these leads can be filtered
-        stage: `source=mentorship${utm.utm_source ? `;utm_source=${utm.utm_source}` : ''}`,
-        created_at: new Date().toISOString()
-      }]);
-    if (error && error.code !== '23505') {
-      setStatus('error');
-      return;
-    }
-    track('optin_submit', { source: 'mentorship' });
-    setStatus('success');
-  };
-
   return (
     <section style={{ padding: '64px 16px', background: '#fff', borderTop: '1px solid #e5e7eb' }}>
       <div className="mentorship-optin">
         <div>
           <h2 style={{ fontSize: '1.4rem', fontWeight: 700, color: '#111827', margin: '0 0 8px 0' }}>Not ready to book?</h2>
           <p style={{ color: '#6b7280', margin: 0, lineHeight: 1.6 }}>
-            Get the cold-email templates built from 130+ real emails, free. Book later if you get stuck.
+            Start with the free research tools and resources: cold-email templates, the professor database and more. Book later if you get stuck.
           </p>
         </div>
-        {status === 'success' ? (
-          <p style={{ color: '#16a34a', fontWeight: 600, margin: 0 }}>Done. Check your inbox for the templates.</p>
-        ) : (
-          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            <label htmlFor="optin-email" style={{ fontSize: '0.8rem', fontWeight: 600, color: '#6b7280' }}>Email address</label>
-            <input
-              id="optin-email"
-              type="email"
-              required
-              autoComplete="email"
-              value={email}
-              onChange={e => setEmail(e.target.value)}
-              placeholder="you@college.edu"
-              style={{ padding: '12px 14px', border: '1px solid #d1d5db', borderRadius: '8px', fontSize: '1rem', fontFamily: 'inherit', width: '100%', boxSizing: 'border-box' }}
-            />
-            <button
-              type="submit"
-              disabled={status === 'loading'}
-              style={{ padding: '12px 18px', background: '#111827', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '0.95rem', fontFamily: 'inherit', cursor: 'pointer' }}
-            >
-              {status === 'loading' ? 'Sending...' : 'Send me the templates'}
-            </button>
-            {status === 'error' && <span style={{ color: '#dc2626', fontSize: '0.85rem' }}>Something went wrong. Please try again.</span>}
-          </form>
-        )}
+        <Link
+          to="/research-tools-and-resources"
+          onClick={() => track('click_tools', { location: 'not_ready' })}
+          style={{ display: 'block', textAlign: 'center', padding: '12px 18px', background: '#111827', color: '#fff', borderRadius: '8px', fontWeight: 600, fontSize: '0.95rem', textDecoration: 'none' }}
+        >
+          Check the free tools →
+        </Link>
       </div>
     </section>
   );
